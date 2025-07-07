@@ -146,6 +146,22 @@ find_package(EnTT CONFIG REQUIRED)
 
 add_executable(
 	${PROJECT_NAME}
+	
+	#===================
+	# EXTERNAL
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/external/imgui-SFML.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/external/imgui-SFML.cpp
+	
+	#===================
+	# UTILITY
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utility/matrix.hpp
+
+	#===================
+	# MAP
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/tile_map.hpp
 
 	#===================
 	# MAIN
