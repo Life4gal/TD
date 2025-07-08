@@ -1,6 +1,16 @@
 #include <print>
 
 // =========================
+// SYSTEMS
+
+#include <systems/map.hpp>
+
+// =========================
+// ENTT
+
+#include <entt/entt.hpp>
+
+// =========================
 // SFML
 
 #include <SFML/Graphics.hpp>
@@ -10,8 +20,6 @@
 
 #include <imgui.h>
 #include <external/imgui-SFML.hpp>
-
-#include <map/tile_map.hpp>
 
 namespace
 {
@@ -24,19 +32,21 @@ namespace
 	class Game
 	{
 	public:
+		entt::registry registry;
+
 		auto initialize() noexcept -> void
 		{
-			//
+			systems::Map::initialize(registry);
 		}
 
 		auto update(const sf::Time delta) noexcept -> void
 		{
-			std::ignore = delta;
+			systems::Map::update(registry, delta);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
 		{
-			std::ignore = window;
+			systems::Map::render(registry, window);
 		}
 	};
 }

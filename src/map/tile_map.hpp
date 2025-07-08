@@ -25,6 +25,9 @@ namespace map
 
 		using size_type = data_type::size_type;
 
+		using iterator = data_type::iterator;
+		using const_iterator = data_type::const_iterator;
+
 	private:
 		size_type tile_width_;
 		size_type tile_height_;
@@ -156,6 +159,26 @@ namespace map
 		constexpr auto set(const size_type x, const size_type y, const TileType type) noexcept -> void
 		{
 			data_[x, y] = type;
+		}
+
+		[[nodiscard]] constexpr auto begin() noexcept -> iterator
+		{
+			return data_.begin();
+		}
+
+		[[nodiscard]] constexpr auto begin() const noexcept -> const_iterator
+		{
+			return data_.begin();
+		}
+
+		[[nodiscard]] constexpr auto end() noexcept -> iterator
+		{
+			return data_.end();
+		}
+
+		[[nodiscard]] constexpr auto end() const noexcept -> const_iterator
+		{
+			return data_.end();
 		}
 	};
 }

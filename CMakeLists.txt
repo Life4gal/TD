@@ -162,6 +162,18 @@ add_executable(
 	# MAP
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/tile_map.hpp
+	
+	#===================
+	# COMPONENTS
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/render.hpp
+	
+	#===================
+	# SYSTEMS
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.cpp
 
 	#===================
 	# MAIN
