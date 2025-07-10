@@ -12,4 +12,16 @@ namespace components
 		sf::CircleShape gate_shape;
 		sf::RectangleShape cursor_shape;
 	};
+
+	class RenderNavigationData
+	{
+	public:
+		sf::VertexArray path_vertices;
+	};
+
+	class RenderEnemyData
+	{
+	public:
+		sf::CircleShape shape;
+	};
 }

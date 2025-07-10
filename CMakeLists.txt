@@ -163,17 +163,34 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/tile_map.hpp
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path_finding.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path_finding.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/navigation.cpp
+	
 	#===================
 	# COMPONENTS
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tags.hpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/render.hpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
 	
 	#===================
 	# SYSTEMS
-
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.cpp
 
 	#===================
 	# MAIN
