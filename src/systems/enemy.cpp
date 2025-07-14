@@ -7,7 +7,6 @@
 #include <components/render.hpp>
 
 #include <components/map.hpp>
-#include <components/navigation.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -59,19 +58,11 @@ namespace systems
 		}
 	}
 
-	auto Enemy::spawn(entt::registry& registry, std::uint32_t start_gate_id) noexcept -> entt::entity
+	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id) noexcept -> entt::entity
 	{
 		auto& map_data = registry.ctx().get<components::MapData>();
 		const auto& map = map_data.map;
-
-		const auto& navigation_data = registry.ctx().get<components::NavigationData>();
-		auto& navigation = navigation_data.navigation;
-		const auto& cache_paths = navigation_data.cache_paths;
-
-		assert(start_gate_id < cache_paths.size());
-		const auto& cache_path = cache_paths[start_gate_id];
-		const auto start_world_position = map.coordinate_grid_to_world(cache_path.front());
-		const auto end_world_position = map.coordinate_grid_to_world(cache_path.back());
+		const auto start_gate = map_data.start_gates[start_gate_id];
 
 		const auto entity = registry.create();
 
@@ -85,7 +76,7 @@ namespace systems
 
 			// todo: 加载配置文件
 			auto& [position] = registry.emplace<components::WorldPosition>(entity);
-			position = start_world_position;
+			position = map.coordinate_grid_to_world(start_gate);
 
 			auto& [speed] = registry.emplace<components::Movement>(entity);
 			speed = 30.f + std::uniform_real_distribution<float>{0, 20}(random);
@@ -94,15 +85,6 @@ namespace systems
 			health = 100;
 
 			// todo: 击杀奖励?
-		}
-
-		// ================================
-		// navigation
-		// ================================
-
-		{
-			auto& [agent_id] = registry.emplace<components::NavigationAgent>(entity);
-			agent_id = navigation->add_agent(registry, start_world_position, end_world_position);
 		}
 
 		map_data.enemy_counter += 1;

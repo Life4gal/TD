@@ -163,12 +163,12 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/tile_map.hpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path_finding.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path_finding.cpp
-
-	${CMAKE_CURRENT_SOURCE_DIR}/src/map/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/map/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/path.cpp
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.cpp
+
 	#===================
 	# COMPONENTS
 

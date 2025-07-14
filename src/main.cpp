@@ -4,6 +4,9 @@
 // SYSTEMS
 
 #include <systems/map.hpp>
+#include <systems/navigation.hpp>
+
+#include <systems/enemy.hpp>
 
 // =========================
 // ENTT
@@ -37,16 +40,25 @@ namespace
 		auto initialize() noexcept -> void
 		{
 			systems::Map::initialize(registry);
+			systems::Navigation::initialize(registry);
+
+			systems::Enemy::initialize(registry);
 		}
 
 		auto update(const sf::Time delta) noexcept -> void
 		{
 			systems::Map::update(registry, delta);
+			systems::Navigation::update(registry, delta);
+
+			systems::Enemy::update(registry, delta);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
 		{
 			systems::Map::render(registry, window);
+			systems::Navigation::render(registry, window);
+
+			systems::Enemy::render(registry, window);
 		}
 	};
 }

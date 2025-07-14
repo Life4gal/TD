@@ -1,26 +1,17 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 
-#include <map/navigation.hpp>
+#include <map/flow_field.hpp>
 
 namespace components
 {
 	class NavigationData
 	{
 	public:
-		using path_type = std::vector<sf::Vector2u>;
-
-		std::unique_ptr<map::Navigation> navigation;
+		map::FlowField flow_field;
 
 		// start_gate => path
-		std::vector<path_type> cache_paths;
-	};
-
-	class NavigationAgent
-	{
-	public:
-		map::Navigation::AgentId agent_id;
+		std::vector<map::path_type> cache_paths;
 	};
 }
