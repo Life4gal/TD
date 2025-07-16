@@ -156,7 +156,7 @@ namespace systems
 				remaining_move_distance -= current_move_distance;
 
 				// 如果移动距离超过到达边界距离
-				if (current_move_distance - distance_to_border >= 1e-5f)
+				if (current_move_distance >= distance_to_border)
 				{
 					// 进入下一个网格
 					current_point = sf::Vector2u{sf::Vector2i{current_point} + direction_value};

@@ -7,6 +7,7 @@
 #include <systems/navigation.hpp>
 
 #include <systems/enemy.hpp>
+#include <systems/graveyard.hpp>
 
 // =========================
 // ENTT
@@ -43,6 +44,7 @@ namespace
 			systems::Navigation::initialize(registry);
 
 			systems::Enemy::initialize(registry);
+			systems::Graveyard::initialize(registry);
 		}
 
 		auto update(const sf::Time delta) noexcept -> void
@@ -51,6 +53,7 @@ namespace
 			systems::Navigation::update(registry, delta);
 
 			systems::Enemy::update(registry, delta);
+			systems::Graveyard::update(registry, delta);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
@@ -59,6 +62,7 @@ namespace
 			systems::Navigation::render(registry, window);
 
 			systems::Enemy::render(registry, window);
+			systems::Graveyard::render(registry, window);
 		}
 	};
 }
@@ -132,11 +136,7 @@ auto main() noexcept -> int
 		ImGui::SFML::Update(window, delta);
 		game.update(delta);
 
-		ImGui::ShowDemoWindow();
-
-		ImGui::Begin("测试窗口");
-		ImGui::Text("hello world!");
-		ImGui::End();
+		// ImGui::ShowDemoWindow();
 
 		window.clear({45, 45, 45});
 
