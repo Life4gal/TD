@@ -168,29 +168,34 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.cpp
-
+	
 	#===================
-	# COMPONENTS
+	# MANAGER
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/manager/font.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/manager/font.cpp
+	
+	#===================
+	# COMPONENTS & SYSTEMS
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tags.hpp
-
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/render.hpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
-	
-	#===================
-	# SYSTEMS
-	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.cpp
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.cpp
-	
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.cpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.cpp
 

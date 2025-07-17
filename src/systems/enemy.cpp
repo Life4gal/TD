@@ -13,8 +13,6 @@
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <imgui.h>
-
 namespace
 {
 	std::mt19937 random{std::random_device{}()};
@@ -62,24 +60,8 @@ namespace systems
 
 	auto Enemy::update(entt::registry& registry, const sf::Time delta) noexcept -> void
 	{
+		std::ignore = registry;
 		std::ignore = delta;
-
-		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-
-			ImGui::Begin("生成敌人");
-
-			for (std::size_t i = 0; i < map_data.start_gates.size(); ++i)
-			{
-				if (const auto label = std::format("出生点 {}", i);
-					ImGui::Button(label.c_str()))
-				{
-					spawn(registry, static_cast<std::uint32_t>(i));
-				}
-			}
-
-			ImGui::End();
-		}
 	}
 
 	auto Enemy::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void

@@ -4,6 +4,7 @@
 // SYSTEMS
 
 #include <systems/map.hpp>
+#include <systems/hud.hpp>
 #include <systems/navigation.hpp>
 
 #include <systems/enemy.hpp>
@@ -42,17 +43,24 @@ namespace
 		{
 			systems::Map::initialize(registry);
 			systems::Navigation::initialize(registry);
+			systems::HUD::initialize(registry);
 
 			systems::Enemy::initialize(registry);
 			systems::Graveyard::initialize(registry);
 		}
 
-		auto update(const sf::Time delta) noexcept -> void
+		auto update_simulation(const sf::Time delta) noexcept -> void
 		{
-			systems::Map::update(registry, delta);
 			systems::Navigation::update(registry, delta);
 
 			systems::Enemy::update(registry, delta);
+		}
+
+		auto update(const sf::Time delta) noexcept -> void
+		{
+			systems::Map::update(registry, delta);
+			systems::HUD::update(registry, delta);
+
 			systems::Graveyard::update(registry, delta);
 		}
 
@@ -60,6 +68,7 @@ namespace
 		{
 			systems::Map::render(registry, window);
 			systems::Navigation::render(registry, window);
+			systems::HUD::render(registry, window);
 
 			systems::Enemy::render(registry, window);
 			systems::Graveyard::render(registry, window);
@@ -74,6 +83,8 @@ auto main() noexcept -> int
 
 	Game game{};
 	game.initialize();
+
+	std::uint32_t simulation_times_per_tick = 1;
 
 	const sf::VideoMode video_mode{{window_width, window_height}};
 	const auto window_title = TD_PROJECT_NAME " (" TD_BUILD_TYPE ") " TD_GIT_COMMIT_INFO;
@@ -121,7 +132,24 @@ auto main() noexcept -> int
 						{
 							window.close();
 						},
-						//
+						[&](const sf::Event::KeyPressed& kp) noexcept -> void
+						{
+							if (kp.code == sf::Keyboard::Key::Space)
+							{
+								simulation_times_per_tick = simulation_times_per_tick == 0 ? 1 : 0;
+							}
+							else if (kp.code == sf::Keyboard::Key::Tab)
+							{
+								simulation_times_per_tick = 10;
+							}
+						},
+						[&](const sf::Event::KeyReleased& kr) noexcept -> void
+						{
+							if (kr.code == sf::Keyboard::Key::Tab)
+							{
+								simulation_times_per_tick = 1;
+							}
+						},
 						// unhandled
 						[&]<typename T>(const T& e) noexcept -> void
 						{
@@ -134,6 +162,11 @@ auto main() noexcept -> int
 		const auto delta = delta_clock.restart();
 
 		ImGui::SFML::Update(window, delta);
+
+		for (std::uint32_t current_simulation_tick = 0; current_simulation_tick < simulation_times_per_tick; ++current_simulation_tick)
+		{
+			game.update_simulation(delta);
+		}
 		game.update(delta);
 
 		// ImGui::ShowDemoWindow();
