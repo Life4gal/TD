@@ -2,6 +2,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <SFML/System/Vector2.hpp>
+
 namespace sf
 {
 	class RenderWindow;
@@ -9,8 +11,7 @@ namespace sf
 
 namespace systems
 {
-	// ReSharper disable once CppInconsistentNaming
-	class HUD
+	class Player
 	{
 	public:
 		static auto initialize(entt::registry& registry) noexcept -> void;
@@ -18,5 +19,12 @@ namespace systems
 		static auto update(entt::registry& registry) noexcept -> void;
 
 		static auto render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void;
+
+		// =============================
+		// 建造塔
+
+		static auto try_build_tower(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
+
+		static auto try_destroy_tower(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
 	};
 }

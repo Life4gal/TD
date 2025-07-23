@@ -49,7 +49,6 @@ namespace systems
 			{
 					.tile_shape = sf::RectangleShape{{static_cast<float>(map.tile_width()), static_cast<float>(map.tile_height())},},
 					.gate_shape = sf::CircleShape{static_cast<float>(std::ranges::min(map.tile_width(), map.tile_height())) * .45f},
-					.cursor_shape = sf::RectangleShape{{static_cast<float>(map.tile_width()), static_cast<float>(map.tile_height())},},
 			};
 
 			// tile
@@ -64,15 +63,6 @@ namespace systems
 				auto& gate_shape = render_map_data.gate_shape;
 
 				gate_shape.setOrigin({gate_shape.getRadius(), gate_shape.getRadius()});
-			}
-			// cursor
-			{
-				auto& cursor_shape = render_map_data.cursor_shape;
-
-				cursor_shape.setOrigin(cursor_shape.getSize() / 2.f);
-				cursor_shape.setFillColor(sf::Color::Transparent);
-				cursor_shape.setOutlineColor(sf::Color::Green);
-				cursor_shape.setOutlineThickness(2.f);
 			}
 
 			registry.ctx().emplace<components::RenderMapData>(std::move(render_map_data));
@@ -91,10 +81,9 @@ namespace systems
 		registry.ctx().emplace<components::MapData>(std::move(map_data));
 	}
 
-	auto Map::update(entt::registry& registry, const sf::Time delta) noexcept -> void
+	auto Map::update(entt::registry& registry) noexcept -> void
 	{
 		std::ignore = registry;
-		std::ignore = delta;
 	}
 
 	auto Map::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
@@ -166,22 +155,6 @@ namespace systems
 					gate_shape.setPosition(position);
 
 					window.draw(gate_shape);
-				}
-			}
-
-			// 绘制游标方框
-			{
-				const auto mouse_position = sf::Mouse::getPosition(window);
-				const auto mouse_grid_position = map.coordinate_world_to_grid(mouse_position);
-
-				if (map.inside(mouse_grid_position.x, mouse_grid_position.y))
-				{
-					auto& cursor_shape = render_map_data->cursor_shape;
-
-					const auto world_position = map.coordinate_grid_to_world(mouse_grid_position);
-					cursor_shape.setPosition(world_position);
-
-					window.draw(cursor_shape);
 				}
 			}
 		}

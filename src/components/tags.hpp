@@ -8,6 +8,16 @@ namespace components::tags
 	using entt::literals::operator ""_hs;
 
 	// ====================================
+	// TOWER
+
+	using tower = entt::tag<"Tower"_hs>;
+
+	// 正在建造中
+	using tower_building = entt::tag<"TowerBuilding"_hs>;
+	// 正在拆除中
+	using tower_destructing = entt::tag<"TowerDestructing"_hs>;
+
+	// ====================================
 	// ENEMY
 
 	using enemy = entt::tag<"Enemy"_hs>;

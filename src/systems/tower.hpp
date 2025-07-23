@@ -14,7 +14,7 @@ namespace sf
 
 namespace systems
 {
-	class Enemy
+	class Tower
 	{
 	public:
 		static auto initialize(entt::registry& registry) noexcept -> void;
@@ -24,10 +24,8 @@ namespace systems
 		static auto render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void;
 
 		// =============================
-		// 生成敌人
+		// 建造塔
 
-		static auto spawn(entt::registry& registry, sf::Vector2u point, components::EntityType enemy_type) noexcept -> entt::entity;
-
-		static auto spawn(entt::registry& registry, std::uint32_t start_gate_id, components::EntityType enemy_type) noexcept -> entt::entity;
+		static auto build(entt::registry& registry, sf::Vector2u grid_position, components::EntityType tower_type) noexcept -> entt::entity;
 	};
 }

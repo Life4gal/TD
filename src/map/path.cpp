@@ -115,6 +115,67 @@ namespace
 		// 没有找到任何路径
 		return std::nullopt;
 	}
+
+	template<typename OnEnd>
+	[[nodiscard]] auto do_check_reachable(
+		const TileMap& map,
+		const sf::Vector2u start_point,
+		const OnEnd on_end
+	) noexcept -> bool
+		//
+		requires requires
+		{
+			{ on_end(sf::Vector2u{}) } -> std::same_as<bool>;
+		}
+	{
+		const auto map_width = map.horizontal_tile_count();
+		const auto map_height = map.vertical_tile_count();
+		const auto to_index = [map_width](const sf::Vector2u position) noexcept -> std::uint32_t
+		{
+			return position.y * map_width + position.x;
+		};
+
+		std::queue<sf::Vector2u> open{};
+		std::vector visited(static_cast<std::size_t>(map_width) * map_height, false);
+
+		open.push(start_point);
+		visited[to_index(start_point)] = true;
+
+		while (not open.empty())
+		{
+			const auto current = open.front();
+			open.pop();
+
+			// 找到目标点
+			if (on_end(current))
+			{
+				return true;
+			}
+
+			// 检查所有相邻节点
+			for (const auto [direction, direction_value]: valid_direction_with_values)
+			{
+				const auto next_signed = sf::Vector2i{current} + direction_value;
+
+				// 下一个点位不在地图内或者无法通过
+				if (not map.inside(next_signed.x, next_signed.y) or not map.passable(next_signed.x, next_signed.y))
+				{
+					continue;
+				}
+
+				const auto next_unsigned = sf::Vector2u{next_signed};
+
+				if (const auto index = to_index(next_unsigned);
+					not visited[index])
+				{
+					visited[index] = true;
+					open.push(next_unsigned);
+				}
+			}
+		}
+
+		return false;
+	}
 }
 
 namespace map
@@ -193,6 +254,54 @@ namespace map
 				const auto cost_view = end_points | std::views::transform(std::bind_front(heuristic, current_point));
 
 				return std::ranges::min(cost_view);
+			}
+		);
+	}
+
+	auto PathFinder::is_reachable(
+		const TileMap& map,
+		const sf::Vector2u start_point,
+		const sf::Vector2u end_point
+	) noexcept -> bool
+	{
+		// 起点或者终点不在地图内
+		if (not map.inside(start_point.x, start_point.y) or not map.inside(end_point.x, end_point.y))
+		{
+			return false;
+		}
+
+		return do_check_reachable(
+			map,
+			start_point,
+			[end_point](const sf::Vector2u current_point) noexcept -> bool
+			{
+				return current_point == end_point;
+			}
+		);
+	}
+
+	auto PathFinder::is_reachable(
+		const TileMap& map,
+		const sf::Vector2u start_point,
+		const std::span<const sf::Vector2u> end_points
+	) noexcept -> bool
+	{
+		if (end_points.empty())
+		{
+			return false;
+		}
+
+		if (end_points.size() == 1)
+		{
+			return is_reachable(map, start_point, end_points.front());
+		}
+
+		return do_check_reachable(
+			map,
+			start_point,
+			[end_points](const sf::Vector2u current_point) noexcept -> bool
+			{
+				return std::ranges::contains(end_points, current_point);
 			}
 		);
 	}

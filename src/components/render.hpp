@@ -13,6 +13,17 @@ namespace components
 	public:
 		sf::RectangleShape tile_shape;
 		sf::CircleShape gate_shape;
+	};
+
+	class RenderNavigationData
+	{
+	public:
+		sf::VertexArray path_vertices;
+	};
+
+	class RenderPlayerData
+	{
+	public:
 		sf::RectangleShape cursor_shape;
 	};
 
@@ -24,10 +35,10 @@ namespace components
 		sf::Text hud_text;
 	};
 
-	class RenderNavigationData
+	class RenderTowerData
 	{
 	public:
-		sf::VertexArray path_vertices;
+		sf::CircleShape shape;
 	};
 
 	class RenderEnemyData

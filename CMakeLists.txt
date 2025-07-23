@@ -179,18 +179,12 @@ add_executable(
 	# COMPONENTS & SYSTEMS
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tags.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/entity.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/render.hpp
-
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/tower.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.hpp
@@ -198,7 +192,22 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/navigation.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/player.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.cpp
+	
 	#===================
 	# MAIN
 

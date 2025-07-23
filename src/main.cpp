@@ -6,7 +6,8 @@
 #include <systems/map.hpp>
 #include <systems/hud.hpp>
 #include <systems/navigation.hpp>
-
+#include <systems/player.hpp>
+#include <systems/tower.hpp>
 #include <systems/enemy.hpp>
 #include <systems/graveyard.hpp>
 
@@ -43,7 +44,10 @@ namespace
 		{
 			systems::Map::initialize(registry);
 			systems::Navigation::initialize(registry);
+			systems::Player::initialize(registry);
 			systems::HUD::initialize(registry);
+
+			systems::Tower::initialize(registry);
 
 			systems::Enemy::initialize(registry);
 			systems::Graveyard::initialize(registry);
@@ -53,25 +57,41 @@ namespace
 		{
 			systems::Navigation::update(registry, delta);
 
+			systems::Tower::update(registry, delta);
+
 			systems::Enemy::update(registry, delta);
 		}
 
-		auto update(const sf::Time delta) noexcept -> void
+		auto update() noexcept -> void
 		{
-			systems::Map::update(registry, delta);
-			systems::HUD::update(registry, delta);
+			systems::Map::update(registry);
+			systems::Player::update(registry);
+			systems::HUD::update(registry);
 
-			systems::Graveyard::update(registry, delta);
+			systems::Graveyard::update(registry);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
 		{
 			systems::Map::render(registry, window);
 			systems::Navigation::render(registry, window);
+			systems::Player::render(registry, window);
 			systems::HUD::render(registry, window);
+
+			systems::Tower::render(registry, window);
 
 			systems::Enemy::render(registry, window);
 			systems::Graveyard::render(registry, window);
+		}
+
+		auto build_tower(const sf::Vector2f world_position) noexcept -> void
+		{
+			systems::Player::try_build_tower(registry, world_position);
+		}
+
+		auto destroy_tower(const sf::Vector2f world_position) noexcept -> void
+		{
+			systems::Player::try_destroy_tower(registry, world_position);
 		}
 	};
 }
@@ -132,8 +152,40 @@ auto main() noexcept -> int
 						{
 							window.close();
 						},
+						[&](const sf::Event::MouseButtonPressed& mbp) noexcept -> void
+						{
+							if (want_capture_mouse)
+							{
+								return;
+							}
+
+							const auto position = sf::Vector2f{mbp.position};
+
+							if (mbp.button == sf::Mouse::Button::Left)
+							{
+								game.build_tower(position);
+							}
+							else if (mbp.button == sf::Mouse::Button::Right)
+							{
+								game.destroy_tower(position);
+							}
+						},
+						[&](const sf::Event::MouseButtonReleased& mbr) noexcept -> void
+						{
+							if (want_capture_mouse)
+							{
+								return;
+							}
+
+							std::ignore = mbr;
+						},
 						[&](const sf::Event::KeyPressed& kp) noexcept -> void
 						{
+							if (want_capture_keyboard)
+							{
+								return;
+							}
+
 							if (kp.code == sf::Keyboard::Key::Space)
 							{
 								simulation_times_per_tick = simulation_times_per_tick == 0 ? 1 : 0;
@@ -145,6 +197,11 @@ auto main() noexcept -> int
 						},
 						[&](const sf::Event::KeyReleased& kr) noexcept -> void
 						{
+							if (want_capture_keyboard)
+							{
+								return;
+							}
+
 							if (kr.code == sf::Keyboard::Key::Tab)
 							{
 								simulation_times_per_tick = 1;
@@ -167,7 +224,7 @@ auto main() noexcept -> int
 		{
 			game.update_simulation(delta);
 		}
-		game.update(delta);
+		game.update();
 
 		// ImGui::ShowDemoWindow();
 

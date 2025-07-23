@@ -5,6 +5,7 @@
 #include <print>
 
 #include <components/tags.hpp>
+#include <components/entity.hpp>
 #include <components/enemy.hpp>
 #include <components/render.hpp>
 
@@ -25,9 +26,17 @@ namespace systems
 		registry.on_construct<components::tags::enemy>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				std::ignore = reg;
+				const auto [type] = reg.get<components::EntityType>(entity);
+				const auto [position] = reg.get<components::WorldPosition>(entity);
 
-				std::println("[{}] Construct enemy {}", std::chrono::system_clock::now(), std::to_underlying(entity));
+				std::println(
+					"[{}] Spawn enemy {}({}) at ({:.0f}:{:.0f})",
+					std::chrono::system_clock::now(),
+					std::to_underlying(entity),
+					std::to_underlying(type),
+					position.x,
+					position.y
+				);
 			}
 		>();
 
@@ -36,7 +45,7 @@ namespace systems
 			{
 				std::ignore = reg;
 
-				std::println("[{}] Destroy enemy {}", std::chrono::system_clock::now(), std::to_underlying(entity));
+				std::println("[{}] Kill enemy {}", std::chrono::system_clock::now(), std::to_underlying(entity));
 			}
 		>();
 
@@ -78,43 +87,40 @@ namespace systems
 		}
 	}
 
-	auto Enemy::spawn(entt::registry& registry, const sf::Vector2u point) noexcept -> entt::entity
+	auto Enemy::spawn(entt::registry& registry, const sf::Vector2u point, const components::EntityType enemy_type) noexcept -> entt::entity
 	{
 		auto& map_data = registry.ctx().get<components::MapData>();
 		const auto& map = map_data.map;
 
 		const auto entity = registry.create();
 
-		// ================================
-		// entity
-		// ================================
+		registry.emplace<components::tags::enemy_alive>(entity);
+		registry.emplace<components::EntityType>(entity, enemy_type);
 
+		auto& [position] = registry.emplace<components::WorldPosition>(entity);
+		position = map.coordinate_grid_to_world(point);
+
+		// todo: 加载配置文件
 		{
-			registry.emplace<components::tags::enemy>(entity);
-			registry.emplace<components::tags::enemy_alive>(entity);
-
-			// todo: 加载配置文件
-			auto& [position] = registry.emplace<components::WorldPosition>(entity);
-			position = map.coordinate_grid_to_world(point);
-
 			auto& [speed] = registry.emplace<components::Movement>(entity);
 			speed = 30.f + std::uniform_real_distribution<float>{0, 20}(random);
 
 			auto& [health] = registry.emplace<components::Health>(entity);
 			health = 100;
-
-			// todo: 击杀奖励?
 		}
+
+		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
+		registry.emplace<components::tags::enemy>(entity);
 
 		map_data.enemy_counter += 1;
 		return entity;
 	}
 
-	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id) noexcept -> entt::entity
+	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id, const components::EntityType enemy_type) noexcept -> entt::entity
 	{
 		const auto& map_data = registry.ctx().get<components::MapData>();
 		const auto start_gate = map_data.start_gates[start_gate_id];
 
-		return spawn(registry, start_gate);
+		return spawn(registry, start_gate, enemy_type);
 	}
 }

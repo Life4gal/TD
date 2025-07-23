@@ -14,10 +14,8 @@ namespace systems
 		std::ignore = registry;
 	}
 
-	auto Graveyard::update(entt::registry& registry, const sf::Time delta) noexcept -> void
+	auto Graveyard::update(entt::registry& registry) noexcept -> void
 	{
-		std::ignore = delta;
-
 		auto& map_data = registry.ctx().get<components::MapData>();
 
 		const auto enemy_killed_view = registry.view<components::tags::enemy, components::tags::enemy_killed>();

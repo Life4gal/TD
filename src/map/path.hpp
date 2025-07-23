@@ -217,5 +217,19 @@ namespace map
 			std::span<const sf::Vector2u> end_points,
 			heuristic_type heuristic = Heuristic::diagonal_distance
 		) noexcept -> std::optional<path_type>;
+
+		// BFS
+		[[nodiscard]] static auto is_reachable(
+			const TileMap& map,
+			sf::Vector2u start_point,
+			sf::Vector2u end_point
+		) noexcept -> bool;
+
+		// BFS
+		[[nodiscard]] static auto is_reachable(
+			const TileMap& map,
+			sf::Vector2u start_point,
+			std::span<const sf::Vector2u> end_points
+		) noexcept -> bool;
 	};
 }
