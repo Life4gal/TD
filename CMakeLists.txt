@@ -189,6 +189,10 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.cpp

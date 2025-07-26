@@ -8,6 +8,11 @@ namespace components::tags
 	using entt::literals::operator ""_hs;
 
 	// ====================================
+	// RESOURCE
+
+	using resource = entt::tag<"Resource"_hs>;
+
+	// ====================================
 	// TOWER
 
 	using tower = entt::tag<"Tower"_hs>;

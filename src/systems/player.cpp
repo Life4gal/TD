@@ -11,6 +11,7 @@
 #include <components/player.hpp>
 
 #include <systems/tower.hpp>
+#include <systems/resource.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -19,13 +20,10 @@ namespace systems
 {
 	auto Player::initialize(entt::registry& registry) noexcept -> void
 	{
-		// todo: 加载配置文件
-
 		components::PlayerData player_data
 		{
-				.health = 100.f,
-				.mana = 10.f,
 				.selected_tower_type = {components::EntityType::invalid_type},
+				.resources = {},
 				.towers = {},
 		};
 
@@ -55,16 +53,21 @@ namespace systems
 	auto Player::update(entt::registry& registry) noexcept -> void
 	{
 		auto& player_data = registry.ctx().get<components::PlayerData>();
+		auto& resources = player_data.resources;
+		auto& health = resources[components::ResourceType::HEALTH];
 
 		const auto enemy_reached_view = registry.view<components::tags::enemy, components::tags::enemy_reached>();
 		const auto reached_count = enemy_reached_view.size_hint();
 
 		// todo: 每个敌人扣多少生命值?
-		player_data.health -= static_cast<float>(reached_count) * 1.f;
-
-		if (player_data.health <= 0)
+		if (const auto cost_health = reached_count * 1;
+			cost_health >= health)
 		{
 			// todo: 游戏结束
+		}
+		else
+		{
+			health -= cost_health;
 		}
 	}
 
@@ -119,7 +122,12 @@ namespace systems
 			return false;
 		}
 
-		// todo: 检查资源是否足够
+		// 检查资源是否足够
+		if (not Resource::require(registry, player_data.selected_tower_type))
+		{
+			std::println("资源不足");
+			return false;
+		}
 
 		// 检查路径是否会被堵死
 		std::vector<std::reference_wrapper<map::path_type>> changed_cache_path{};
@@ -160,12 +168,15 @@ namespace systems
 			return false;
 		}
 
-		// todo: 消耗资源
+		// 消耗资源
+		Resource::consume_unchecked(registry, player_data.selected_tower_type);
 
 		// 记录建造的塔
 		player_data.towers.emplace(grid_position, entity);
 
 		// 更新流场
+		// todo: 即使建造位置不在路径上,流场更新也可能造成某些路径变化
+		// 如此会造成实际路径与显示路径不一致
 		if (changed_cache_path.empty())
 		{
 			// 新进路径不变,仅是部分区域流向变动
@@ -221,11 +232,24 @@ namespace systems
 			// 武器
 			if (not weapons.empty())
 			{
-				// todo
+				std::vector<components::EntityType> types{};
+				types.reserve(weapons.size());
+
+				std::ranges::transform(
+					weapons,
+					std::back_inserter(types),
+					[&](const entt::entity entity) noexcept -> components::EntityType
+					{
+						return registry.get<components::EntityType>(entity);
+					}
+				);
+
+				Resource::acquire(registry, types);
 			}
 
 			// 塔
-			// todo
+			const auto tower_type = registry.get<components::EntityType>(it->second);
+			Resource::acquire(registry, tower_type);
 		}
 
 		// 销毁塔

@@ -9,6 +9,7 @@
 #include <systems/player.hpp>
 #include <systems/tower.hpp>
 #include <systems/enemy.hpp>
+#include <systems/resource.hpp>
 #include <systems/graveyard.hpp>
 
 // =========================
@@ -51,6 +52,7 @@ namespace
 
 			systems::Enemy::initialize(registry);
 			systems::Graveyard::initialize(registry);
+			systems::Resource::initialize(registry);
 		}
 
 		auto update_simulation(const sf::Time delta) noexcept -> void
@@ -69,6 +71,7 @@ namespace
 			systems::HUD::update(registry);
 
 			systems::Graveyard::update(registry);
+			systems::Resource::update(registry);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
@@ -82,6 +85,7 @@ namespace
 
 			systems::Enemy::render(registry, window);
 			systems::Graveyard::render(registry, window);
+			systems::Resource::render(registry, window);
 		}
 
 		auto build_tower(const sf::Vector2f world_position) noexcept -> void

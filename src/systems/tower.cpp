@@ -105,7 +105,7 @@ namespace systems
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
 		registry.emplace<components::tags::tower>(entity);
 
-		map_data.enemy_counter += 1;
+		map_data.tower_counter += 1;
 		return entity;
 	}
 }

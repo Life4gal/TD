@@ -3,8 +3,7 @@
 #include <unordered_map>
 
 #include <components/entity.hpp>
-
-#include <entt/entity/entity.hpp>
+#include <components/resource.hpp>
 
 #include <SFML/System/Vector2.hpp>
 
@@ -22,13 +21,9 @@ namespace components
 		};
 
 	public:
-		// 当前生命值
-		float health;
-		// 当前魔法值(用于释放技能)
-		float mana;
-
 		EntityType selected_tower_type;
 
+		std::unordered_map<ResourceType, Resource::size_type> resources;
 		std::unordered_map<sf::Vector2u, entt::entity, vector2_hasher> towers;
 	};
 }
