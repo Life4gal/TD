@@ -2,6 +2,7 @@
 
 #include <print>
 
+#include <components/hud.hpp>
 #include <components/render.hpp>
 
 #include <components/map.hpp>
@@ -19,32 +20,37 @@ namespace systems
 {
 	auto HUD::initialize(entt::registry& registry) noexcept -> void
 	{
+		using namespace components;
+
 		auto& font_manager = manager::Font::instance();
 		const auto hud_font_id = font_manager.precache(R"(C:\Windows\Fonts\msyh.ttc)");
 		assert(hud_font_id.has_value());
 
-		components::RenderHUDData render_hud_data
+		render::HUD render_hud
 		{
 				.hud_font = *hud_font_id,
 				.hud_text = {font_manager.font_of(*hud_font_id), "", 25},
 		};
 
-		registry.ctx().emplace<components::RenderHUDData>(std::move(render_hud_data));
+		registry.ctx().emplace<render::HUD>(std::move(render_hud));
 	}
 
 	auto HUD::update(entt::registry& registry) noexcept -> void
 	{
-		using entity_underlying_type = std::underlying_type_t<components::EntityType::Type>;
+		using namespace components;
+
+		using entity_underlying_type = std::underlying_type_t<EntityType::Type>;
 		constexpr entity_underlying_type enemy_type_base = 0;
 		constexpr entity_underlying_type tower_type_base = 1000;
 
-		const auto& map_data = registry.ctx().get<components::MapData>();
-		auto& player_data = registry.ctx().get<components::PlayerData>();
+		const auto& [map_start_gates, map_end_gates] = registry.ctx().get<const map_ex::Gate>();
+
+		auto& [player_selected_tower_type, player_selected_weapon_type] = registry.ctx().get<player::Interaction>();
 
 		ImGui::Begin("辅助窗口");
 		{
 			{
-				static entity_underlying_type selected_enemy_type = std::to_underlying(components::EntityType::invalid_type);
+				static entity_underlying_type selected_enemy_type = std::to_underlying(EntityType::invalid_type);
 
 				ImGui::Text("选择敌人类型");
 				ImGui::Separator();
@@ -63,18 +69,18 @@ namespace systems
 				ImGui::Text("生成敌人");
 				ImGui::Separator();
 
-				for (std::size_t i = 0; i < map_data.start_gates.size(); ++i)
+				for (std::size_t i = 0; i < map_start_gates.size(); ++i)
 				{
 					if (const auto label = std::format("出生点 {}", i);
 						ImGui::Button(label.c_str()))
 					{
-						if (selected_enemy_type == std::to_underlying(components::EntityType::invalid_type))
+						if (selected_enemy_type == std::to_underlying(EntityType::invalid_type))
 						{
 							std::println("未选择敌人类型");
 						}
 						else
 						{
-							const components::EntityType type{static_cast<components::EntityType::Type>(selected_enemy_type)};
+							const EntityType type{static_cast<EntityType::Type>(selected_enemy_type)};
 
 							Enemy::spawn(registry, static_cast<std::uint32_t>(i), type);
 						}
@@ -91,9 +97,9 @@ namespace systems
 					if (const auto label = std::format("塔 {}", i);
 						ImGui::Button(label.c_str()))
 					{
-						player_data.selected_tower_type = {static_cast<components::EntityType::Type>(tower_type_base + i)};
+						player_selected_tower_type = {static_cast<EntityType::Type>(tower_type_base + i)};
 
-						std::println("选择塔: {}", std::to_underlying(player_data.selected_tower_type.type));
+						std::println("选择塔: {}", std::to_underlying(player_selected_tower_type.type));
 					}
 				}
 			}
@@ -115,21 +121,21 @@ namespace systems
 					{
 						Resource::acquire(
 							registry,
-							components::Resource{components::ResourceType::HEALTH, static_cast<components::Resource::size_type>(health)}
+							resource::Resource{resource::Type::HEALTH, static_cast<resource::size_type>(health)}
 						);
 					}
 					if (mana > 0)
 					{
 						Resource::acquire(
 							registry,
-							components::Resource{components::ResourceType::MANA, static_cast<components::Resource::size_type>(mana)}
+							resource::Resource{resource::Type::MANA, static_cast<resource::size_type>(mana)}
 						);
 					}
 					if (gold > 0)
 					{
 						Resource::acquire(
 							registry,
-							components::Resource{components::ResourceType::GOLD, static_cast<components::Resource::size_type>(gold)}
+							resource::Resource{resource::Type::GOLD, static_cast<resource::size_type>(gold)}
 						);
 					}
 				}
@@ -140,19 +146,21 @@ namespace systems
 
 	auto HUD::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
 	{
-		if (auto* render_hud_data = registry.ctx().find<components::RenderHUDData>())
+		using namespace components;
+
+		if (auto* render_hud = registry.ctx().find<render::HUD>())
 		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-			const auto& player_data = registry.ctx().get<components::PlayerData>();
-			const auto& player_resources = player_data.resources;
+			const auto& [map_alive_enemy, map_killed_enemy, map_built_tower] = registry.ctx().get<const map_ex::Counter>();
+
+			const auto& [player_resources] = registry.ctx().get<const player::Resource>();
 
 			const auto window_size = window.getSize();
-			auto& hud_text = render_hud_data->hud_text;
+			auto& hud_text = render_hud->hud_text;
 
 			// Health & Mana
 			{
-				const auto health = player_resources.at(components::ResourceType::HEALTH);
-				const auto mana = player_resources.at(components::ResourceType::MANA);
+				const auto health = player_resources.at(resource::Type::HEALTH);
+				const auto mana = player_resources.at(resource::Type::MANA);
 
 				hud_text.setString(std::format("Health: {} / Mana: {}", health, mana));
 				hud_text.setPosition({10, static_cast<float>(window_size.y - 120)});
@@ -162,7 +170,7 @@ namespace systems
 
 			// Resources
 			{
-				const auto gold = player_resources.at(components::ResourceType::GOLD);
+				const auto gold = player_resources.at(resource::Type::GOLD);
 
 				hud_text.setString(std::format("Gold: ${}", gold));
 				hud_text.setPosition({10, static_cast<float>(window_size.y - 90)});
@@ -172,7 +180,7 @@ namespace systems
 
 			// Counter
 			{
-				hud_text.setString(std::format("Enemies: {}, Enemy Kills: {}, Towers: {}", map_data.enemy_counter, map_data.enemy_kill_counter, map_data.tower_counter));
+				hud_text.setString(std::format("Enemies: {} / Enemy Kills: {} / Towers: {}", map_alive_enemy, map_killed_enemy, map_built_tower));
 				hud_text.setPosition({10, static_cast<float>(window_size.y - 60)});
 				hud_text.setFillColor(sf::Color::Blue);
 				window.draw(hud_text);

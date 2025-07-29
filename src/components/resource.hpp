@@ -2,9 +2,9 @@
 
 #include <utility>
 
-namespace components
+namespace components::resource
 {
-	enum class ResourceType : std::uint8_t
+	enum class Type : std::uint8_t
 	{
 		// 生命值
 		HEALTH,
@@ -15,23 +15,25 @@ namespace components
 		//
 	};
 
+	using size_type = std::uint64_t;
+
 	class Resource
 	{
 	public:
-		using size_type = std::uint64_t;
+		//
 
 	private:
 		size_type type_ : 8;
 		size_type count_ : 64 - 8;
 
 	public:
-		Resource(const ResourceType type, const size_type count) noexcept
+		Resource(const Type type, const size_type count) noexcept
 			: type_{std::to_underlying(type)},
 			  count_{count} {}
 
-		[[nodiscard]] constexpr auto type() const noexcept -> ResourceType
+		[[nodiscard]] constexpr auto type() const noexcept -> Type
 		{
-			return static_cast<ResourceType>(type_);
+			return static_cast<Type>(type_);
 		}
 
 		[[nodiscard]] constexpr auto count() const noexcept -> size_type

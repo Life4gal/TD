@@ -23,11 +23,13 @@ namespace systems
 {
 	auto Enemy::initialize(entt::registry& registry) noexcept -> void
 	{
-		registry.on_construct<components::tags::enemy>().connect<
+		using namespace components;
+
+		registry.on_construct<tags::enemy>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				const auto [type] = reg.get<components::EntityType>(entity);
-				const auto [position] = reg.get<components::WorldPosition>(entity);
+				const auto [type] = reg.get<const EntityType>(entity);
+				const auto [position] = reg.get<const Position>(entity);
 
 				std::println(
 					"[{}] Spawn enemy {}({}) at ({:.0f}:{:.0f})",
@@ -40,7 +42,7 @@ namespace systems
 			}
 		>();
 
-		registry.on_destroy<components::tags::enemy>().connect<
+		registry.on_destroy<tags::enemy>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
 				std::ignore = reg;
@@ -51,20 +53,19 @@ namespace systems
 
 		sf::CircleShape shape{};
 		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-			const auto& map = map_data.map;
+			const auto& [map] = registry.ctx().get<const map_ex::Map>();
 
 			shape.setRadius(static_cast<float>(std::ranges::min(map.tile_width(), map.tile_height())) * .35f);
 			shape.setOrigin({shape.getRadius(), shape.getRadius()});
 			shape.setFillColor(sf::Color::Red);
 		}
 
-		components::RenderEnemyData render_enemy_data
+		render::Enemy render_enemy
 		{
 				.shape = std::move(shape),
 		};
 
-		registry.ctx().emplace<components::RenderEnemyData>(std::move(render_enemy_data));
+		registry.ctx().emplace<render::Enemy>(std::move(render_enemy));
 	}
 
 	auto Enemy::update(entt::registry& registry, const sf::Time delta) noexcept -> void
@@ -75,51 +76,59 @@ namespace systems
 
 	auto Enemy::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
 	{
-		if (auto* render_enemy_data = registry.ctx().find<components::RenderEnemyData>())
+		using namespace components;
+
+		if (auto* render_enemy = registry.ctx().find<render::Enemy>())
 		{
-			for (const auto enemy_view = registry.view<components::tags::enemy, components::tags::enemy_alive, components::WorldPosition>();
+			auto& shape = render_enemy->shape;
+
+			for (const auto enemy_view = registry.view<tags::enemy, tags::enemy_alive, Position>();
 			     const auto [entity, position]: enemy_view.each())
 			{
-				render_enemy_data->shape.setPosition(position.position);
+				shape.setPosition(position.position);
 
-				window.draw(render_enemy_data->shape);
+				window.draw(shape);
 			}
 		}
 	}
 
 	auto Enemy::spawn(entt::registry& registry, const sf::Vector2u point, const components::EntityType enemy_type) noexcept -> entt::entity
 	{
-		auto& map_data = registry.ctx().get<components::MapData>();
-		const auto& map = map_data.map;
+		using namespace components;
+
+		const auto& [map] = registry.ctx().get<const map_ex::Map>();
+		auto& map_counter = registry.ctx().get<map_ex::Counter>();
 
 		const auto entity = registry.create();
 
-		registry.emplace<components::tags::enemy_alive>(entity);
-		registry.emplace<components::EntityType>(entity, enemy_type);
+		registry.emplace<tags::enemy_alive>(entity);
+		registry.emplace<EntityType>(entity, enemy_type);
 
-		auto& [position] = registry.emplace<components::WorldPosition>(entity);
+		auto& [position] = registry.emplace<Position>(entity);
 		position = map.coordinate_grid_to_world(point);
 
 		// todo: 加载配置文件
 		{
-			auto& [speed] = registry.emplace<components::Movement>(entity);
+			auto& [speed] = registry.emplace<enemy::Movement>(entity);
 			speed = 30.f + std::uniform_real_distribution<float>{0, 20}(random);
 
-			auto& [health] = registry.emplace<components::Health>(entity);
+			auto& [health] = registry.emplace<enemy::Health>(entity);
 			health = 100;
 		}
 
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
-		registry.emplace<components::tags::enemy>(entity);
+		registry.emplace<tags::enemy>(entity);
 
-		map_data.enemy_counter += 1;
+		map_counter.alive_enemy += 1;
 		return entity;
 	}
 
 	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id, const components::EntityType enemy_type) noexcept -> entt::entity
 	{
-		const auto& map_data = registry.ctx().get<components::MapData>();
-		const auto start_gate = map_data.start_gates[start_gate_id];
+		using namespace components;
+
+		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
+		const auto start_gate = start_gates[start_gate_id];
 
 		return spawn(registry, start_gate, enemy_type);
 	}

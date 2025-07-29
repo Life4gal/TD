@@ -6,18 +6,28 @@
 
 #include <SFML/System/Vector2.hpp>
 
-namespace components
+namespace components::map_ex
 {
-	class MapData
+	class Map
 	{
 	public:
 		map::TileMap map;
+	};
 
+	class Gate
+	{
+	public:
 		std::vector<sf::Vector2u> start_gates;
 		std::vector<sf::Vector2u> end_gates;
+	};
 
-		std::uint32_t enemy_counter;
-		std::uint32_t enemy_kill_counter;
-		std::uint32_t tower_counter;
+	class Counter
+	{
+	public:
+		using size_type = std::uint32_t;
+
+		size_type alive_enemy;
+		size_type killed_enemy;
+		size_type built_tower;
 	};
 }

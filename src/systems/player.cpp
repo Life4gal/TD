@@ -20,17 +20,11 @@ namespace systems
 {
 	auto Player::initialize(entt::registry& registry) noexcept -> void
 	{
-		components::PlayerData player_data
-		{
-				.selected_tower_type = {components::EntityType::invalid_type},
-				.resources = {},
-				.towers = {},
-		};
+		using namespace components;
 
 		// render
 		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-			const auto& map = map_data.map;
+			const auto& [map] = registry.ctx().get<const map_ex::Map>();
 
 			sf::RectangleShape cursor_shape{{static_cast<float>(map.tile_width()), static_cast<float>(map.tile_height())},};
 
@@ -39,44 +33,48 @@ namespace systems
 			cursor_shape.setOutlineColor(sf::Color::Green);
 			cursor_shape.setOutlineThickness(2.f);
 
-			components::RenderPlayerData render_player_data
+			render::Player render_player
 			{
 					.cursor_shape = std::move(cursor_shape),
 			};
 
-			registry.ctx().emplace<components::RenderPlayerData>(std::move(render_player_data));
+			registry.ctx().emplace<render::Player>(std::move(render_player));
 		}
 
-		registry.ctx().emplace<components::PlayerData>(std::move(player_data));
+		registry.ctx().emplace<player::Interaction>(EntityType{EntityType::invalid_type}, EntityType{EntityType::invalid_type});
+		registry.ctx().emplace<player::Resource>();
+		registry.ctx().emplace<player::Tower>();
 	}
 
 	auto Player::update(entt::registry& registry) noexcept -> void
 	{
-		auto& player_data = registry.ctx().get<components::PlayerData>();
-		auto& resources = player_data.resources;
-		auto& health = resources[components::ResourceType::HEALTH];
+		using namespace components;
 
-		const auto enemy_reached_view = registry.view<components::tags::enemy, components::tags::enemy_reached>();
+		auto& [player_resources] = registry.ctx().get<player::Resource>();
+		auto& player_health = player_resources[resource::Type::HEALTH];
+
+		const auto enemy_reached_view = registry.view<tags::enemy, tags::enemy_reached>();
 		const auto reached_count = enemy_reached_view.size_hint();
 
 		// todo: 每个敌人扣多少生命值?
 		if (const auto cost_health = reached_count * 1;
-			cost_health >= health)
+			cost_health >= player_health)
 		{
 			// todo: 游戏结束
 		}
 		else
 		{
-			health -= cost_health;
+			player_health -= cost_health;
 		}
 	}
 
 	auto Player::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
 	{
-		if (auto* render_player_data = registry.ctx().find<components::RenderPlayerData>())
+		using namespace components;
+
+		if (auto* render_player = registry.ctx().find<render::Player>())
 		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-			auto& map = map_data.map;
+			const auto& [map] = registry.ctx().get<const map_ex::Map>();
 
 			// 绘制游标方框
 			{
@@ -85,7 +83,7 @@ namespace systems
 
 				if (map.inside(mouse_grid_position.x, mouse_grid_position.y))
 				{
-					auto& cursor_shape = render_player_data->cursor_shape;
+					auto& cursor_shape = render_player->cursor_shape;
 
 					const auto world_position = map.coordinate_grid_to_world(mouse_grid_position);
 					cursor_shape.setPosition(world_position);
@@ -98,18 +96,21 @@ namespace systems
 
 	auto Player::try_build_tower(entt::registry& registry, const sf::Vector2f world_position) noexcept -> bool
 	{
-		auto& map_data = registry.ctx().get<components::MapData>();
-		auto& map = map_data.map;
+		using namespace components;
 
-		auto& player_data = registry.ctx().get<components::PlayerData>();
+		auto& [map] = registry.ctx().get<map_ex::Map>();
+		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
 
-		auto& navigation_data = registry.ctx().get<components::NavigationData>();
-		auto& flow_field = navigation_data.flow_field;
+		const auto& [player_selected_tower_type, player_selected_weapon_type] = registry.ctx().get<player::Interaction>();
+		auto& [player_towers] = registry.ctx().get<player::Tower>();
+
+		auto& [flow_field] = registry.ctx().get<navigation::FlowField>();
+		auto& [cache_paths] = registry.ctx().get<navigation::Path>();
 
 		const auto grid_position = map.coordinate_world_to_grid(world_position);
 
 		// 检查是否选择了塔
-		if (player_data.selected_tower_type.type == components::EntityType::invalid_type)
+		if (player_selected_tower_type.type == EntityType::invalid_type)
 		{
 			std::println("未选择塔类型,建造失败");
 			return false;
@@ -123,7 +124,7 @@ namespace systems
 		}
 
 		// 检查资源是否足够
-		if (not Resource::require(registry, player_data.selected_tower_type))
+		if (not Resource::require(registry, player_selected_tower_type))
 		{
 			std::println("资源不足");
 			return false;
@@ -135,7 +136,7 @@ namespace systems
 			map.set(grid_position.x, grid_position.y, map::TileType::TOWER);
 
 			// 只要有一条路线被堵死就不允许建造
-			for (auto& cache_path: navigation_data.cache_paths)
+			for (auto& cache_path: cache_paths)
 			{
 				// 建造位置不在路径上不会影响路径
 				if (not std::ranges::contains(cache_path, grid_position))
@@ -146,7 +147,7 @@ namespace systems
 				if (not map::PathFinder::is_reachable(
 					map,
 					cache_path.front(),
-					map_data.end_gates
+					end_gates
 				))
 				{
 					// 该起点找不到一条达到任意终点的路径
@@ -161,7 +162,7 @@ namespace systems
 		}
 
 		// 建造
-		const auto entity = Tower::build(registry, grid_position, player_data.selected_tower_type);
+		const auto entity = Tower::build(registry, grid_position, player_selected_tower_type);
 		if (entity == entt::null)
 		{
 			std::println("建造失败");
@@ -169,10 +170,10 @@ namespace systems
 		}
 
 		// 消耗资源
-		Resource::consume_unchecked(registry, player_data.selected_tower_type);
+		Resource::consume_unchecked(registry, player_selected_tower_type);
 
 		// 记录建造的塔
-		player_data.towers.emplace(grid_position, entity);
+		player_towers.emplace(grid_position, entity);
 
 		// 更新流场
 		// todo: 即使建造位置不在路径上,流场更新也可能造成某些路径变化
@@ -205,13 +206,14 @@ namespace systems
 
 	auto Player::try_destroy_tower(entt::registry& registry, const sf::Vector2f world_position) noexcept -> bool
 	{
-		auto& map_data = registry.ctx().get<components::MapData>();
-		auto& map = map_data.map;
+		using namespace components;
 
-		auto& player_data = registry.ctx().get<components::PlayerData>();
+		auto& [map] = registry.ctx().get<map_ex::Map>();
+		auto& map_counter = registry.ctx().get<map_ex::Counter>();
 
-		auto& navigation_data = registry.ctx().get<components::NavigationData>();
-		auto& flow_field = navigation_data.flow_field;
+		auto& [player_towers] = registry.ctx().get<player::Tower>();
+
+		auto& [flow_field] = registry.ctx().get<navigation::FlowField>();
 
 		const auto grid_position = map.coordinate_world_to_grid(world_position);
 
@@ -222,25 +224,25 @@ namespace systems
 			return false;
 		}
 
-		const auto it = player_data.towers.find(grid_position);
-		assert(it != player_data.towers.end());
+		const auto it = player_towers.find(grid_position);
+		assert(it != player_towers.end());
 
-		const auto& [weapons] = registry.get<components::Equipment>(it->second);
+		const auto& [weapons] = registry.get<Equipment>(it->second);
 
 		// 返还资源
 		{
 			// 武器
 			if (not weapons.empty())
 			{
-				std::vector<components::EntityType> types{};
+				std::vector<EntityType> types{};
 				types.reserve(weapons.size());
 
 				std::ranges::transform(
 					weapons,
 					std::back_inserter(types),
-					[&](const entt::entity entity) noexcept -> components::EntityType
+					[&](const entt::entity entity) noexcept -> EntityType
 					{
-						return registry.get<components::EntityType>(entity);
+						return registry.get<const EntityType>(entity);
 					}
 				);
 
@@ -248,7 +250,7 @@ namespace systems
 			}
 
 			// 塔
-			const auto tower_type = registry.get<components::EntityType>(it->second);
+			const auto tower_type = registry.get<const EntityType>(it->second);
 			Resource::acquire(registry, tower_type);
 		}
 
@@ -259,13 +261,13 @@ namespace systems
 				registry.destroy(weapons.begin(), weapons.end());
 			}
 			registry.destroy(it->second);
-			player_data.towers.erase(it);
+			player_towers.erase(it);
 		}
 
 		// 设置地块
 		{
 			map.set(grid_position.x, grid_position.y, map::TileType::BUILDABLE_FLOOR);
-			map_data.tower_counter -= 1;
+			map_counter.built_tower -= 1;
 		}
 
 		// 更新流场

@@ -26,9 +26,9 @@ namespace systems
 		// =============================
 		// 获取资源
 
-		static auto acquire(entt::registry& registry, std::span<const components::Resource> resources) noexcept -> void;
+		static auto acquire(entt::registry& registry, std::span<const components::resource::Resource> resources) noexcept -> void;
 
-		static auto acquire(entt::registry& registry, components::Resource resource) noexcept -> entt::entity;
+		static auto acquire(entt::registry& registry, components::resource::Resource resource) noexcept -> entt::entity;
 
 		static auto acquire(entt::registry& registry, std::span<const components::EntityType> types) noexcept -> void;
 
@@ -37,9 +37,9 @@ namespace systems
 		// =============================
 		// 检查资源是否足够
 
-		static auto require(entt::registry& registry, std::span<const components::Resource> resources) noexcept -> bool;
+		static auto require(entt::registry& registry, std::span<const components::resource::Resource> resources) noexcept -> bool;
 
-		static auto require(entt::registry& registry, components::Resource resource) noexcept -> bool;
+		static auto require(entt::registry& registry, components::resource::Resource resource) noexcept -> bool;
 
 		static auto require(entt::registry& registry, std::span<const components::EntityType> types) noexcept -> bool;
 
@@ -48,9 +48,9 @@ namespace systems
 		// =============================
 		// 消耗资源(如果足够)
 
-		static auto consume(entt::registry& registry, std::span<const components::Resource> resources) noexcept -> bool;
+		static auto consume(entt::registry& registry, std::span<const components::resource::Resource> resources) noexcept -> bool;
 
-		static auto consume(entt::registry& registry, components::Resource resource) noexcept -> bool;
+		static auto consume(entt::registry& registry, components::resource::Resource resource) noexcept -> bool;
 
 		static auto consume(entt::registry& registry, std::span<const components::EntityType> types) noexcept -> bool;
 
@@ -59,9 +59,9 @@ namespace systems
 		// =============================
 		// 消耗资源(假定足够)
 
-		static auto consume_unchecked(entt::registry& registry, std::span<const components::Resource> resources) noexcept -> void;
+		static auto consume_unchecked(entt::registry& registry, std::span<const components::resource::Resource> resources) noexcept -> void;
 
-		static auto consume_unchecked(entt::registry& registry, components::Resource resource) noexcept -> void;
+		static auto consume_unchecked(entt::registry& registry, components::resource::Resource resource) noexcept -> void;
 
 		static auto consume_unchecked(entt::registry& registry, std::span<const components::EntityType> types) noexcept -> void;
 

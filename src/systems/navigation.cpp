@@ -1,6 +1,7 @@
 #include <systems/navigation.hpp>
 
 #include <components/tags.hpp>
+#include <components/entity.hpp>
 #include <components/enemy.hpp>
 #include <components/render.hpp>
 
@@ -14,19 +15,21 @@ namespace systems
 {
 	auto Navigation::initialize(entt::registry& registry) noexcept -> void
 	{
-		const auto& map_data = registry.ctx().get<components::MapData>();
-		const auto& map = map_data.map;
+		using namespace components;
+
+		const auto& [map] = registry.ctx().get<const map_ex::Map>();
+		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
 
 		map::FlowField flow_field{map};
 		{
-			flow_field.build(map_data.end_gates);
+			flow_field.build(end_gates);
 		}
 
 		std::vector<map::path_type> cache_paths{};
 		{
-			cache_paths.reserve(map_data.start_gates.size());
+			cache_paths.reserve(start_gates.size());
 
-			for (const auto start_point: map_data.start_gates)
+			for (const auto start_point: start_gates)
 			{
 				auto path = flow_field.path_of(start_point, std::numeric_limits<std::size_t>::max());
 				assert(path.has_value());
@@ -37,42 +40,37 @@ namespace systems
 
 		// render
 		{
-			components::RenderNavigationData render_navigation_data
+			render::Navigation render_navigation
 			{
 					.path_vertices = sf::VertexArray{sf::PrimitiveType::LineStrip},
 			};
 
-			registry.ctx().emplace<components::RenderNavigationData>(std::move(render_navigation_data));
+			registry.ctx().emplace<render::Navigation>(std::move(render_navigation));
 		}
 
-		components::NavigationData navigation_data
-		{
-				.flow_field = std::move(flow_field),
-				.cache_paths = std::move(cache_paths),
-		};
-
-		registry.ctx().emplace<components::NavigationData>(std::move(navigation_data));
+		registry.ctx().emplace<navigation::FlowField>(std::move(flow_field));
+		registry.ctx().emplace<navigation::Path>(std::move(cache_paths));
 	}
 
 	auto Navigation::update(entt::registry& registry, const sf::Time delta) noexcept -> void
 	{
+		using namespace components;
+
 		const auto delta_time = delta.asSeconds();
 
-		const auto& map_data = registry.ctx().get<components::MapData>();
-		const auto& map = map_data.map;
+		const auto& [map] = registry.ctx().get<const map_ex::Map>();
 		const auto half_tile = sf::Vector2f{static_cast<float>(map.tile_width()) * .5f, static_cast<float>(map.tile_height()) * .5f,};
 
-		const auto& navigation_data = registry.ctx().get<components::NavigationData>();
-		const auto& flow_field = navigation_data.flow_field;
+		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
 
 		// 标记为到达终点
 		auto mark_reached = [&registry](const entt::entity entity) noexcept -> void
 		{
-			registry.remove<components::tags::enemy_alive>(entity);
-			registry.emplace<components::tags::enemy_reached>(entity);
+			registry.remove<tags::enemy_alive>(entity);
+			registry.emplace<tags::enemy_reached>(entity);
 		};
 
-		for (const auto enemy_view = registry.view<components::tags::enemy, components::tags::enemy_alive, components::WorldPosition, components::Movement>();
+		for (const auto enemy_view = registry.view<tags::enemy, tags::enemy_alive, Position, const enemy::Movement>();
 		     auto [entity, position, movement]: enemy_view.each())
 		{
 			// 本帧移动距离
@@ -207,16 +205,15 @@ namespace systems
 
 	auto Navigation::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
 	{
-		if (auto* render_navigation_data = registry.ctx().find<components::RenderNavigationData>())
+		using namespace components;
+
+		if (auto* render_navigation = registry.ctx().find<render::Navigation>())
 		{
-			const auto& map_data = registry.ctx().get<components::MapData>();
-			const auto& map = map_data.map;
+			const auto& [map] = registry.ctx().get<const map_ex::Map>();
 
-			const auto& navigation_data = registry.ctx().get<components::NavigationData>();
-			const auto& flow_field = navigation_data.flow_field;
-			const auto& cache_paths = navigation_data.cache_paths;
+			const auto& [cache_paths] = registry.ctx().get<const navigation::Path>();
 
-			auto& path_vertices = render_navigation_data->path_vertices;
+			auto& path_vertices = render_navigation->path_vertices;
 
 			std::ranges::for_each(
 				cache_paths,
@@ -238,6 +235,7 @@ namespace systems
 			);
 
 			// 绘制流场方向
+			const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
 			sf::VertexArray lines{sf::PrimitiveType::Lines};
 			const auto arrow_length = static_cast<float>(std::ranges::min(map.tile_width(), map.tile_height())) * .5f;
 			const auto arrow_head_length = arrow_length * .35f;

@@ -6,42 +6,42 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-namespace components
+namespace components::render
 {
-	class RenderMapData
+	class Map
 	{
 	public:
 		sf::RectangleShape tile_shape;
 		sf::CircleShape gate_shape;
 	};
 
-	class RenderNavigationData
+	class Navigation
 	{
 	public:
 		sf::VertexArray path_vertices;
 	};
 
-	class RenderPlayerData
+	class Player
 	{
 	public:
 		sf::RectangleShape cursor_shape;
 	};
 
 	// ReSharper disable once CppInconsistentNaming
-	class RenderHUDData
+	class HUD
 	{
 	public:
 		manager::Font::FontId hud_font;
 		sf::Text hud_text;
 	};
 
-	class RenderTowerData
+	class Tower
 	{
 	public:
 		sf::CircleShape shape;
 	};
 
-	class RenderEnemyData
+	class Enemy
 	{
 	public:
 		sf::CircleShape shape;

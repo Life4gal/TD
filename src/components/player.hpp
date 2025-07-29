@@ -7,9 +7,24 @@
 
 #include <SFML/System/Vector2.hpp>
 
-namespace components
+namespace components::player
 {
-	class PlayerData
+	class Interaction
+	{
+	public:
+		// 当前选择的塔(用于建造塔)
+		EntityType selected_tower_type;
+		// 当前选择的武器(用于给塔装备武器)
+		EntityType selected_weapon_type;
+	};
+
+	class Resource
+	{
+	public:
+		std::unordered_map<resource::Type, resource::size_type> resources;
+	};
+
+	class Tower
 	{
 		struct vector2_hasher
 		{
@@ -21,9 +36,6 @@ namespace components
 		};
 
 	public:
-		EntityType selected_tower_type;
-
-		std::unordered_map<ResourceType, Resource::size_type> resources;
 		std::unordered_map<sf::Vector2u, entt::entity, vector2_hasher> towers;
 	};
 }

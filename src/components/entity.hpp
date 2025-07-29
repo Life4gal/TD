@@ -3,6 +3,8 @@
 #include <utility>
 #include <limits>
 
+#include <SFML/System/Vector2.hpp>
+
 namespace components
 {
 	class EntityType
@@ -13,5 +15,11 @@ namespace components
 		constexpr static auto invalid_type = static_cast<Type>(std::numeric_limits<std::underlying_type_t<Type>>::max());
 
 		Type type;
+	};
+
+	class Position
+	{
+	public:
+		sf::Vector2f position;
 	};
 }

@@ -21,12 +21,14 @@ namespace
 	};
 
 	template<Type T>
-	[[nodiscard]] constexpr auto entity_type_to_resource(const components::EntityType type) noexcept -> components::Resource
+	[[nodiscard]] constexpr auto entity_type_to_resource(const components::EntityType type) noexcept -> components::resource::Resource
 	{
+		using namespace components;
+
 		// todo: 加载配置文件
 		std::ignore = type;
 
-		using enum components::ResourceType;
+		using enum resource::Type;
 		if constexpr (T == Type::ACQUIRE)
 		{
 			return {GOLD, 50};
@@ -42,15 +44,17 @@ namespace
 	}
 
 	template<Type T>
-	[[nodiscard]] constexpr auto entity_type_to_resource(const std::span<const components::EntityType> types) noexcept -> std::vector<components::Resource>
+	[[nodiscard]] constexpr auto entity_type_to_resource(const std::span<const components::EntityType> types) noexcept -> std::vector<components::resource::Resource>
 	{
-		std::vector<components::Resource> resources{};
+		using namespace components;
+
+		std::vector<resource::Resource> resources{};
 		resources.reserve(types.size());
 
 		std::ranges::transform(
 			types,
 			std::back_inserter(resources),
-			static_cast<auto(*)(components::EntityType type) noexcept -> components::Resource>(entity_type_to_resource<T>)
+			static_cast<auto(*)(EntityType type) noexcept -> resource::Resource>(entity_type_to_resource<T>)
 		);
 
 		return resources;
@@ -61,26 +65,27 @@ namespace systems
 {
 	auto Resource::initialize(entt::registry& registry) noexcept -> void
 	{
-		auto& player_data = registry.ctx().get<components::PlayerData>();
-		auto& resources = player_data.resources;
+		using namespace components;
+
+		auto& [player_resources] = registry.ctx().get<player::Resource>();
 
 		// todo: 加载配置文件
-		using enum components::ResourceType;
-		resources[HEALTH] = 100;
-		resources[MANA] = 100;
-		resources[GOLD] = 999999999;
+		player_resources[resource::Type::HEALTH] = 100;
+		player_resources[resource::Type::MANA] = 100;
+		player_resources[resource::Type::GOLD] = 9999999;
 	}
 
 	auto Resource::update(entt::registry& registry) noexcept -> void
 	{
-		auto& player_data = registry.ctx().get<components::PlayerData>();
-		auto& resources = player_data.resources;
+		using namespace components;
 
-		const auto resource_reward_view = registry.view<components::tags::resource, components::Resource>();
+		auto& [player_resources] = registry.ctx().get<player::Resource>();
+
+		const auto resource_reward_view = registry.view<tags::resource, resource::Resource>();
 
 		for (const auto [entity, resource]: resource_reward_view.each())
 		{
-			resources[resource.type()] += resource.count();
+			player_resources[resource.type()] += resource.count();
 		}
 
 		registry.destroy(resource_reward_view.begin(), resource_reward_view.end());
@@ -92,7 +97,7 @@ namespace systems
 		std::ignore = window;
 	}
 
-	auto Resource::acquire(entt::registry& registry, const std::span<const components::Resource> resources) noexcept -> void
+	auto Resource::acquire(entt::registry& registry, const std::span<const components::resource::Resource> resources) noexcept -> void
 	{
 		for (const auto resource: resources)
 		{
@@ -100,11 +105,11 @@ namespace systems
 		}
 	}
 
-	auto Resource::acquire(entt::registry& registry, const components::Resource resource) noexcept -> entt::entity
+	auto Resource::acquire(entt::registry& registry, const components::resource::Resource resource) noexcept -> entt::entity
 	{
 		const auto entity = registry.create();
 
-		registry.emplace<components::Resource>(entity, resource);
+		registry.emplace<components::resource::Resource>(entity, resource);
 
 		registry.emplace<components::tags::resource>(entity);
 		return entity;
@@ -124,21 +129,22 @@ namespace systems
 		return acquire(registry, resource);
 	}
 
-	auto Resource::require(entt::registry& registry, const std::span<const components::Resource> resources) noexcept -> bool
+	auto Resource::require(entt::registry& registry, const std::span<const components::resource::Resource> resources) noexcept -> bool
 	{
 		return std::ranges::all_of(
 			resources,
-			[&](const components::Resource resource) noexcept -> bool
+			[&](const components::resource::Resource resource) noexcept -> bool
 			{
 				return require(registry, resource);
 			}
 		);
 	}
 
-	auto Resource::require(entt::registry& registry, const components::Resource resource) noexcept -> bool
+	auto Resource::require(entt::registry& registry, const components::resource::Resource resource) noexcept -> bool
 	{
-		const auto& player_data = registry.ctx().get<components::PlayerData>();
-		const auto& player_resources = player_data.resources;
+		using namespace components;
+
+		auto& [player_resources] = registry.ctx().get<player::Resource>();
 
 		const auto it = player_resources.find(resource.type());
 		return it != player_resources.end() and it->second >= resource.count();
@@ -158,7 +164,7 @@ namespace systems
 		return require(registry, resource);
 	}
 
-	auto Resource::consume(entt::registry& registry, const std::span<const components::Resource> resources) noexcept -> bool
+	auto Resource::consume(entt::registry& registry, const std::span<const components::resource::Resource> resources) noexcept -> bool
 	{
 		if (not require(registry, resources))
 		{
@@ -170,7 +176,7 @@ namespace systems
 		return true;
 	}
 
-	auto Resource::consume(entt::registry& registry, const components::Resource resource) noexcept -> bool
+	auto Resource::consume(entt::registry& registry, const components::resource::Resource resource) noexcept -> bool
 	{
 		if (not require(registry, resource))
 		{
@@ -196,23 +202,24 @@ namespace systems
 		return consume(registry, resource);
 	}
 
-	auto Resource::consume_unchecked(entt::registry& registry, const std::span<const components::Resource> resources) noexcept -> void
+	auto Resource::consume_unchecked(entt::registry& registry, const std::span<const components::resource::Resource> resources) noexcept -> void
 	{
 		std::ranges::for_each(
 			resources,
-			[&](const components::Resource resource) noexcept -> void
+			[&](const components::resource::Resource resource) noexcept -> void
 			{
 				consume_unchecked(registry, resource);
 			}
 		);
 	}
 
-	auto Resource::consume_unchecked(entt::registry& registry, const components::Resource resource) noexcept -> void
+	auto Resource::consume_unchecked(entt::registry& registry, const components::resource::Resource resource) noexcept -> void
 	{
 		assert(require(registry, resource));
 
-		auto& player_data = registry.ctx().get<components::PlayerData>();
-		auto& player_resources = player_data.resources;
+		using namespace components;
+
+		auto& [player_resources] = registry.ctx().get<player::Resource>();
 
 		const auto it = player_resources.find(resource.type());
 		assert(it->second >= resource.count());

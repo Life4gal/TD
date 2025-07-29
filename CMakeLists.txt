@@ -194,6 +194,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/graveyard.cpp
 	
@@ -209,6 +210,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/player.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/hud.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/hud.cpp
 	

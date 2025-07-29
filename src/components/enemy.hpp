@@ -1,15 +1,7 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
-
-namespace components
+namespace components::enemy
 {
-	class WorldPosition
-	{
-	public:
-		sf::Vector2f position;
-	};
-
 	class Movement
 	{
 	public:

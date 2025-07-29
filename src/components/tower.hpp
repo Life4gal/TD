@@ -4,16 +4,8 @@
 
 #include <entt/entity/entity.hpp>
 
-#include <SFML/System/Vector2.hpp>
-
 namespace components
 {
-	class GridPosition
-	{
-	public:
-		sf::Vector2u position;
-	};
-
 	class Modifier
 	{
 	public:
