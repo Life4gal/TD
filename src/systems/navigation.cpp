@@ -63,6 +63,7 @@ namespace systems
 
 		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
 
+		// todo: 导航系统依然存在问题,在进行对角移动时,依然会意外地进入非路径网格
 		// 标记为到达终点
 		auto mark_reached = [&registry](const entt::entity entity) noexcept -> void
 		{

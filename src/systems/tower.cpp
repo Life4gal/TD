@@ -25,7 +25,7 @@ namespace systems
 				const auto [position] = reg.get<const Position>(entity);
 
 				std::println(
-					"[{}] Build tower {}({}) at ({:0f}:{:0f})",
+					"[{}] Build tower {}({}) at ({:.0f}:{:.0f})",
 					std::chrono::system_clock::now(),
 					std::to_underlying(entity),
 					std::to_underlying(type),
@@ -103,8 +103,8 @@ namespace systems
 
 		// todo: 读取配置文件
 		{
-			registry.emplace<Modifier>(entity, 0);
-			registry.emplace<Equipment>(entity);
+			registry.emplace<tower::Modifier>(entity, 0);
+			registry.emplace<tower::Equipment>(entity);
 		}
 
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息

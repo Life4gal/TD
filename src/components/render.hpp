@@ -41,6 +41,12 @@ namespace components::render
 		sf::CircleShape shape;
 	};
 
+	class Weapon
+	{
+	public:
+		sf::VertexArray target_line;
+	};
+
 	class Enemy
 	{
 	public:

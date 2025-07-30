@@ -42,6 +42,7 @@ namespace systems
 		using entity_underlying_type = std::underlying_type_t<EntityType::Type>;
 		constexpr entity_underlying_type enemy_type_base = 0;
 		constexpr entity_underlying_type tower_type_base = 1000;
+		constexpr entity_underlying_type weapon_type_base = 2000;
 
 		const auto& [map_start_gates, map_end_gates] = registry.ctx().get<const map_ex::Gate>();
 
@@ -100,6 +101,22 @@ namespace systems
 						player_selected_tower_type = {static_cast<EntityType::Type>(tower_type_base + i)};
 
 						std::println("选择塔: {}", std::to_underlying(player_selected_tower_type.type));
+					}
+				}
+			}
+
+			{
+				ImGui::Text("选择武器");
+				ImGui::Separator();
+
+				for (entity_underlying_type i = 0; i < 3; ++i)
+				{
+					if (const auto label = std::format("武器 {}", i);
+						ImGui::Button(label.c_str()))
+					{
+						player_selected_weapon_type = {static_cast<EntityType::Type>(weapon_type_base + i)};
+
+						std::println("选择武器: {}", std::to_underlying(player_selected_weapon_type.type));
 					}
 				}
 			}

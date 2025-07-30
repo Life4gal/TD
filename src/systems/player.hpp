@@ -21,10 +21,17 @@ namespace systems
 		static auto render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void;
 
 		// =============================
-		// 建造塔
+		// 建造/销毁塔
 
 		static auto try_build_tower(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
 
 		static auto try_destroy_tower(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
+
+		// =============================
+		// 安装/解除武器
+
+		static auto try_equip_weapon(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
+
+		static auto try_remove_weapon(entt::registry& registry, sf::Vector2f world_position) noexcept -> bool;
 	};
 }

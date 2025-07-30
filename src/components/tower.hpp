@@ -4,7 +4,7 @@
 
 #include <entt/entity/entity.hpp>
 
-namespace components
+namespace components::tower
 {
 	class Modifier
 	{

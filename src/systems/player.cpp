@@ -11,6 +11,7 @@
 #include <components/player.hpp>
 
 #include <systems/tower.hpp>
+#include <systems/weapon.hpp>
 #include <systems/resource.hpp>
 
 #include <entt/entt.hpp>
@@ -227,7 +228,7 @@ namespace systems
 		const auto it = player_towers.find(grid_position);
 		assert(it != player_towers.end());
 
-		const auto& [weapons] = registry.get<Equipment>(it->second);
+		const auto& [weapons] = registry.get<tower::Equipment>(it->second);
 
 		// 返还资源
 		{
@@ -272,6 +273,91 @@ namespace systems
 
 		// 更新流场
 		flow_field.update(grid_position);
+
+		return true;
+	}
+
+	auto Player::try_equip_weapon(entt::registry& registry, const sf::Vector2f world_position) noexcept -> bool
+	{
+		using namespace components;
+
+		const auto& [map] = registry.ctx().get<const map_ex::Map>();
+
+		const auto& [player_selected_tower_type, player_selected_weapon_type] = registry.ctx().get<const player::Interaction>();
+		auto& [player_towers] = registry.ctx().get<player::Tower>();
+
+		const auto grid_position = map.coordinate_world_to_grid(world_position);
+
+		// 检查是否选择了武器
+		if (player_selected_weapon_type.type == EntityType::invalid_type)
+		{
+			std::println("未选择武器类型,装备失败");
+			return false;
+		}
+
+		// 检查选择地块是否有塔
+		if (not map.inside(grid_position.x, grid_position.y) or map.at(grid_position.x, grid_position.y) != map::TileType::TOWER)
+		{
+			std::println("位置({}:{})不在地图内或未建造塔", grid_position.x, grid_position.y);
+			return false;
+		}
+
+		// 检查资源是否足够
+		if (not Resource::require(registry, player_selected_weapon_type))
+		{
+			std::println("资源不足");
+			return false;
+		}
+
+		const auto it = player_towers.find(grid_position);
+		assert(it != player_towers.end());
+
+		// 安装武器
+		const auto entity = Weapon::equip(registry, it->second, player_selected_weapon_type);
+		assert(entity != entt::null);
+
+		// 消耗资源
+		Resource::consume_unchecked(registry, player_selected_weapon_type);
+
+		return true;
+	}
+
+	auto Player::try_remove_weapon(entt::registry& registry, const sf::Vector2f world_position) noexcept -> bool
+	{
+		using namespace components;
+
+		const auto& [map] = registry.ctx().get<const map_ex::Map>();
+
+		auto& [player_towers] = registry.ctx().get<player::Tower>();
+
+		const auto grid_position = map.coordinate_world_to_grid(world_position);
+
+		// 检查选择地块是否有塔
+		if (not map.inside(grid_position.x, grid_position.y) or map.at(grid_position.x, grid_position.y) != map::TileType::TOWER)
+		{
+			std::println("位置({}:{})不在地图内或未建造塔", grid_position.x, grid_position.y);
+			return false;
+		}
+
+		const auto it = player_towers.find(grid_position);
+		assert(it != player_towers.end());
+
+		// todo: 如何优雅地选择要解除的武器?
+		auto& [weapons] = registry.get<tower::Equipment>(it->second);
+		const auto weapon_to_remove = weapons.back();
+		weapons.pop_back();
+
+		// 返还资源
+		{
+			const auto type = registry.get<EntityType>(weapon_to_remove);
+
+			Resource::acquire(registry, type);
+		}
+
+		// 销毁武器
+		{
+			registry.destroy(weapon_to_remove);
+		}
 
 		return true;
 	}

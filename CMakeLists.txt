@@ -190,6 +190,10 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/enemy.cpp
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/weapon.cpp
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/resource.cpp

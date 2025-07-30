@@ -102,6 +102,7 @@ namespace systems
 		const auto entity = registry.create();
 
 		registry.emplace<tags::enemy_alive>(entity);
+		registry.emplace<tags::enemy_aimable>(entity);
 		registry.emplace<EntityType>(entity, enemy_type);
 
 		auto& [position] = registry.emplace<Position>(entity);
@@ -109,6 +110,9 @@ namespace systems
 
 		// todo: 加载配置文件
 		{
+			registry.emplace<enemy::Category>(entity, enemy::CategoryValue::GROUND);
+			registry.emplace<enemy::Power>(entity, static_cast<enemy::Power::value_type>(1));
+
 			auto& [speed] = registry.emplace<enemy::Movement>(entity);
 			speed = 30.f + std::uniform_real_distribution<float>{0, 20}(random);
 

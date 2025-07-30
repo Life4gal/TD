@@ -8,6 +8,7 @@
 #include <systems/navigation.hpp>
 #include <systems/player.hpp>
 #include <systems/tower.hpp>
+#include <systems/weapon.hpp>
 #include <systems/enemy.hpp>
 #include <systems/resource.hpp>
 #include <systems/graveyard.hpp>
@@ -49,6 +50,7 @@ namespace
 			systems::HUD::initialize(registry);
 
 			systems::Tower::initialize(registry);
+			systems::Weapon::initialize(registry);
 
 			systems::Enemy::initialize(registry);
 			systems::Graveyard::initialize(registry);
@@ -60,6 +62,7 @@ namespace
 			systems::Navigation::update(registry, delta);
 
 			systems::Tower::update(registry, delta);
+			systems::Weapon::update(registry, delta);
 
 			systems::Enemy::update(registry, delta);
 		}
@@ -82,6 +85,7 @@ namespace
 			systems::HUD::render(registry, window);
 
 			systems::Tower::render(registry, window);
+			systems::Weapon::render(registry, window);
 
 			systems::Enemy::render(registry, window);
 			systems::Graveyard::render(registry, window);
@@ -96,6 +100,16 @@ namespace
 		auto destroy_tower(const sf::Vector2f world_position) noexcept -> void
 		{
 			systems::Player::try_destroy_tower(registry, world_position);
+		}
+
+		auto equip_weapon(const sf::Vector2f world_position) noexcept -> void
+		{
+			systems::Player::try_equip_weapon(registry, world_position);
+		}
+
+		auto remove_weapon(const sf::Vector2f world_position) noexcept -> void
+		{
+			systems::Player::try_remove_weapon(registry, world_position);
 		}
 	};
 }
@@ -164,14 +178,29 @@ auto main() noexcept -> int
 							}
 
 							const auto position = sf::Vector2f{mbp.position};
+							const auto pressed_ctrl = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl);
 
 							if (mbp.button == sf::Mouse::Button::Left)
 							{
-								game.build_tower(position);
+								if (pressed_ctrl)
+								{
+									game.equip_weapon(position);
+								}
+								else
+								{
+									game.build_tower(position);
+								}
 							}
 							else if (mbp.button == sf::Mouse::Button::Right)
 							{
-								game.destroy_tower(position);
+								if (pressed_ctrl)
+								{
+									game.remove_weapon(position);
+								}
+								else
+								{
+									game.destroy_tower(position);
+								}
 							}
 						},
 						[&](const sf::Event::MouseButtonReleased& mbr) noexcept -> void
