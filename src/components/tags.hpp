@@ -23,7 +23,7 @@ namespace components::tags
 	// using tower_destructing = entt::tag<"TowerDestructing"_hs>;
 
 	// ====================================
-	// TOWER
+	// WEAPON
 
 	using weapon = entt::tag<"Weapon"_hs>;
 
