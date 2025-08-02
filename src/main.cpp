@@ -3,15 +3,35 @@
 // =========================
 // SYSTEMS
 
-#include <systems/map.hpp>
-#include <systems/hud.hpp>
-#include <systems/navigation.hpp>
-#include <systems/player.hpp>
-#include <systems/tower.hpp>
-#include <systems/weapon.hpp>
-#include <systems/enemy.hpp>
-#include <systems/resource.hpp>
-#include <systems/graveyard.hpp>
+#include <systems/initialize/player.hpp>
+#include <systems/initialize/map.hpp>
+#include <systems/initialize/navigation.hpp>
+#include <systems/initialize/resource.hpp>
+#include <systems/initialize/hud.hpp>
+#include <systems/initialize/enemy.hpp>
+#include <systems/initialize/tower.hpp>
+#include <systems/initialize/weapon.hpp>
+
+#include <systems/update/player.hpp>
+#include <systems/update/map.hpp>
+#include <systems/update/navigation.hpp>
+#include <systems/update/graveyard.hpp>
+#include <systems/update/resource.hpp>
+#include <systems/update/hud.hpp>
+#include <systems/update/enemy.hpp>
+#include <systems/update/tower.hpp>
+#include <systems/update/weapon.hpp>
+
+#include <systems/render/player.hpp>
+#include <systems/render/map.hpp>
+#include <systems/render/navigation.hpp>
+#include <systems/render/hud.hpp>
+#include <systems/render/enemy.hpp>
+#include <systems/render/tower.hpp>
+#include <systems/render/weapon.hpp>
+
+#include <systems/helper/map.hpp>
+#include <systems/helper/player.hpp>
 
 // =========================
 // ENTT
@@ -42,74 +62,110 @@ namespace
 	public:
 		entt::registry registry;
 
-		auto initialize() noexcept -> void
+		// 创建游戏
+		auto create() noexcept -> void
 		{
-			systems::Map::initialize(registry);
-			systems::Navigation::initialize(registry);
-			systems::Player::initialize(registry);
-			systems::HUD::initialize(registry);
+			using namespace systems;
 
-			systems::Tower::initialize(registry);
-			systems::Weapon::initialize(registry);
+			// todo
+		}
 
-			systems::Enemy::initialize(registry);
-			systems::Graveyard::initialize(registry);
-			systems::Resource::initialize(registry);
+		auto load_map() noexcept -> void
+		{
+			using namespace systems;
+
+			// 载入地图
+			helper::Map::load(registry);
+			// 初始化地图
+			initialize::map(registry);
+			// 初始化导航
+			initialize::navigation(registry);
+			// 初始化玩家
+			initialize::player(registry);
+			// 初始化玩家资源
+			initialize::resource(registry);
+			// 初始化玩家HUD
+			initialize::hud(registry);
+			// 初始化敌人
+			initialize::enemy(registry);
+			// 初始化塔
+			initialize::tower(registry);
+			// 初始化武器
+			initialize::weapon(registry);
 		}
 
 		auto update_simulation(const sf::Time delta) noexcept -> void
 		{
-			systems::Navigation::update(registry, delta);
+			using namespace systems;
 
-			systems::Tower::update(registry, delta);
-			systems::Weapon::update(registry, delta);
-
-			systems::Enemy::update(registry, delta);
+			// 更新导航
+			update::navigation(registry, delta);
+			// 更新塔
+			update::tower(registry, delta);
+			// 更新武器
+			update::weapon(registry, delta);
+			// 更新敌人
+			update::enemy(registry, delta);
 		}
 
 		auto update() noexcept -> void
 		{
-			systems::Map::update(registry);
-			systems::Player::update(registry);
-			systems::HUD::update(registry);
+			using namespace systems;
 
-			systems::Graveyard::update(registry);
-			systems::Resource::update(registry);
+			// 更新地图
+			update::map(registry);
+			// 更新墓地
+			update::graveyard(registry);
+			// 更新资源
+			update::resource(registry);
+			// 更新玩家
+			update::player(registry);
+			// 更新玩家HUD
+			update::hud(registry);
 		}
 
 		auto render(sf::RenderWindow& window) noexcept -> void
 		{
-			systems::Map::render(registry, window);
-			systems::Navigation::render(registry, window);
-			systems::Player::render(registry, window);
-			systems::HUD::render(registry, window);
+			using namespace systems;
 
-			systems::Tower::render(registry, window);
-			systems::Weapon::render(registry, window);
-
-			systems::Enemy::render(registry, window);
-			systems::Graveyard::render(registry, window);
-			systems::Resource::render(registry, window);
+			// 地图和导航位于最底层
+			render::map(registry, window);
+			render::navigation(registry, window);
+			// 绘制塔/武器/敌人
+			render::tower(registry, window);
+			render::weapon(registry, window);
+			render::enemy(registry, window);
+			// 玩家位于最上层
+			render::player(registry, window);
+			render::hud(registry, window);
 		}
 
 		auto build_tower(const sf::Vector2f world_position) noexcept -> void
 		{
-			systems::Player::try_build_tower(registry, world_position);
+			using namespace systems;
+
+			helper::Player::try_build_tower(registry, world_position);
 		}
 
 		auto destroy_tower(const sf::Vector2f world_position) noexcept -> void
 		{
-			systems::Player::try_destroy_tower(registry, world_position);
+			using namespace systems;
+
+			helper::Player::try_destroy_tower(registry, world_position);
 		}
 
 		auto equip_weapon(const sf::Vector2f world_position) noexcept -> void
 		{
-			systems::Player::try_equip_weapon(registry, world_position);
+			using namespace systems;
+
+			helper::Player::try_equip_weapon(registry, world_position);
 		}
 
 		auto remove_weapon(const sf::Vector2f world_position) noexcept -> void
 		{
-			systems::Player::try_remove_weapon(registry, world_position);
+			using namespace systems;
+
+			helper::Player::try_remove_weapon(registry, world_position);
 		}
 	};
 }
@@ -120,7 +176,9 @@ auto main() noexcept -> int
 	constexpr int window_height = 1080;
 
 	Game game{};
-	game.initialize();
+	game.create();
+	// 载入地图
+	game.load_map();
 
 	std::uint32_t simulation_times_per_tick = 1;
 
