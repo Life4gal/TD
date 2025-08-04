@@ -157,6 +157,7 @@ add_executable(
 	# UTILITY
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utility/matrix.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utility/hash.hpp
 
 	#===================
 	# MAP
@@ -169,138 +170,167 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map/flow_field.cpp
 	
+	# =============================
+	# SCENE
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/scene/scene.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/scene/scene.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/scene/game.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/scene/game.cpp
+	
 	#===================
 	# MANAGER
-
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/manager/font.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/manager/font.cpp
 	
-	# =============================
-	# ECS
+	#===================
+	# COMPONENT
 	
-	# =============
-	# components
+	# ============
+	# 全局注册表(每个场景的注册表都会有一个全局注册表指针)
+	# ============
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/registry.hpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tags.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/entity.hpp
+	# ============
+	# 主菜单
+	# ============
+	
+	# ============
+	# 游戏主场景
+	# ============
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/tags.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/entity.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/graveyard.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/navigation.hpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/graveyard.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/hud.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/weapon.hpp
-
-	${CMAKE_CURRENT_SOURCE_DIR}/src/components/render.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/weapon.hpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/render.hpp
+	
+	#===================
+	# SYSTEM
+	
+	# ============
+	# 主菜单
+	# ============
+	
+	# ============
+	# 游戏主场景
+	# ============
 	
 	# =============
 	# helper
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/player.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/map.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/resource.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/enemy.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/tower.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/player.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/weapon.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/helper/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/resource.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/enemy.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/tower.cpp
 	
-	# =============
-	# create
-	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/weapon.cpp
+
 	# =============
 	# initialize
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/player.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/map.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/navigation.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/resource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/player.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/resource.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/hud.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/hud.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/hud.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/enemy.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/enemy.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/tower.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/tower.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/weapon.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/initialize/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/weapon.cpp
 
 	# =============
 	# update
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/player.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/map.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/map.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/graveyard.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/graveyard.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/graveyard.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/graveyard.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/resource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/resource.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/hud.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/hud.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/hud.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/enemy.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/enemy.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/tower.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/tower.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/weapon.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/update/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/weapon.cpp
 
 	# =============
 	# render
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/player.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/map.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/map.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/navigation.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/hud.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/hud.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/hud.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/enemy.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/enemy.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/tower.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/tower.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/weapon.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/systems/render/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/render/weapon.cpp
 	
 	#===================
 	# MAIN
