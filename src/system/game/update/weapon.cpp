@@ -5,6 +5,8 @@
 #include <component/game/enemy.hpp>
 #include <component/game/weapon.hpp>
 
+#include <system/game/helper/observer.hpp>
+
 #include <entt/entt.hpp>
 
 namespace
@@ -54,34 +56,17 @@ namespace
 					{
 						if constexpr (std::is_same_v<Tag, tags::enemy::archetype::ground>)
 						{
-							return registry.view<tags::enemy::identifier, tags::enemy::status::alive, tags::enemy::status::visible, tags::enemy::archetype::ground, entity::Position>();
+							return helper::Observer::query_ground(registry, owner_position, weapon.range);
 						}
 						else if constexpr (std::is_same_v<Tag, tags::enemy::archetype::aerial>)
 						{
-							return registry.view<tags::enemy::identifier, tags::enemy::status::alive, tags::enemy::status::visible, tags::enemy::archetype::aerial, entity::Position>();
+							return helper::Observer::query_aerial(registry, owner_position, weapon.range);
 						}
 						else
 						{
 							std::unreachable();
 						}
 					}();
-
-					std::vector<entt::entity> result{};
-
-					for (const auto weapon_range_square = std::powf(weapon.range, 2);
-					     const auto [enemy_entity, enemy_position]: view.each())
-					{
-						const auto dx = owner_position.x - enemy_position.position.x;
-						const auto dy = owner_position.y - enemy_position.position.y;
-
-						if (const auto distance_square = dx * dx + dy * dy;
-							distance_square <= weapon_range_square)
-						{
-							result.push_back(enemy_entity);
-						}
-					}
-
-					return result;
 				}();
 
 				if (enemies_in_range.empty())
