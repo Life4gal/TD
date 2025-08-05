@@ -15,7 +15,7 @@ namespace
 	};
 
 	template<Archetype A>
-	[[nodiscard]] constexpr auto do_query(entt::registry& registry, sf::Vector2f world_position, float range) noexcept -> std::vector<entt::entity>
+	[[nodiscard]] constexpr auto do_query(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
 	{
 		using namespace game::component;
 
