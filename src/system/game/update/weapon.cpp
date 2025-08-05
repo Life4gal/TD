@@ -52,21 +52,18 @@ namespace
 				{
 					using namespace system;
 
-					const auto view = [&]
+					if constexpr (std::is_same_v<Tag, tags::enemy::archetype::ground>)
 					{
-						if constexpr (std::is_same_v<Tag, tags::enemy::archetype::ground>)
-						{
-							return helper::Observer::query_ground(registry, owner_position, weapon.range);
-						}
-						else if constexpr (std::is_same_v<Tag, tags::enemy::archetype::aerial>)
-						{
-							return helper::Observer::query_aerial(registry, owner_position, weapon.range);
-						}
-						else
-						{
-							std::unreachable();
-						}
-					}();
+						return helper::Observer::query_ground(registry, owner_position, weapon.range);
+					}
+					else if constexpr (std::is_same_v<Tag, tags::enemy::archetype::aerial>)
+					{
+						return helper::Observer::query_aerial(registry, owner_position, weapon.range);
+					}
+					else
+					{
+						std::unreachable();
+					}
 				}();
 
 				if (enemies_in_range.empty())
