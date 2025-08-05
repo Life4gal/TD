@@ -208,7 +208,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/navigation.hpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/hud.hpp
@@ -239,6 +239,9 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/observer.cpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/resource.cpp
 
@@ -262,6 +265,9 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/observer.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/resource.cpp
@@ -289,6 +295,9 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/observer.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/graveyard.cpp

@@ -1,9 +1,15 @@
 #pragma once
 
-#include <cstdint>
+#include <map/path.hpp>
 
 namespace game::component::enemy
 {
+	class Direction
+	{
+	public:
+		map::Direction direction;
+	};
+
 	class Power
 	{
 	public:

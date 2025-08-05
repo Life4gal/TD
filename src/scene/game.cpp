@@ -3,6 +3,7 @@
 #include <system/game/initialize/player.hpp>
 #include <system/game/initialize/map.hpp>
 #include <system/game/initialize/navigation.hpp>
+#include <system/game/initialize/observer.hpp>
 #include <system/game/initialize/resource.hpp>
 #include <system/game/initialize/hud.hpp>
 #include <system/game/initialize/enemy.hpp>
@@ -12,6 +13,7 @@
 #include <system/game/update/player.hpp>
 #include <system/game/update/map.hpp>
 #include <system/game/update/navigation.hpp>
+#include <system/game/update/observer.hpp>
 #include <system/game/update/graveyard.hpp>
 #include <system/game/update/resource.hpp>
 #include <system/game/update/hud.hpp>
@@ -54,6 +56,8 @@ namespace scene
 
 		// 更新导航
 		update::navigation(scene_registry_, delta);
+		// 更新观察者
+		update::observer(scene_registry_, delta);
 		// 更新塔
 		update::tower(scene_registry_, delta);
 		// 更新武器
@@ -98,6 +102,8 @@ namespace scene
 		initialize::map(scene_registry_);
 		// 初始化导航
 		initialize::navigation(scene_registry_);
+		// 初始化观察者
+		initialize::observer(scene_registry_);
 		// 初始化玩家
 		initialize::player(scene_registry_);
 		// 初始化玩家资源

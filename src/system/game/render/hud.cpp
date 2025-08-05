@@ -2,6 +2,7 @@
 
 #include <component/game/resource.hpp>
 #include <component/game/player.hpp>
+#include <component/game/observer.hpp>
 #include <component/game/render.hpp>
 
 #include <entt/entt.hpp>
@@ -43,9 +44,10 @@ namespace game::system::render
 
 			// Statistics
 			{
+				const auto& [alive_enemy] = registry.ctx().get<const observer::EnemyStatistics>();
 				const auto& [killed_enemy] = registry.ctx().get<const player::Statistics>();
 
-				hud_text.setString(std::format("Killed: {}", killed_enemy));
+				hud_text.setString(std::format("Alive: {}, Killed: {}", alive_enemy, killed_enemy));
 				hud_text.setPosition({10, static_cast<float>(window_size.y - 60)});
 				hud_text.setFillColor(sf::Color::Cyan);
 				window.draw(hud_text);

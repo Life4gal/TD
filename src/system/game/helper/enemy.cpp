@@ -4,6 +4,7 @@
 
 #include <component/game/tags.hpp>
 #include <component/game/enemy.hpp>
+#include <component/game/navigation.hpp>
 #include <component/game/map.hpp>
 
 #include <entt/entt.hpp>
@@ -16,7 +17,10 @@ namespace game::system::helper
 
 		const auto& [tile_map] = registry.ctx().get<const map_ex::TileMap>();
 
+		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
+
 		const auto position = tile_map.coordinate_grid_to_world(point);
+		const auto direction = flow_field.direction_of(point);
 
 		const auto entity = registry.create();
 
@@ -25,6 +29,8 @@ namespace game::system::helper
 
 		registry.emplace<entity::Type>(entity, enemy_type);
 		registry.emplace<entity::Position>(entity, position);
+
+		registry.emplace<enemy::Direction>(entity, direction);
 
 		// todo: 加载配置文件
 		{
