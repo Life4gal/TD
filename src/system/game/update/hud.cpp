@@ -3,11 +3,13 @@
 #include <print>
 
 #include <component/game/entity.hpp>
+#include <component/game/wave.hpp>
 #include <component/game/player.hpp>
 #include <component/game/map.hpp>
 
 #include <system/game/helper/enemy.hpp>
 #include <system/game/helper/resource.hpp>
+#include <system/game/helper/wave.hpp>
 
 #include <entt/entt.hpp>
 
@@ -30,6 +32,38 @@ namespace game::system::update
 
 		ImGui::Begin("辅助窗口");
 		{
+			{
+				ImGui::Text("波次管理");
+				ImGui::Separator();
+
+				const auto& [waves, durations] = registry.ctx().get<const wave::WaveSequence>();
+
+				if (ImGui::Button("立即开始当前波次"))
+				{
+					helper::Wave::start(registry);
+				}
+
+				ImGui::SeparatorText("生成");
+				for (std::size_t wave_index = 0; wave_index < waves.size(); ++wave_index)
+				{
+					if (const auto label = std::format("第 {} 波##spawn", wave_index);
+						ImGui::Button(label.c_str()))
+					{
+						helper::Wave::spawn(registry, static_cast<wave::WaveIndex>(wave_index));
+					}
+				}
+
+				ImGui::SeparatorText("跳转");
+				for (std::size_t wave_index = 0; wave_index < waves.size(); ++wave_index)
+				{
+					if (const auto label = std::format("第 {} 波##start_at", wave_index);
+						ImGui::Button(label.c_str()))
+					{
+						helper::Wave::start_at(registry, static_cast<wave::WaveIndex>(wave_index));
+					}
+				}
+			}
+
 			{
 				static entity_underlying_type selected_enemy_type = std::to_underlying(entity::invalid_type);
 

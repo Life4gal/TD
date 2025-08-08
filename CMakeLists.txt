@@ -207,6 +207,7 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/wave.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/component/game/graveyard.hpp
@@ -239,6 +240,9 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/map.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/wave.cpp
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/helper/observer.cpp
 
@@ -262,6 +266,9 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/wave.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/initialize/navigation.cpp
@@ -292,6 +299,9 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/wave.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/system/game/update/navigation.cpp

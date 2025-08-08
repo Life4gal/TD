@@ -8,6 +8,25 @@ namespace game::component::tags
 	using entt::literals::operator ""_hs;
 
 	// ====================================
+	// WAVE
+
+	namespace wave
+	{
+		using identifier = entt::tag<"Wave"_hs>;
+
+		// =======
+		// 状态
+
+		namespace status
+		{
+			// 正在生成
+			// using spawning = entt::tag<"WaveSpawning"_hs>;
+			// 生成完毕
+			using end = entt::tag<"WaveEnd"_hs>;
+		}
+	}
+
+	// ====================================
 	// TOWER
 
 	namespace tower

@@ -2,6 +2,7 @@
 
 #include <system/game/initialize/player.hpp>
 #include <system/game/initialize/map.hpp>
+#include <system/game/initialize/wave.hpp>
 #include <system/game/initialize/navigation.hpp>
 #include <system/game/initialize/observer.hpp>
 #include <system/game/initialize/resource.hpp>
@@ -12,6 +13,7 @@
 
 #include <system/game/update/player.hpp>
 #include <system/game/update/map.hpp>
+#include <system/game/update/wave.hpp>
 #include <system/game/update/navigation.hpp>
 #include <system/game/update/observer.hpp>
 #include <system/game/update/graveyard.hpp>
@@ -30,6 +32,7 @@
 #include <system/game/render/weapon.hpp>
 
 #include <system/game/helper/map.hpp>
+#include <system/game/helper/wave.hpp>
 #include <system/game/helper/player.hpp>
 
 #include <component/game/map.hpp>
@@ -54,6 +57,8 @@ namespace scene
 	{
 		using namespace game::system;
 
+		// 更新波次
+		update::wave(scene_registry_, delta);
 		// 更新导航
 		update::navigation(scene_registry_, delta);
 		// 更新观察者
@@ -97,9 +102,13 @@ namespace scene
 
 		// 载入地图
 		helper::Map::load(scene_registry_);
+		// 载入波次
+		helper::Wave::load(scene_registry_);
 
 		// 初始化地图
 		initialize::map(scene_registry_);
+		// 初始化波次
+		initialize::wave(scene_registry_);
 		// 初始化导航
 		initialize::navigation(scene_registry_);
 		// 初始化观察者
