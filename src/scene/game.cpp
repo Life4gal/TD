@@ -77,12 +77,12 @@ namespace scene
 
 		// 更新地图
 		update::map(scene_registry_);
+		// 更新玩家
+		update::player(scene_registry_);
 		// 更新墓地
 		update::graveyard(scene_registry_);
 		// 更新资源
 		update::resource(scene_registry_);
-		// 更新玩家
-		update::player(scene_registry_);
 		// 更新玩家HUD
 		update::hud(scene_registry_);
 	}
