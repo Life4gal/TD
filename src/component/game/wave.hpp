@@ -12,6 +12,7 @@ namespace game::component::wave
 	//  Wave
 	//  WaveSpawnIndex
 	//  WaveTimer
+	//  WaveIndex
 	//
 	// WaveDuration[context]
 	// WaveIndex[context]

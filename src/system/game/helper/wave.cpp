@@ -1,6 +1,7 @@
 #include <system/game/helper/wave.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <ranges>
 #include <print>
 
@@ -83,13 +84,12 @@ namespace game::system::helper
 			return;
 		}
 
-		std::println("[{}] 生成波次 {}", std::chrono::system_clock::now(), wave_index_value);
-
 		const auto entity = registry.create();
 
 		registry.emplace<wave::Wave>(entity, waves[wave_index_value]);
 		registry.emplace<wave::WaveSpawnIndex>(entity, static_cast<wave::WaveSpawnIndex>(0));
 		registry.emplace<wave::WaveTimer>(entity);
+		registry.emplace<wave::WaveIndex>(entity, wave_index);
 
 		registry.emplace<tags::wave::identifier>(entity);
 	}
