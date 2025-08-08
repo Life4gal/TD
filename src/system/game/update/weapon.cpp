@@ -52,13 +52,14 @@ namespace
 				{
 					using namespace system;
 
+					// 瞄准目标必须可见
 					if constexpr (std::is_same_v<Tag, tags::enemy::archetype::ground>)
 					{
-						return helper::Observer::query_ground(registry, owner_position, weapon.range);
+						return helper::Observer::query_visible_ground(registry, owner_position, weapon.range);
 					}
 					else if constexpr (std::is_same_v<Tag, tags::enemy::archetype::aerial>)
 					{
-						return helper::Observer::query_aerial(registry, owner_position, weapon.range);
+						return helper::Observer::query_visible_aerial(registry, owner_position, weapon.range);
 					}
 					else
 					{

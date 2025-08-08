@@ -13,40 +13,35 @@ namespace game::system::update
 	{
 		using namespace component;
 
+		using size_type = observer::EnemyStatistics::size_type;
+
 		std::ignore = delta;
 
 		const auto& [tile_map] = registry.ctx().get<const map_ex::TileMap>();
 
 		auto& [enemies_ground, enemies_aerial] = registry.ctx().get<observer::EnemyArchetype>();
-		auto& [enemy_alive] = registry.ctx().get<observer::EnemyStatistics>();
+		auto& [ground_alive, aerial_alive] = registry.ctx().get<observer::EnemyStatistics>();
+
+		const auto ground_enemy_view = registry.view<tags::enemy::identifier, tags::enemy::status::alive, tags::enemy::archetype::ground, const entity::Position>();
+		const auto aerial_enemy_view = registry.view<tags::enemy::identifier, tags::enemy::status::alive, tags::enemy::archetype::aerial, const entity::Position>();
+
+		ground_alive = static_cast<size_type>(ground_enemy_view.size_hint());
+		aerial_alive = static_cast<size_type>(aerial_enemy_view.size_hint());
 
 		enemies_ground.clear();
-		enemies_aerial.clear();
-		enemy_alive = 0;
-
-		for (const auto enemy_view = registry.view<tags::enemy::identifier, tags::enemy::status::alive, const entity::Position>();
-		     const auto [entity, position]: enemy_view.each())
+		for (const auto [entity, position]: ground_enemy_view.each())
 		{
-			enemy_alive += 1;
+			const auto grid_position = tile_map.coordinate_world_to_grid(position.position);
 
-			if (registry.all_of<tags::enemy::status::visible>(entity))
-			{
-				const auto grid_position = tile_map.coordinate_world_to_grid(position.position);
+			enemies_ground[grid_position].push_back(entity);
+		}
 
-				if (registry.all_of<tags::enemy::archetype::ground>(entity))
-				{
-					enemies_ground[grid_position].push_back(entity);
-				}
-				else if (registry.all_of<tags::enemy::archetype::aerial>(entity))
-				{
-					enemies_ground[grid_position].push_back(entity);
-				}
-				else
-				{
-					// 要么地面移动,要么空中移动,不允许其他情况
-					std::unreachable();
-				}
-			}
+		enemies_aerial.clear();
+		for (const auto [entity, position]: aerial_enemy_view.each())
+		{
+			const auto grid_position = tile_map.coordinate_world_to_grid(position.position);
+
+			enemies_aerial[grid_position].push_back(entity);
 		}
 	}
 }

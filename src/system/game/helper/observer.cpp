@@ -1,5 +1,6 @@
 #include <system/game/helper/observer.hpp>
 
+#include <component/game/tags.hpp>
 #include <component/game/observer.hpp>
 #include <component/game/map.hpp>
 
@@ -14,7 +15,7 @@ namespace
 		DUAL = GROUND | AERIAL,
 	};
 
-	template<Archetype A>
+	template<Archetype A, bool VisibleOnly>
 	[[nodiscard]] constexpr auto do_query(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
 	{
 		using namespace game::component;
@@ -49,7 +50,21 @@ namespace
 					if (const auto it = enemies_ground.find(grid_unsigned);
 						it != enemies_ground.end())
 					{
-						result.append_range(it->second);
+						if constexpr (VisibleOnly)
+						{
+							std::ranges::copy_if(
+								it->second,
+								std::back_inserter(result),
+								[&](const entt::entity entity) noexcept -> bool
+								{
+									return registry.all_of<tags::enemy::status::visible>(entity);
+								}
+							);
+						}
+						else
+						{
+							result.append_range(it->second);
+						}
 					}
 				}
 
@@ -58,7 +73,21 @@ namespace
 					if (const auto it = enemies_aerial.find(grid_unsigned);
 						it != enemies_aerial.end())
 					{
-						result.append_range(it->second);
+						if constexpr (VisibleOnly)
+						{
+							std::ranges::copy_if(
+								it->second,
+								std::back_inserter(result),
+								[&](const entt::entity entity) noexcept -> bool
+								{
+									return registry.all_of<tags::enemy::status::visible>(entity);
+								}
+							);
+						}
+						else
+						{
+							result.append_range(it->second);
+						}
 					}
 				}
 			}
@@ -72,16 +101,31 @@ namespace game::system::helper
 {
 	auto Observer::query_ground(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
 	{
-		return do_query<Archetype::GROUND>(registry, world_position, range);
+		return do_query<Archetype::GROUND, false>(registry, world_position, range);
 	}
 
 	auto Observer::query_aerial(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
 	{
-		return do_query<Archetype::AERIAL>(registry, world_position, range);
+		return do_query<Archetype::AERIAL, false>(registry, world_position, range);
 	}
 
 	auto Observer::query_dual(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
 	{
-		return do_query<Archetype::DUAL>(registry, world_position, range);
+		return do_query<Archetype::DUAL, false>(registry, world_position, range);
+	}
+
+	auto Observer::query_visible_ground(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
+	{
+		return do_query<Archetype::GROUND, true>(registry, world_position, range);
+	}
+
+	auto Observer::query_visible_aerial(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
+	{
+		return do_query<Archetype::AERIAL, true>(registry, world_position, range);
+	}
+
+	auto Observer::query_visible_dual(entt::registry& registry, const sf::Vector2f world_position, const float range) noexcept -> std::vector<entt::entity>
+	{
+		return do_query<Archetype::DUAL, true>(registry, world_position, range);
 	}
 }

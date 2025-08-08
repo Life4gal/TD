@@ -44,10 +44,10 @@ namespace game::system::render
 
 			// Statistics
 			{
-				const auto& [alive_enemy] = registry.ctx().get<const observer::EnemyStatistics>();
+				const auto& [ground_alive, aerial_alive] = registry.ctx().get<const observer::EnemyStatistics>();
 				const auto& [killed_enemy] = registry.ctx().get<const player::Statistics>();
 
-				hud_text.setString(std::format("Alive: {}, Killed: {}", alive_enemy, killed_enemy));
+				hud_text.setString(std::format("Alive: G:{} | A:{} / Killed: {}", ground_alive, aerial_alive, killed_enemy));
 				hud_text.setPosition({10, static_cast<float>(window_size.y - 60)});
 				hud_text.setFillColor(sf::Color::Cyan);
 				window.draw(hud_text);
