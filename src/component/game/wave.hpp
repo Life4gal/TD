@@ -44,7 +44,7 @@ namespace game::component::wave
 	// 生成索引
 	enum class WaveSpawnIndex : std::uint32_t {};
 
-	// 当前波次计数器
+	// 当前波次计时器
 	class WaveTimer
 	{
 	public:
