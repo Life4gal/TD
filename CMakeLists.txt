@@ -153,3 +153,4 @@ add_custom_target(
 )
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/main)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/editor)
