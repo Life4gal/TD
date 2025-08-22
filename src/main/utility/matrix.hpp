@@ -39,6 +39,16 @@ namespace utility
 			data_.resize(static_cast<std::size_t>(width_) * height_, value);
 		}
 
+		[[nodiscard]] constexpr auto size() const noexcept -> size_type
+		{
+			return static_cast<size_type>(data_.size());
+		}
+
+		[[nodiscard]] constexpr auto empty() const noexcept -> bool
+		{
+			return data_.empty();
+		}
+
 		[[nodiscard]] constexpr auto width() const noexcept -> size_type
 		{
 			return width_;
@@ -93,6 +103,48 @@ namespace utility
 			const auto length = width();
 
 			return {it, length};
+		}
+
+		constexpr auto copy_from(const Matrix& other) noexcept -> void
+		{
+			const auto min_height = std::ranges::min(height(), other.height());
+			const auto min_width = std::ranges::min(width(), other.width());
+
+			for (size_type y = 0; y < min_height; ++y)
+			{
+				const auto from = other.line(y);
+				auto to = line(y);
+
+				std::ranges::copy(
+					std::ranges::subrange
+					{
+							from.begin(),
+							from.begin() + min_width
+					},
+					to.data()
+				);
+			}
+		}
+
+		constexpr auto move_from(const Matrix& other) noexcept -> void
+		{
+			const auto min_height = std::ranges::min(height(), other.height());
+			const auto min_width = std::ranges::min(width(), other.width());
+
+			for (size_type y = 0; y < min_height; ++y)
+			{
+				const auto from = other.line(y);
+				auto to = line(y);
+
+				std::ranges::copy(
+					std::ranges::subrange
+					{
+							std::make_move_iterator(from.begin()),
+							std::make_move_iterator(from.begin() + min_width)
+					},
+					to.data()
+				);
+			}
 		}
 	};
 }

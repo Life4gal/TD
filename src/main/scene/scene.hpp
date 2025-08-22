@@ -23,6 +23,8 @@ namespace scene
 		auto operator=(Scene&&) noexcept -> Scene& = delete;
 
 	protected:
+		std::shared_ptr<entt::registry> global_registry_;
+
 		entt::registry scene_registry_;
 
 	public:

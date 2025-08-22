@@ -1,0 +1,35 @@
+#pragma once
+
+#include <vector>
+#include <unordered_map>
+
+#include <utility/hash.hpp>
+
+#include <entt/entity/fwd.hpp>
+
+#include <SFML/System/Vector2.hpp>
+
+namespace components::observer
+{
+	class EnemyArchetype
+	{
+	public:
+		// 网格 => 敌人
+
+		// 地面
+		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> ground;
+		// 空中
+		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> aerial;
+	};
+
+	class EnemyStatistics
+	{
+	public:
+		using size_type = std::uint32_t;
+
+		// 当前存活的地面敌人数量
+		size_type ground_alive;
+		// 当前存活的空中敌人数量
+		size_type aerial_alive;
+	};
+}
