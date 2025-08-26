@@ -31,6 +31,8 @@ namespace editor
 			size_type sprite_y;
 
 			[[nodiscard]] auto get() const noexcept -> sf::Sprite&;
+
+			[[nodiscard]] auto operator==(const Tile& other) const noexcept -> bool;
 		};
 
 	private:
@@ -66,6 +68,9 @@ namespace editor
 
 		// 当前选择的图集
 		sprite_atlases_type::iterator selected_sprite_atlas_iterator_;
+
+		// 精灵按钮的放大倍数(如果纹理上的尺寸较小时可以将其放大)
+		sf::Vector2f tile_scale_;
 
 		// 当前选择的子精灵
 		std::optional<Tile> selected_tile_;

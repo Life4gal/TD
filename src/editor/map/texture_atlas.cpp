@@ -21,6 +21,14 @@ namespace editor
 		return sprite;
 	}
 
+	auto TextureAtlas::Tile::operator==(const Tile& other) const noexcept -> bool
+	{
+		const auto& atlas = sprite_atlas.get();
+		const auto& other_atlas = other.sprite_atlas.get();
+
+		return &atlas == &other_atlas and sprite_x == other.sprite_x and sprite_y == other.sprite_y;
+	}
+
 	auto TextureAtlas::SpriteAtlas::reload() noexcept -> void
 	{
 		assert(sprite_size > 0);
@@ -70,6 +78,7 @@ namespace editor
 		  texture_{std::move(other.texture_)},
 		  sprite_atlases_{std::exchange(other.sprite_atlases_, {})},
 		  selected_sprite_atlas_iterator_{std::exchange(other.selected_sprite_atlas_iterator_, {})},
+		  tile_scale_{other.tile_scale_},
 		  selected_tile_{std::exchange(other.selected_tile_, std::nullopt)}
 	{
 		std::ranges::for_each(
@@ -94,6 +103,7 @@ namespace editor
 		sprite_atlases_ = std::exchange(other.sprite_atlases_, {});
 		selected_sprite_atlas_iterator_ = std::exchange(selected_sprite_atlas_iterator_, {});
 
+		tile_scale_ = other.tile_scale_;
 		selected_tile_ = std::exchange(selected_tile_, std::nullopt);
 
 		std::ranges::for_each(
@@ -112,6 +122,7 @@ namespace editor
 	TextureAtlas::TextureAtlas(const std::filesystem::path& path) noexcept
 		: region_selector_{nullptr},
 		  selected_sprite_atlas_iterator_{sprite_atlases_.end()},
+		  tile_scale_{1.f, 1.f},
 		  selected_tile_{std::nullopt}
 	{
 		if (not exists(path))
@@ -147,8 +158,6 @@ namespace editor
 	{
 		assert(loaded());
 
-		ImGui::PushID(this);
-
 		// 选择器
 		if (region_selector_ and region_selector_->opened())
 		{
@@ -177,7 +186,7 @@ namespace editor
 		// 所有精灵图集
 		ImGui::SeparatorText("SpriteAtlas");
 		{
-			if (ImGui::BeginCombo("Select", selected_sprite_atlas_iterator_->first.c_str()))
+			if (ImGui::BeginCombo("Select SpriteAtlas", selected_sprite_atlas_iterator_->first.c_str()))
 			{
 				for (auto it = sprite_atlases_.begin(); it != sprite_atlases_.end(); ++it)
 				{
@@ -259,9 +268,10 @@ namespace editor
 		ImGui::SeparatorText("Selected");
 		if (selected_tile_.has_value())
 		{
-			const auto& atlas = selected_tile_->sprite_atlas.get();
-			const auto& sprite = atlas.sprites[selected_tile_->sprite_x, selected_tile_->sprite_y];
+			auto& atlas = selected_tile_->sprite_atlas.get();
+			auto& sprite = atlas.sprites[selected_tile_->sprite_x, selected_tile_->sprite_y];
 
+			sprite.setScale(tile_scale_);
 			ImGui::Image(sprite);
 		}
 		else
@@ -278,6 +288,14 @@ namespace editor
 		}
 		else
 		{
+			ImGui::SliderFloat2(
+				"Scale",
+				&tile_scale_.x,
+				.5f,
+				4.f,
+				"%.1f"
+			);
+
 			// 按钮间距
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0, 0});
 			// 按钮内边距
@@ -293,9 +311,10 @@ namespace editor
 					ImGui::PushID(i);
 
 					const auto& sprite = sprites[x, y];
+					const auto sprite_rect_size = sf::Vector2f{sprite.getTextureRect().size};
+					const auto button_size = sf::Vector2f{sprite_rect_size.x * tile_scale_.x, sprite_rect_size.y * tile_scale_.y};
 
-					if (const auto sprite_size = sf::Vector2f{sprite.getTextureRect().size};
-						ImGui::ImageButton("sprite", sprite, sprite_size))
+					if (ImGui::ImageButton("sprite", sprite, button_size))
 					{
 						selected_tile_ = Tile
 						{
@@ -327,7 +346,5 @@ namespace editor
 			// 恢复样式
 			ImGui::PopStyleVar(3);
 		}
-
-		ImGui::PopID();
 	}
 }

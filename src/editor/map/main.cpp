@@ -8,19 +8,38 @@
 
 auto main() noexcept -> int
 {
-	sf::RenderWindow window{sf::VideoMode{{1920, 1080}}, "MapEditor"};
+	constexpr int window_width = 1920;
+	constexpr int window_height = 1080;
+
+	const sf::VideoMode video_mode{{window_width, window_height}};
+	sf::RenderWindow window{video_mode, "MapEditor"};
 	window.setFramerateLimit(60);
 
 	sf::Clock delta_clock;
 
-	if (not ImGui::SFML::Init(window))
 	{
-		return 1;
+		IMGUI_CHECKVERSION();
+
+		// const auto init = ImGui::SFML::Init(window);
+		// assert(init);
+
+		const auto init = ImGui::SFML::Init(window, false);
+		assert(init);
+
+		auto* fonts = ImGui::GetIO().Fonts;
+		fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\msyh.ttc)", 16.f, nullptr, fonts->GetGlyphRangesChineseSimplifiedCommon());
+
+		const auto update = ImGui::SFML::UpdateFontTexture();
+		assert(update);
 	}
 
-	ImGui::GetIO().IniFilename = "map_editor.ini";
+	auto& imgui_io = ImGui::GetIO();
+	imgui_io.IniFilename = "map_editor.ini";
+	imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	editor::Map map{};
+
+	map.setup();
 
 	// 主循环
 	while (window.isOpen())
@@ -33,40 +52,18 @@ auto main() noexcept -> int
 			{
 				window.close();
 			}
-
-			const auto& io = ImGui::GetIO();
-			const auto want_mouse = io.WantCaptureMouse;
-			const auto want_keyboard = io.WantCaptureKeyboard;
-
-			if (not want_mouse)
-			{
-				// 鼠标点击放置瓦片
-				if (const auto mbp = event->getIf<sf::Event::MouseButtonPressed>();
-					mbp && mbp->button == sf::Mouse::Button::Left)
-				{
-					map.place_tile_map(sf::Vector2u{mbp->position});
-				}
-
-				// 鼠标拖放放置瓦片
-				if (const auto mv = event->getIf<sf::Event::MouseMoved>();
-					mv && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-				{
-					map.place_tile_map(sf::Vector2u{mv->position});
-				}
-			}
 		}
 
-		ImGui::SFML::Update(window, delta_clock.restart());
+		const auto delta = delta_clock.restart();
 
-		ImGui::Begin("MapEditor");
-		map.show();
-		ImGui::End();
+		ImGui::SFML::Update(window, delta);
+
+		map.update();
 
 		window.clear({40, 44, 52});
 
-		map.render(window);
-
 		ImGui::SFML::Render(window);
+
 		window.display();
 	}
 

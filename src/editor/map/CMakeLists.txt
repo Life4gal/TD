@@ -58,6 +58,7 @@ target_link_libraries(
 
 	${TD_SFML_LIBRARIES}
 	imgui::imgui
+	spdlog::spdlog
 )
 
 set_target_properties(
