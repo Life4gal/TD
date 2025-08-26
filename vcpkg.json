@@ -4,7 +4,11 @@
   "dependencies": [
     {
       "name": "imgui",
-      "version>=": "1.91.9"
+      "version>=": "1.91.9",
+      "features": [
+        "freetype",
+        "docking-experimental"
+      ]
     },
     {
       "name": "sfml",
