@@ -141,6 +141,12 @@ find_package(imgui CONFIG REQUIRED)
 # EnTT
 find_package(EnTT CONFIG REQUIRED)
 
+# nlohmann::json
+find_package(nlohmann_json CONFIG REQUIRED)
+
+# spdlog
+find_package(spdlog CONFIG REQUIRED)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # 复制 config/data/media的文件到输出目录
