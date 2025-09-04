@@ -14,6 +14,7 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/matrix.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/hash.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/utility/functional.hpp
 	
 	#===================
 	# MAP
@@ -63,6 +64,8 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/texture.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/sound.hpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/components/debug.hpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tags.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/entity.hpp
 
@@ -80,7 +83,37 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/hud.hpp
 
 	# =============================
+	# HELPER
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/wave.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/observer.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/resource.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/enemy.cpp
+
+	# =============================
 	# SYSTEMS
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/map.cpp
@@ -96,6 +129,9 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/tower.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/enemy.cpp

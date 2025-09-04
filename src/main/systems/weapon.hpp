@@ -6,7 +6,7 @@
 
 namespace systems
 {
-	class Wave
+	class Weapon
 	{
 	public:
 		static auto update(entt::registry& registry, sf::Time delta) noexcept -> void;

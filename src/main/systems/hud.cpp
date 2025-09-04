@@ -2,16 +2,15 @@
 
 #include <print>
 
-#include <components/hud.hpp>
 #include <components/map.hpp>
 #include <components/observer.hpp>
+
 #include <components/player.hpp>
+#include <components/hud.hpp>
 
-#include <components/font.hpp>
-
-#include <systems/enemy.hpp>
-#include <systems/resource.hpp>
-#include <systems/wave.hpp>
+#include <helper/wave.hpp>
+#include <helper/resource.hpp>
+#include <helper/enemy.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -20,19 +19,6 @@
 
 namespace systems
 {
-	auto HUD::initialize(entt::registry& registry) noexcept -> void
-	{
-		using namespace components;
-
-		auto& [fonts] = registry.ctx().get<Fonts>();
-
-		const auto [it, result] = fonts.load(constants::hud, "hud");
-		assert(result);
-		assert(it->second);
-
-		registry.ctx().emplace<hud::Render>(sf::Text{it->second, "", 25});
-	}
-
 	auto HUD::update(entt::registry& registry) noexcept -> void
 	{
 		using namespace components;
@@ -56,7 +42,7 @@ namespace systems
 
 				if (ImGui::Button("立即开始当前波次"))
 				{
-					Wave::start(registry);
+					helper::Wave::start(registry);
 				}
 
 				ImGui::SeparatorText("生成");
@@ -65,7 +51,7 @@ namespace systems
 					if (const auto label = std::format("第 {} 波##spawn", wave_index);
 						ImGui::Button(label.c_str()))
 					{
-						Wave::spawn(registry, static_cast<wave::WaveIndex>(wave_index));
+						helper::Wave::spawn(registry, static_cast<wave::WaveIndex>(wave_index));
 					}
 				}
 
@@ -75,7 +61,7 @@ namespace systems
 					if (const auto label = std::format("第 {} 波##start_at", wave_index);
 						ImGui::Button(label.c_str()))
 					{
-						Wave::start_at(registry, static_cast<wave::WaveIndex>(wave_index));
+						helper::Wave::start_at(registry, static_cast<wave::WaveIndex>(wave_index));
 					}
 				}
 			}
@@ -112,7 +98,7 @@ namespace systems
 						{
 							const auto type = static_cast<entity::Type>(selected_enemy_type);
 
-							Enemy::spawn(registry, static_cast<std::uint32_t>(i), type);
+							helper::Enemy::spawn(registry, static_cast<std::uint32_t>(i), type);
 						}
 					}
 				}
@@ -147,21 +133,21 @@ namespace systems
 				{
 					if (health != 0)
 					{
-						Resource::acquire(
+						helper::Resource::acquire(
 							registry,
 							resource::Resource{resource::Type::HEALTH, static_cast<resource::size_type>(health)}
 						);
 					}
 					if (mana != 0)
 					{
-						Resource::acquire(
+						helper::Resource::acquire(
 							registry,
 							resource::Resource{resource::Type::MANA, static_cast<resource::size_type>(mana)}
 						);
 					}
 					if (gold != 0)
 					{
-						Resource::acquire(
+						helper::Resource::acquire(
 							registry,
 							resource::Resource{resource::Type::GOLD, static_cast<resource::size_type>(gold)}
 						);
@@ -179,7 +165,7 @@ namespace systems
 
 		const auto& [player_resource] = registry.ctx().get<const player::Resource>();
 
-		auto& [hud_text] = registry.ctx().get<hud::Render>();
+		auto& [hud_text] = registry.ctx().get<hud::Text>();
 
 		// const auto& view = window.getView();
 		// window.setView(window.getDefaultView());
@@ -192,7 +178,7 @@ namespace systems
 			const auto wave_index = registry.ctx().get<const wave::WaveIndex>();
 			const auto wave_index_value = std::to_underlying(wave_index);
 
-			if (Wave::has_next_wave(registry))
+			if (helper::Wave::has_next_wave(registry))
 			{
 				hud_text.setString(std::format("Next Wave: {} | Next Wave Time: {:.3f}", wave_index_value, wave_duration.asSeconds()));
 			}

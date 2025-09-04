@@ -5,6 +5,8 @@
 #include <components/sound.hpp>
 #include <components/texture.hpp>
 
+#include <systems/initialize.hpp>
+
 #include <systems/map.hpp>
 #include <systems/wave.hpp>
 #include <systems/navigation.hpp>
@@ -14,23 +16,22 @@
 #include <systems/player.hpp>
 #include <systems/graveyard.hpp>
 #include <systems/hud.hpp>
-
 #include <systems/tower.hpp>
+#include <systems/weapon.hpp>
 #include <systems/enemy.hpp>
+
+#include <systems/debug.hpp>
+
+#include <helper/map.hpp>
+#include <helper/player.hpp>
+#include <helper/wave.hpp>
+
+#include <utility/functional.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <imgui.h>
-
-namespace
-{
-	template<typename... Ts>
-	struct overloads : Ts...
-	{
-		using Ts::operator()...;
-	};
-}
 
 namespace scene
 {
@@ -43,10 +44,10 @@ namespace scene
 		// 更新观察者
 		systems::Observer::update(scene_registry_, delta);
 
-		// 更新塔
-		systems::Tower::update(scene_registry_, delta);
-		// 更新敌人
-		systems::Enemy::update(scene_registry_, delta);
+		// 更新塔目标
+		systems::Weapon::update(scene_registry_, delta);
+
+		// todo: 更新动画
 	}
 
 	auto Game::do_update() noexcept -> void
@@ -75,30 +76,12 @@ namespace scene
 		scene_registry_.ctx().emplace<components::Sounds>();
 
 		// 载入地图
-		systems::Map::load(scene_registry_);
+		helper::Map::load(scene_registry_);
 		// 载入波次
-		systems::Wave::load(scene_registry_);
+		helper::Wave::load(scene_registry_);
 
-		// 初始化地图
-		systems::Map::initialize(scene_registry_);
-		// 初始化波次
-		systems::Wave::initialize(scene_registry_);
-		// 初始化导航
-		systems::Navigation::initialize(scene_registry_);
-		// 初始化观察者
-		systems::Observer::initialize(scene_registry_);
-
-		// 初始化玩家
-		systems::Player::initialize(scene_registry_);
-		// 初始化玩家资源
-		systems::Resource::initialize(scene_registry_);
-		// 初始化玩家HUD
-		systems::HUD::initialize(scene_registry_);
-
-		// 初始化塔
-		systems::Tower::initialize(scene_registry_);
-		// 初始化敌人
-		systems::Enemy::initialize(scene_registry_);
+		// 初始化游戏
+		systems::Initialize::initialize(scene_registry_);
 	}
 
 	auto Game::handle_event(const sf::Event& event) noexcept -> void
@@ -113,7 +96,7 @@ namespace scene
 		}
 
 		event.visit(
-			overloads
+			utility::overloads
 			{
 					[&](const sf::Event::MouseButtonPressed& mbp) noexcept -> void
 					{
@@ -126,11 +109,11 @@ namespace scene
 
 						if (mbp.button == sf::Mouse::Button::Left)
 						{
-							systems::Player::try_build_tower(scene_registry_, position);
+							helper::Player::try_build_tower(scene_registry_, position);
 						}
 						else if (mbp.button == sf::Mouse::Button::Right)
 						{
-							systems::Player::try_destroy_tower(scene_registry_, position);
+							helper::Player::try_destroy_tower(scene_registry_, position);
 						}
 					},
 					[&](const sf::Event::KeyPressed& kp) noexcept -> void
@@ -184,13 +167,13 @@ namespace scene
 	{
 		// 先渲染地图
 		systems::Map::render(scene_registry_, window);
-		// 其次绘制导航(路径和流向)
-		systems::Navigation::render(scene_registry_, window);
 
 		// 绘制塔
 		systems::Tower::render(scene_registry_, window);
 		// 绘制敌人
 		systems::Enemy::render(scene_registry_, window);
+
+		systems::Debug::render(scene_registry_, window);
 
 		// HUD位于最上层
 		systems::HUD::render(scene_registry_, window);

@@ -4,7 +4,7 @@
 
 namespace components::hud
 {
-	class Render
+	class Text
 	{
 	public:
 		sf::Text hud_text;

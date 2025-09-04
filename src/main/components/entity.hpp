@@ -4,7 +4,6 @@
 #include <type_traits>
 
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/Color.hpp>
 
 namespace components::entity
 {
@@ -17,12 +16,6 @@ namespace components::entity
 	{
 	public:
 		sf::Vector2f position;
-	};
-
-	class Color
-	{
-	public:
-		sf::Color color;
 	};
 
 	class Scale

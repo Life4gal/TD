@@ -22,7 +22,7 @@ namespace components::map_ex
 		std::vector<sf::Vector2u> end_gates;
 	};
 
-	class Render
+	class Background
 	{
 	public:
 		// 地图图片

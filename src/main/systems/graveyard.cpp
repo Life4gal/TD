@@ -1,10 +1,11 @@
 #include <systems/graveyard.hpp>
 
-#include <components/tags.hpp>
 #include <components/player.hpp>
 #include <components/graveyard.hpp>
 
-#include <systems/resource.hpp>
+#include <components/tags.hpp>
+
+#include <helper/resource.hpp>
 
 #include <entt/entt.hpp>
 
@@ -29,7 +30,7 @@ namespace systems
 
 				for (const auto [entity]: killed_view.each())
 				{
-					Resource::acquire(registry, entity);
+					helper::Resource::acquire(registry, entity);
 					killed_enemy += 1;
 				}
 			}

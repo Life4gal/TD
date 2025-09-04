@@ -13,8 +13,6 @@ namespace systems
 	class HUD
 	{
 	public:
-		static auto initialize(entt::registry& registry) noexcept -> void;
-
 		static auto update(entt::registry& registry) noexcept -> void;
 
 		static auto render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void;

@@ -46,7 +46,7 @@ namespace components::player
 		size_type killed_enemy;
 	};
 
-	class Render
+	class Cursor
 	{
 	public:
 		sf::RectangleShape cursor;

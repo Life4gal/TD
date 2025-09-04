@@ -15,42 +15,6 @@
 
 namespace systems
 {
-	auto Navigation::initialize(entt::registry& registry) noexcept -> void
-	{
-		using namespace components;
-
-		const auto& [tile_map] = registry.ctx().get<const map_ex::TileMap>();
-		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
-
-		map::FlowField flow_field{tile_map};
-		{
-			flow_field.build(end_gates);
-		}
-
-		std::vector<map::path_type> cache_paths{};
-		{
-			cache_paths.reserve(start_gates.size());
-
-			// 为每个起点到最佳终点计算路径
-			for (const auto start: start_gates)
-			{
-				auto path = flow_field.path_of(start, std::numeric_limits<std::size_t>::max());
-				assert(path.has_value());
-
-				cache_paths.emplace_back(std::move(*path));
-			}
-		}
-
-		registry.ctx().emplace<navigation::FlowField>(std::move(flow_field));
-		registry.ctx().emplace<navigation::Path>(std::move(cache_paths));
-
-		// debug
-		{
-			registry.ctx().emplace<navigation::DebugRenderPath>(sf::VertexArray{sf::PrimitiveType::LineStrip});
-			registry.ctx().emplace<navigation::DebugRenderFlow>(sf::VertexArray{sf::PrimitiveType::Lines});
-		}
-	}
-
 	auto Navigation::update(entt::registry& registry, const sf::Time delta) noexcept -> void
 	{
 		using namespace components;
@@ -205,78 +169,6 @@ namespace systems
 					}
 				}
 			}
-		}
-	}
-
-	auto Navigation::render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void
-	{
-		using namespace components;
-
-		const auto& [tile_map] = registry.ctx().get<const map_ex::TileMap>();
-
-		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
-		const auto& [cache_paths] = registry.ctx().get<const navigation::Path>();
-
-		// 缓存路径
-		if (auto* render = registry.ctx().find<navigation::DebugRenderPath>())
-		{
-			auto& paths = render->paths;
-
-			std::ranges::for_each(
-				cache_paths,
-				[&](const auto& path) noexcept -> void
-				{
-					std::ranges::for_each(
-						path,
-						[&](const auto point) noexcept -> void
-						{
-							const auto world_position = tile_map.coordinate_grid_to_world(point);
-
-							paths.append({.position = world_position, .color = sf::Color::Green, .texCoords = {}});
-						}
-					);
-
-					window.draw(paths);
-					paths.clear();
-				}
-			);
-		}
-
-		// 网格流向
-		if (auto* render = registry.ctx().find<navigation::DebugRenderFlow>())
-		{
-			auto& directions = render->directions;
-
-			for (std::uint32_t y = 0; y < tile_map.vertical_tile_count(); ++y)
-			{
-				for (std::uint32_t x = 0; x < tile_map.horizontal_tile_count(); ++x)
-				{
-					constexpr auto arrow_length = 15.f;
-					constexpr auto arrow_head_length = arrow_length * .35f;
-
-					const auto direction = flow_field.direction_of({x, y});
-					const auto direction_value = sf::Vector2f{map::value_of(direction)};
-
-					const auto start_position = tile_map.coordinate_grid_to_world(sf::Vector2u{x, y});
-					const auto end_position = start_position + direction_value * arrow_length;
-					const auto arrow_offset = direction_value * arrow_head_length;
-
-					directions.append({.position = start_position, .color = sf::Color::Red, .texCoords = {}});
-					directions.append({.position = end_position, .color = sf::Color::Red, .texCoords = {}});
-
-					const auto perpendicular = direction_value.perpendicular();
-					const auto arrow_position_1 = end_position - arrow_offset + perpendicular * arrow_head_length * .5f;
-					const auto arrow_position_2 = end_position - arrow_offset - perpendicular * arrow_head_length * .5f;
-
-					directions.append({.position = arrow_position_1, .color = sf::Color::Red, .texCoords = {}});
-					directions.append({.position = end_position, .color = sf::Color::Red, .texCoords = {}});
-					directions.append({.position = arrow_position_2, .color = sf::Color::Red, .texCoords = {}});
-					directions.append({.position = end_position, .color = sf::Color::Red, .texCoords = {}});
-				}
-			}
-
-			window.draw(directions);
-			directions.clear();
 		}
 	}
 }

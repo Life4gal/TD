@@ -38,11 +38,4 @@ namespace components::tower
 	public:
 		sf::CircleShape shape;
 	};
-
-	// 绘制塔与目标连线
-	class DebugRenderTarget
-	{
-	public:
-		sf::VertexArray lines;
-	};
 }
