@@ -19,7 +19,10 @@ namespace loaders
 	{
 		// media/map
 		MAP,
-		//
+		// media/enemy
+		ENEMY,
+		// media/tower
+		TOWER,
 	};
 
 	class Texture

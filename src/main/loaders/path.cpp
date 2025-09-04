@@ -8,15 +8,36 @@ namespace loaders
 	extern const std::filesystem::path data_path{base_path / "data"};
 	extern const std::filesystem::path media_path{base_path / "media"};
 
-	// config
+	namespace config
+	{
+		//
+	}
 
-	// font
+	namespace font
+	{
+		extern const std::filesystem::path path{media_path / "font"};
+		extern const std::filesystem::path extension{".ttc"};
+	} // namespace font
 
-	// texture
-	extern const std::filesystem::path texture_map_path{media_path / "map"};
-	extern const std::filesystem::path texture_map_extension{".png"};
+	namespace texture
+	{
+		extern const std::filesystem::path map_path{media_path / "map"};
+		extern const std::filesystem::path map_extension{".png"};
 
-	// sound
+		extern const std::filesystem::path enemy_path{media_path / "enemy"};
+		extern const std::filesystem::path enemy_extension{".png"};
 
-	// music
+		extern const std::filesystem::path tower_path{media_path / "tower"};
+		extern const std::filesystem::path tower_extension{".png"};
+	} // namespace texture
+
+	namespace sound
+	{
+		//
+	}
+
+	namespace music
+	{
+		//
+	}
 }
