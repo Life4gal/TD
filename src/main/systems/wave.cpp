@@ -85,6 +85,7 @@ namespace systems
 			if (std::to_underlying(index) == wave.spawns.size())
 			{
 				// 标记死亡即可,墓地会销毁所有标记了死亡的实体
+				// todo: Wave系统每个模拟帧都会更新,但是Graveyard系统每帧只更新一次,所以这里标记死亡的实体可能会还未销毁(如果模拟帧数>1)
 				registry.emplace<tags::dead>(entity);
 
 				// todo: 结束一个波次有奖励吗?
