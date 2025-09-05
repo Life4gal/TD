@@ -32,10 +32,4 @@ namespace components::enemy
 	public:
 		map::Direction direction;
 	};
-
-	class Render
-	{
-	public:
-		sf::CircleShape shape;
-	};
 }

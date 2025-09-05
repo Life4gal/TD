@@ -16,9 +16,9 @@
 #include <systems/player.hpp>
 #include <systems/graveyard.hpp>
 #include <systems/hud.hpp>
-#include <systems/tower.hpp>
 #include <systems/weapon.hpp>
-#include <systems/enemy.hpp>
+#include <systems/sprite_frame.hpp>
+#include <systems/renderable.hpp>
 
 #include <systems/debug.hpp>
 
@@ -47,7 +47,8 @@ namespace scene
 		// 更新塔目标
 		systems::Weapon::update(scene_registry_, delta);
 
-		// todo: 更新动画
+		// 更新精灵帧序列
+		systems::SpriteFrame::update(scene_registry_, delta);
 	}
 
 	auto Game::do_update() noexcept -> void
@@ -168,10 +169,8 @@ namespace scene
 		// 先渲染地图
 		systems::Map::render(scene_registry_, window);
 
-		// 绘制塔
-		systems::Tower::render(scene_registry_, window);
-		// 绘制敌人
-		systems::Enemy::render(scene_registry_, window);
+		// 绘制实体
+		systems::Renderable::render(scene_registry_, window);
 
 		systems::Debug::render(scene_registry_, window);
 

@@ -9,7 +9,7 @@ namespace sf
 
 namespace systems
 {
-	class Enemy
+	class Renderable
 	{
 	public:
 		static auto render(entt::registry& registry, sf::RenderWindow& window) noexcept -> void;

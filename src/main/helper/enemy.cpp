@@ -8,6 +8,11 @@
 #include <components/tags.hpp>
 #include <components/enemy.hpp>
 
+#include <components/sprite_frame.hpp>
+#include <components/renderable.hpp>
+
+#include <components/texture.hpp>
+
 #include <entt/entt.hpp>
 
 namespace helper
@@ -48,14 +53,43 @@ namespace helper
 			auto& [power] = registry.emplace<enemy::Power>(entity);
 			power = 1 + std::uniform_int_distribution<enemy::Power::value_type>{0, 100}(random);
 
-			sf::CircleShape shape{};
+			// SpriteFrame & Renderable
 			{
-				shape.setRadius(static_cast<float>(tile_map.tile_width()) * .35f);
-				shape.setOrigin({shape.getRadius(), shape.getRadius()});
-				shape.setFillColor(sf::Color::Red);
+				const auto& texture = [&]() -> decltype(auto)
+				{
+					auto& [textures] = registry.ctx().get<Textures>();
+
+					constexpr std::string_view enemy_name{"deep-dive-AntleredRascal"};
+					constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
+
+					auto [it, result] = textures.load(enemy_hash_name, loaders::TextureType::ENEMY, enemy_name);
+					assert(it->second);
+
+					return *it->second;
+				}();
+
+				sprite_frame::Uniform frames
+				{
+						.frame_duration = sf::seconds(.25f),
+						.elapsed_time = sf::Time::Zero,
+						.frame_position = {0, 0},
+						.frame_size = {16, 16},
+						.total_frame_count = 4,
+						.current_frame_index = 0,
+						.looping = true,
+						.playing = true,
+				};
+
+				sf::Sprite renderable{texture};
+				renderable.setTextureRect({{0, 0}, frames.frame_size});
+				renderable.setOrigin(sf::Vector2f{frames.frame_size / 2});
+
+				registry.emplace<sprite_frame::Uniform>(entity, frames);
+				registry.emplace<Renderable>(entity, std::move(renderable));
 			}
 
-			registry.emplace<enemy::Render>(entity, std::move(shape));
+			// 图集纹理大小为16*16,放大一些
+			registry.emplace<entity::Scale>(entity, sf::Vector2f{2.f, 2.f});
 		}
 
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息

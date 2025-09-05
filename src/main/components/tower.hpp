@@ -31,11 +31,4 @@ namespace components::tower
 	public:
 		entt::entity entity;
 	};
-
-	// 绘制塔
-	class Render
-	{
-	public:
-		sf::CircleShape shape;
-	};
 }

@@ -69,6 +69,9 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tags.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/entity.hpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/components/sprite_frame.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/renderable.hpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/enemy.hpp
 
@@ -127,14 +130,8 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/tower.cpp
-	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/enemy.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/enemy.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.cpp
@@ -148,6 +145,12 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.cpp
+	
 	#===================
 	# MAIN
 

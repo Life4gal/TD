@@ -6,9 +6,12 @@
 #include <components/tower.hpp>
 #include <components/enemy.hpp>
 
+#include <components/sprite_frame.hpp>
+#include <components/renderable.hpp>
+
 // #include <components/config.hpp>
 // #include <components/sound.hpp>
-// #include <components/texture.hpp>
+#include <components/texture.hpp>
 
 #include <entt/entt.hpp>
 
@@ -77,19 +80,44 @@ namespace helper
 						}
 					};
 
-			// render
+			// SpriteFrame & Renderable
 			{
-				const auto& [tile_map] = registry.ctx().get<const map_ex::TileMap>();
-
-				sf::CircleShape shape{};
+				const auto& texture = [&]() -> decltype(auto)
 				{
-					shape.setRadius(static_cast<float>(tile_map.tile_width()) * .35f);
-					shape.setOrigin({shape.getRadius(), shape.getRadius()});
-					shape.setFillColor({200, 150, 50});
-				}
+					auto& [textures] = registry.ctx().get<Textures>();
 
-				registry.emplace<tower::Render>(entity, std::move(shape));
+					constexpr std::string_view enemy_name{"deep-dive-WarpSkull"};
+					constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
+
+					// todo: 还没有为塔准备纹理
+					auto [it, result] = textures.load(enemy_hash_name, loaders::TextureType::ENEMY, enemy_name);
+					assert(it->second);
+
+					return *it->second;
+				}();
+
+				sprite_frame::Uniform frames
+				{
+						.frame_duration = sf::seconds(.5f),
+						.elapsed_time = sf::Time::Zero,
+						.frame_position = {0, 0},
+						.frame_size = {16, 16},
+						.total_frame_count = 4,
+						.current_frame_index = 0,
+						.looping = true,
+						.playing = true,
+				};
+
+				sf::Sprite renderable{texture};
+				renderable.setTextureRect({{0, 0}, frames.frame_size});
+				renderable.setOrigin(sf::Vector2f{frames.frame_size / 2});
+
+				registry.emplace<sprite_frame::Uniform>(entity, frames);
+				registry.emplace<Renderable>(entity, std::move(renderable));
 			}
+
+			// 图集纹理大小为16*16,放大一些
+			registry.emplace<entity::Scale>(entity, sf::Vector2f{2.5f, 2.5f});
 		}
 
 		return entity;
