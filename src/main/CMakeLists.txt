@@ -18,6 +18,12 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/time.hpp
 	
 	#===================
+	# META
+
+	${CMAKE_CURRENT_SOURCE_DIR}/meta/name.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/meta/enumeration.hpp
+
+	#===================
 	# MAP
 
 	${CMAKE_CURRENT_SOURCE_DIR}/map/tile_map.hpp
