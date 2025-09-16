@@ -1,6 +1,5 @@
 #include <systems/initialize.hpp>
 
-#include <chrono>
 #include <print>
 
 #include <components/map.hpp>
@@ -21,6 +20,8 @@
 
 #include <helper/wave.hpp>
 
+#include <utility/time.hpp>
+
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -40,12 +41,12 @@ namespace
 		registry.on_construct<tags::wave>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				const auto& [spawns] = reg.get<const wave::Wave>(entity);
 				const auto wave_index = reg.get<const wave::WaveIndex>(entity);
+				const auto& [spawns] = reg.get<const wave::Wave>(entity);
 
 				std::println(
-					"[{}] 生成波次{},共{}个敌人({})",
-					std::chrono::system_clock::now(),
+					"[{:%Y-%m-%d %H:%M:%S}] 生成波次{},共{}个敌人(EID:{})",
+					utility::zoned_now(),
 					std::to_underlying(wave_index),
 					spawns.size(),
 					std::to_underlying(entity)
@@ -57,7 +58,11 @@ namespace
 			{
 				std::ignore = reg;
 
-				std::println("[{}] 结束波次({})", std::chrono::system_clock::now(), std::to_underlying(entity));
+				std::println(
+					"[{:%Y-%m-%d %H:%M:%S}] 结束波次(EID:{})",
+					utility::zoned_now(),
+					std::to_underlying(entity)
+				);
 			}>();
 	}
 
@@ -157,12 +162,12 @@ namespace
 				const auto [position] = reg.get<const entity::Position>(entity);
 
 				std::println(
-					"[{}] Construct tower {}({}) at ({:.0f}:{:.0f})",
-					std::chrono::system_clock::now(),
-					std::to_underlying(entity),
-					std::to_underlying(type),
+					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})建造[0x{:08x}]型塔(EID:{})",
+					utility::zoned_now(),
 					position.x,
-					position.y
+					position.y,
+					std::to_underlying(type),
+					std::to_underlying(entity)
 				);
 			}>();
 
@@ -171,7 +176,11 @@ namespace
 			{
 				std::ignore = reg;
 
-				std::println("[{}] Destroy tower {}", std::chrono::system_clock::now(), std::to_underlying(entity));
+				std::println(
+					"[{:%Y-%m-%d %H:%M:%S}] 销毁塔(EID:{})",
+					utility::zoned_now(),
+					std::to_underlying(entity)
+				);
 			}>();
 	}
 
@@ -186,12 +195,12 @@ namespace
 				const auto [position] = reg.get<const entity::Position>(entity);
 
 				std::println(
-					"[{}] Spawn enemy {}({}) at ({:.0f}:{:.0f})",
-					std::chrono::system_clock::now(),
-					std::to_underlying(entity),
-					std::to_underlying(type),
+					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})生成[0x{:08x}]型敌人(EID:{})",
+					utility::zoned_now(),
 					position.x,
-					position.y
+					position.y,
+					std::to_underlying(type),
+					std::to_underlying(entity)
 				);
 			}>();
 
@@ -200,7 +209,11 @@ namespace
 			{
 				std::ignore = reg;
 
-				std::println("[{}] Kill enemy {}", std::chrono::system_clock::now(), std::to_underlying(entity));
+				std::println(
+					"[{:%Y-%m-%d %H:%M:%S}] 销毁敌人(EID:{})",
+					utility::zoned_now(),
+					std::to_underlying(entity)
+				);
 			}>();
 	}
 

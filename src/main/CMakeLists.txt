@@ -15,6 +15,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/matrix.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/hash.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utility/functional.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/utility/time.hpp
 	
 	#===================
 	# MAP
