@@ -1,78 +1,109 @@
 #pragma once
 
-#include <components/entity.hpp>
+#include <config/wave.hpp>
 
-#include <SFML/System/Time.hpp>
+#include <entt/entity/fwd.hpp>
 
 namespace components::wave
 {
-	// Wave[entity]:
-	//  Wave (当前波次所有生成信息)
-	//  WaveSpawnIndex (当前波次正在生成的波次索引)
-	//  WaveTimer (当前波次历时)
-	//  WaveIndex (当前波次在所有波次中的索引)
-	//
-	// WaveDuration[context] (当前波次剩余持续时间,或者说下一个波次刷新时间)
-	// WaveIndex[context] (当前刷新的波次索引)
-	// WaveSequence[context] (所有波次信息)
+	using config::wave::index_type;
 
-	// 单个敌人生成
-	class Spawn
+	// 没有任何波次生成(游戏处于最初准备阶段)
+	constexpr index_type wave_not_start = std::numeric_limits<index_type>::max();
+	// 所有波次都完全结束
+	constexpr index_type wave_all_completed = wave_not_start - 1;
+
+	// ==================
+	// 波次实体
+	// ==================
+
+	// 波次索引(readonly)
+	class WaveIndex
 	{
 	public:
-		// 敌人类型
-		entity::Type type;
-		// 出生点
-		std::uint32_t gate_id;
-		// 该波次开始后多久进行该次生成
-		sf::Time delay;
+		index_type index;
 	};
 
-	// =====================================
-	// 一个波次的数据
-	// =====================================
-
-	// 此波次生成敌人的信息
+	// 波次配置(readonly)
 	class Wave
 	{
 	public:
-		// 假定已经按照Spawn::delay排序
-		std::vector<Spawn> spawns;
+		using spawns_type = config::wave::Wave::spawns_type;
+
+		// 直接引用config::wave::Wave中的数据
+		std::reference_wrapper<const spawns_type> spawns;
+	};
+
+	// 波次结束条件(readonly)
+	using config::wave::EndCondition;
+
+	// 波次准备时间(如果有,取决于配置)
+	class WavePreparationTimer
+	{
+	public:
+		sf::Time remaining;
+	};
+
+	// 波次敌人实体(用于检测波次是否满足ENDED=>DEAD)
+	class WaveEnemy
+	{
+	public:
+		std::vector<entt::entity> enemy;
+	};
+
+	// 波次状态
+	enum class WaveState : std::uint8_t
+	{
+		// 准备阶段,等待用户确认
+		PREPARING,
+		// 正在生成敌人
+		SPAWNING,
+		// 生成完毕,但是未满足结束条件
+		RUNNING,
+		// 已满足结束条件(可以刷新下一波次)
+		COMPLETED,
+		// 已结束(满足结束条件,但是当前波次还有敌人未死亡)
+		ENDED,
+		// 波次完全结束(所有敌人全部死亡,波次实体可以销毁)
+		DEAD,
 	};
 
 	// 生成索引
-	enum class WaveSpawnIndex : std::uint32_t {};
+	class SpawnIndex
+	{
+	public:
+		index_type index;
+	};
 
-	// 当前波次计时器
+	// 波次计时器
 	class WaveTimer
 	{
 	public:
-		sf::Time timer;
+		sf::Time elapsed_time;
 	};
 
-	// =====================================
-	// 所有波次的数据
-	// =====================================
+	// ==================
+	// 波次上下文
+	// ==================
 
-	// 当前波次持续时间
-	// 到达时间后刷新下一个波次
-	// 玩家可以提前开始下一波
-	class WaveDuration
+	// 总的波次数量
+	class WaveTotalCount
 	{
 	public:
-		sf::Time duration;
+		index_type count;
 	};
 
-	// 波次索引
-	enum class WaveIndex : std::uint32_t {};
-
-	// 波次信息
-	class WaveSequence
+	// 当前生成的波次
+	class WaveCurrentIndex
 	{
 	public:
-		// 所有波次
-		std::vector<Wave> waves;
-		// 所有波次持续时间
-		std::vector<WaveDuration> durations;
+		index_type index;
+	};
+
+	// 当前生成的波次实体
+	class WaveCurrentEntity
+	{
+	public:
+		entt::entity entity;
 	};
 }

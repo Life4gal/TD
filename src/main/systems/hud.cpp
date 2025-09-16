@@ -5,12 +5,15 @@
 #include <components/map.hpp>
 #include <components/observer.hpp>
 
+#include <components/tags.hpp>
 #include <components/player.hpp>
 #include <components/hud.hpp>
 
 #include <helper/wave.hpp>
 #include <helper/resource.hpp>
 #include <helper/enemy.hpp>
+
+#include <utility/functional.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -38,30 +41,42 @@ namespace systems
 				ImGui::Text("波次管理");
 				ImGui::Separator();
 
-				const auto& [waves, durations] = registry.ctx().get<const wave::WaveSequence>();
+				const auto [wave_total_count] = registry.ctx().get<const wave::WaveTotalCount>();
 
-				if (ImGui::Button("立即开始当前波次"))
+				if (ImGui::Button("游戏开始"))
 				{
-					helper::Wave::start(registry);
+					helper::Wave::start_from_wave(registry, {.index = 0});
+				}
+
+				using sm = helper::Wave::StateMachine;
+
+				if (ImGui::Button("跳过准备时间"))
+				{
+					sm::on(registry, sm::SkipPreparationRequested{});
+				}
+
+				if (ImGui::Button("立即开始下一波次"))
+				{
+					sm::on(registry, sm::EarlyStartRequested{});
 				}
 
 				ImGui::SeparatorText("生成");
-				for (std::size_t wave_index = 0; wave_index < waves.size(); ++wave_index)
+				for (std::size_t wave_index = 0; wave_index < wave_total_count; ++wave_index)
 				{
 					if (const auto label = std::format("第 {} 波##spawn", wave_index);
 						ImGui::Button(label.c_str()))
 					{
-						helper::Wave::spawn(registry, static_cast<wave::WaveIndex>(wave_index));
+						helper::Wave::spawn_wave(registry, {.index = static_cast<wave::index_type>(wave_index)});
 					}
 				}
 
 				ImGui::SeparatorText("跳转");
-				for (std::size_t wave_index = 0; wave_index < waves.size(); ++wave_index)
+				for (std::size_t wave_index = 0; wave_index < wave_total_count; ++wave_index)
 				{
 					if (const auto label = std::format("第 {} 波##start_at", wave_index);
 						ImGui::Button(label.c_str()))
 					{
-						helper::Wave::start_at(registry, static_cast<wave::WaveIndex>(wave_index));
+						helper::Wave::start_from_wave(registry, {.index = static_cast<wave::index_type>(wave_index)});
 					}
 				}
 			}
@@ -174,17 +189,120 @@ namespace systems
 
 		// Wave
 		{
-			const auto [wave_duration] = registry.ctx().get<const wave::WaveDuration>();
-			const auto wave_index = registry.ctx().get<const wave::WaveIndex>();
-			const auto wave_index_value = std::to_underlying(wave_index);
-
-			if (helper::Wave::has_next_wave(registry))
+			if (const auto [wave_current_index] = registry.ctx().get<const wave::WaveCurrentIndex>();
+				wave_current_index == wave::wave_not_start)
 			{
-				hud_text.setString(std::format("Next Wave: {} | Next Wave Time: {:.3f}", wave_index_value, wave_duration.asSeconds()));
+				hud_text.setString(L"按下'辅助窗口'中的'游戏开始'以开始");
+			}
+			else if (wave_current_index == wave::wave_all_completed)
+			{
+				hud_text.setString(L"所有波次已完成");
 			}
 			else
 			{
-				hud_text.setString(std::format("Next Wave: {} (Last Wave!)", wave_index_value));
+				const auto [wave_current_entity] = registry.ctx().get<const wave::WaveCurrentEntity>();
+				assert(registry.valid(wave_current_entity));
+
+				// 等待阶段单独处理
+				if (const auto state = registry.get<const wave::WaveState>(wave_current_entity);
+					state == wave::WaveState::PREPARING)
+				{
+					// 如果波次没有准备时间,则其可能处于等待阶段(波次刚创建,还没有更新过)且没有准备时间计时器
+					if (const auto* preparation_timer = registry.try_get<const wave::WavePreparationTimer>(wave_current_entity))
+					{
+						hud_text.setString(std::format(
+							L"波次 [{}] | 准备阶段 (剩余{:.3f}秒...",
+							wave_current_index,
+							preparation_timer->remaining.asSeconds()
+						));
+					}
+					else
+					{
+						// 其实我们完全可以什么都不显示,因为该分支可能仅持续1帧
+						hud_text.setString(std::format(L"波次 [{}]", wave_current_index));
+					}
+				}
+				else
+				{
+					const auto& [end_condition] = registry.get<const wave::EndCondition>(wave_current_entity);
+
+					const auto get_alive_enemy = [&](const entt::entity wave_entity) noexcept -> std::size_t
+					{
+						const auto& [wave_enemy] = registry.get<const wave::WaveEnemy>(wave_entity);
+						const auto wave_alive_enemy = std::ranges::count_if(
+							wave_enemy,
+							[&](const entt::entity enemy) noexcept -> bool
+							{
+								return registry.valid(enemy) and not registry.all_of<tags::dead>(enemy);
+							}
+						);
+
+						return wave_alive_enemy;
+					};
+
+					std::visit(
+						utility::overloads{
+								[&](const wave::EndCondition::Extinction&) noexcept -> void
+								{
+									const auto total_alive = [&]
+									{
+										const auto wave_view = registry.view<tags::wave>();
+
+										return std::ranges::fold_left(
+											wave_view,
+											std::size_t{0},
+											[&](const std::size_t total, const entt::entity wave_entity) noexcept -> std::size_t
+											{
+												return total + get_alive_enemy(wave_entity);
+											}
+										);
+									}();
+
+									hud_text.setString(std::format(
+										L"波次 [{}] (剩余{}个敌人)",
+										wave_current_index,
+										total_alive
+									));
+								},
+								[&](const wave::EndCondition::Clear&) noexcept -> void
+								{
+									const auto alive = get_alive_enemy(wave_current_entity);
+
+									hud_text.setString(std::format(
+										L"波次 [{}] (剩余{}个敌人)",
+										wave_current_index,
+										alive
+									));
+								},
+								[&](const wave::EndCondition::Duration& condition) noexcept -> void
+								{
+									const auto alive = get_alive_enemy(wave_current_entity);
+
+									const auto& [elapsed_time] = registry.get<const wave::WaveTimer>(wave_current_entity);
+									const auto remaining = condition.duration - elapsed_time;
+
+									hud_text.setString(std::format(
+										L"波次 [{}] (剩余{}个敌人) | {:.3f}秒后开始下一波次",
+										wave_current_index,
+										alive,
+										remaining.asSeconds()
+									));
+								},
+								[&](const wave::EndCondition::Type& condition) noexcept -> void
+								{
+									const auto alive = get_alive_enemy(wave_current_entity);
+
+									hud_text.setString(std::format(
+										L"波次 [{}] (剩余{}个敌人) | 消灭所有({})类型的敌人",
+										wave_current_index,
+										alive,
+										std::to_underlying(condition.type)
+									));
+								},
+						},
+						end_condition
+					);
+				}
 			}
 
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 150)});

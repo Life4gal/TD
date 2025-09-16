@@ -41,14 +41,14 @@ namespace
 		registry.on_construct<tags::wave>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				const auto wave_index = reg.get<const wave::WaveIndex>(entity);
+				const auto [wave_index] = reg.get<const wave::WaveIndex>(entity);
 				const auto& [spawns] = reg.get<const wave::Wave>(entity);
 
 				std::println(
 					"[{:%Y-%m-%d %H:%M:%S}] 生成波次{},共{}个敌人(EID:{})",
 					utility::zoned_now(),
-					std::to_underlying(wave_index),
-					spawns.size(),
+					wave_index,
+					spawns.get().size(),
 					std::to_underlying(entity)
 				);
 			}>();

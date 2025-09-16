@@ -64,13 +64,18 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/loaders/music.cpp
 	
 	# =============================
+	# CONFIG
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/config/wave.hpp
+
+	# =============================
 	# COMPONENTS
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/components/config.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/font.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/texture.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/sound.hpp
-
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/components/debug.hpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tags.hpp
@@ -91,7 +96,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/graveyard.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/hud.hpp
-
+	
 	# =============================
 	# HELPER
 	
@@ -118,7 +123,7 @@ add_executable(
 
 	# =============================
 	# SYSTEMS
-	
+		
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.cpp
 	
@@ -136,10 +141,10 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.cpp
-	
+
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.cpp
-	
+
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.cpp
 
@@ -151,7 +156,7 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.cpp
-
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.cpp
 
