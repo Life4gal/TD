@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include <config/wave.hpp>
 
 #include <entt/entity/fwd.hpp>
@@ -31,7 +33,8 @@ namespace components::wave
 		using spawns_type = config::wave::Wave::spawns_type;
 
 		// 直接引用config::wave::Wave中的数据
-		std::reference_wrapper<const spawns_type> spawns;
+		// std::reference_wrapper<const spawns_type> spawns;
+		std::span<const spawns_type::value_type> spawns;
 	};
 
 	// 波次结束条件(readonly)

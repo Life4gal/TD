@@ -48,7 +48,7 @@ namespace
 					"[{:%Y-%m-%d %H:%M:%S}] 生成波次{},共{}个敌人(EID:{})",
 					utility::zoned_now(),
 					wave_index,
-					spawns.get().size(),
+					spawns.size(),
 					std::to_underlying(entity)
 				);
 			}>();

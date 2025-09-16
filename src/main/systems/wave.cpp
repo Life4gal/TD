@@ -54,7 +54,7 @@ namespace systems
 
 					// 生成敌人
 					const auto to_spawn =
-							spawns.get() |
+							spawns |
 							// 排除已经生成的部分
 							std::views::drop(spawn_index.index) |
 							// 处于时间范围内
@@ -85,7 +85,7 @@ namespace systems
 						spawn_index.index += static_cast<wave::index_type>(std::ranges::distance(to_spawn));
 					}
 
-					if (spawn_index.index == spawns.get().size())
+					if (spawn_index.index == spawns.size())
 					{
 						// 生成完毕
 						sm::on(registry, sm::SpawnsCompleted{.wave = entity});

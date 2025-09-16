@@ -444,7 +444,7 @@ namespace helper
 			const auto& [waves] = registry.ctx().get<const config::wave::Waves>();
 			const auto& [spawns, end_condition, preparation_time] = waves[wave_index.index];
 
-			registry.emplace<wave::Wave>(entity, std::cref(spawns));
+			registry.emplace<wave::Wave>(entity, spawns);
 			registry.emplace<wave::EndCondition>(entity, end_condition);
 			if (preparation_time != sf::Time::Zero)
 			{
