@@ -20,6 +20,7 @@
 #include <systems/timed_life.hpp>
 #include <systems/sprite_frame.hpp>
 #include <systems/renderable.hpp>
+#include <systems/health_bar.hpp>
 
 #include <systems/debug.hpp>
 
@@ -175,6 +176,9 @@ namespace scene
 
 		// 绘制实体
 		systems::Renderable::render(scene_registry_, window);
+
+		// 渲染血条
+		systems::HealthBar::render(scene_registry_, window);
 
 		systems::Debug::render(scene_registry_, window);
 

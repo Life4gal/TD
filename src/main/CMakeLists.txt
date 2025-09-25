@@ -83,6 +83,7 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/sprite_frame.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/renderable.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/health_bar.hpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/enemy.hpp
@@ -170,6 +171,9 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/health_bar.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/health_bar.cpp
 	
 	#===================
 	# MAIN

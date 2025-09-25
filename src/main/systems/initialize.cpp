@@ -13,6 +13,7 @@
 
 #include <components/tags.hpp>
 #include <components/entity.hpp>
+#include <components/health_bar.hpp>
 
 #include <components/debug.hpp>
 
@@ -219,6 +220,9 @@ namespace
 					std::to_underlying(entity)
 				);
 			}>();
+
+		// 敌人血条
+		registry.ctx().emplace<health_bar::Renderer>(sf::VertexArray{sf::PrimitiveType::Triangles});
 	}
 
 	auto do_initialize_debug(entt::registry& registry) noexcept -> void

@@ -11,6 +11,7 @@
 
 #include <components/sprite_frame.hpp>
 #include <components/renderable.hpp>
+#include <components/health_bar.hpp>
 
 #include <components/texture.hpp>
 
@@ -59,7 +60,7 @@ namespace helper
 			auto& [power] = registry.emplace<enemy::Power>(entity);
 			power = 1 + std::uniform_int_distribution<enemy::Power::value_type>{0, 100}(random);
 
-			// SpriteFrame & Renderable
+			// SpriteFrame & Renderable & HealthBar
 			{
 				const auto& texture = [&]() -> decltype(auto)
 				{
@@ -76,10 +77,7 @@ namespace helper
 
 				constexpr auto frame_size = sf::Vector2i{16, 16};
 
-				sf::Sprite renderable{texture};
-				renderable.setTextureRect({{0, 0}, frame_size});
-				renderable.setOrigin(sf::Vector2f{frame_size / 2});
-
+				// SpriteFrame
 				registry.emplace<sprite_frame::Timer>(
 					entity,
 					sprite_frame::Timer{.frame_duration = sf::seconds(.25f), .elapsed_time = sf::Time::Zero}
@@ -97,7 +95,16 @@ namespace helper
 					sprite_frame::Uniform{.frame_position = {0, 0}, .frame_size = frame_size}
 				);
 
+				// Renderable
+				sf::Sprite renderable{texture};
+				renderable.setTextureRect({{0, 0}, frame_size});
+				renderable.setOrigin(sf::Vector2f{frame_size / 2});
 				registry.emplace<Renderable>(entity, std::move(renderable));
+
+				// HealthBar
+				registry.emplace<health_bar::Health>(entity, health);
+				registry.emplace<health_bar::Size>(entity, sf::Vector2f{static_cast<float>(frame_size.x), static_cast<float>(frame_size.y / 4)}); // NOLINT(bugprone-integer-division)
+				registry.emplace<health_bar::Offset>(entity, sf::Vector2f{static_cast<float>(-frame_size.x / 2), -static_cast<float>(frame_size.y / 2) - 5.f}); // NOLINT(bugprone-integer-division)
 			}
 
 			// 图集纹理大小为16*16,放大一些
