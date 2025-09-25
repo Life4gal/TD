@@ -46,7 +46,7 @@ namespace systems
 			auto& [cursor] = registry.ctx().get<player::Cursor>();
 
 			const auto mouse_position = sf::Mouse::getPosition(window);
-			const auto mouse_grid_position = tile_map.coordinate_world_to_grid(mouse_position);
+			const auto mouse_grid_position = tile_map.coordinate_world_to_grid(sf::Vector2f{mouse_position});
 
 			if (tile_map.inside(mouse_grid_position.x, mouse_grid_position.y))
 			{
