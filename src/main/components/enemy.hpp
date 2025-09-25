@@ -2,10 +2,20 @@
 
 #include <map/path.hpp>
 
-#include <SFML/Graphics/CircleShape.hpp>
-
 namespace components::enemy
 {
+	// 敌人实体不包含该枚举值
+	// 其用于Observer限定范围
+	enum class Archetype : std::uint8_t
+	{
+		// 地面移动
+		GROUND = 0b0000'0001,
+		// 空中移动
+		AERIAL = 0b0000'0010,
+		// 皆可
+		DUAL = GROUND | AERIAL,
+	};
+
 	class Health
 	{
 	public:

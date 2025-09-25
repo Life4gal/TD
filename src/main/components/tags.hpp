@@ -37,6 +37,10 @@ namespace components::tags
 	// using targeting_dual = entt::tag<"TargetingDual"_hs>;
 
 	// 索敌策略
+	// 地面优先
+	using strategy_ground_first = entt::tag<"StrategyGroundFirst"_hs>;
+	// 空中优先
+	using strategy_air_first = entt::tag<"StrategyAirFirst"_hs>;
 	// 距离优先
 	using strategy_distance_first = entt::tag<"StrategyDistanceFirst"_hs>;
 	// 强度优先

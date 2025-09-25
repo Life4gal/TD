@@ -37,29 +37,67 @@ namespace
 	{
 		using namespace components;
 
-		const auto do_select_target = [&]<typename Tag>(const entt::entity entity, const tower::Weapon& weapon) noexcept -> void
+		for (const auto tower_view = registry.view<tower::Weapon, const entity::Position>(entt::exclude<tower::Cooldown>);
+		     const auto [entity, specifications, position]: tower_view.each())
 		{
-			assert(registry.valid(entity));
-
 			const auto [tower_position] = registry.get<const entity::Position>(entity);
 
 			const auto target_enemy = [&]() noexcept -> entt::entity
 			{
+				// 瞄准目标必须可见
 				const auto enemies_in_range = [&]
 				{
-					// 瞄准目标必须可见
-					if constexpr (std::is_same_v<Tag, tags::archetype_ground>)
+					using enemy::Archetype;
+
+					const auto do_query = [&](const Archetype archetype) noexcept -> std::vector<entt::entity>
 					{
-						return helper::Observer::query_visible_ground(registry, tower_position, weapon.range);
-					}
-					else if constexpr (std::is_same_v<Tag, tags::archetype_aerial>)
+						return helper::Observer::query(registry, archetype, true, position.position, specifications.range);
+					};
+
+					const auto targeting_ground = registry.all_of<tags::targeting_ground>(entity);
+					const auto targeting_air = registry.all_of<tags::targeting_air>(entity);
+
+					// 可同时对地/对空
+					if (targeting_ground and targeting_air)
 					{
-						return helper::Observer::query_visible_aerial(registry, tower_position, weapon.range);
+						if (registry.all_of<tags::strategy_ground_first>(entity))
+						{
+							if (auto r = do_query(Archetype::GROUND);
+								not r.empty())
+							{
+								return r;
+							}
+
+							return do_query(Archetype::AERIAL);
+						}
+
+						if (registry.all_of<tags::strategy_air_first>(entity))
+						{
+							if (auto r = do_query(Archetype::AERIAL);
+								not r.empty())
+							{
+								return r;
+							}
+
+							return do_query(Archetype::GROUND);
+						}
+
+						return do_query(Archetype::DUAL);
 					}
-					else
+
+					// 对地
+					if (targeting_ground)
 					{
-						std::unreachable();
+						return do_query(Archetype::GROUND);
 					}
+
+					// 对空
+					if (targeting_air)
+					{
+						return do_query(Archetype::AERIAL);
+					}
+
+					std::unreachable();
 				}();
 
 				if (enemies_in_range.empty())
@@ -116,19 +154,6 @@ namespace
 				// 找不到目标, 移除目标组件
 				registry.remove<tower::Target>(entity);
 			}
-		};
-
-		// 优先处理对空
-		for (const auto weapon_view = registry.view<tags::targeting_air, tower::Weapon>(entt::exclude<tower::Cooldown>);
-		     const auto [entity, weapon]: weapon_view.each())
-		{
-			do_select_target.operator()<tags::archetype_aerial>(entity, weapon);
-		}
-		// 再处理对地(也包括没找到空中目标的可对地武器)
-		for (const auto weapon_view = registry.view<tags::targeting_ground, tower::Weapon>(entt::exclude<tower::Cooldown>);
-		     const auto [entity, weapon]: weapon_view.each())
-		{
-			do_select_target.operator()<tags::archetype_ground>(entity, weapon);
 		}
 	}
 
