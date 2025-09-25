@@ -17,6 +17,7 @@
 #include <systems/graveyard.hpp>
 #include <systems/hud.hpp>
 #include <systems/weapon.hpp>
+#include <systems/timed_life.hpp>
 #include <systems/sprite_frame.hpp>
 #include <systems/renderable.hpp>
 
@@ -44,8 +45,11 @@ namespace scene
 		// 更新观察者
 		systems::Observer::update(scene_registry_, delta);
 
-		// 更新塔目标
+		// 更新塔(武器)目标
 		systems::Weapon::update(scene_registry_, delta);
+
+		// 更新定长生命周期实体
+		systems::TimedLife::update(scene_registry_, delta);
 
 		// 更新精灵帧序列
 		systems::SpriteFrame::update(scene_registry_, delta);
