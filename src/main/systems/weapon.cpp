@@ -161,14 +161,14 @@ namespace
 	{
 		using namespace components;
 
-		for (const auto weapon_view = registry.view<const tower::Target, const tower::Weapon>(entt::exclude<tower::Cooldown>);
-		     const auto [entity, target, weapon]: weapon_view.each())
+		for (const auto weapon_view = registry.view<const tower::Target, const tower::Weapon, const tower::Trigger>(entt::exclude<tower::Cooldown>);
+		     const auto [entity, target, weapon, trigger]: weapon_view.each())
 		{
 			// 进入冷却
 			registry.emplace<tower::Cooldown>(entity, weapon.fire_rate);
 
 			// 触发攻击
-			weapon.on_fire(registry, entity, target.entity);
+			trigger.on_fire(registry, entity, target.entity);
 		}
 	}
 }

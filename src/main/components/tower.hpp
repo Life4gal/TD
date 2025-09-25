@@ -2,18 +2,21 @@
 
 #include <entt/entity/fwd.hpp>
 
-#include <SFML/Graphics/CircleShape.hpp>
-
 namespace components::tower
 {
 	// 武器配置
 	class Weapon
 	{
 	public:
-		using fire_type = auto(*)(entt::registry& registry, entt::entity attacker, entt::entity victim) noexcept -> void;
-
 		float range;
 		float fire_rate;
+	};
+
+	// 开火
+	class Trigger
+	{
+	public:
+		using fire_type = auto (*)(entt::registry& registry, entt::entity attacker, entt::entity victim) noexcept -> void;
 
 		fire_type on_fire;
 	};

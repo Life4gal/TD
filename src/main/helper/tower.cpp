@@ -41,9 +41,11 @@ namespace helper
 			// 距离优先
 			registry.emplace<tags::strategy_distance_first>(entity);
 			// 武器
-			auto& [range, fire_rate, on_fire] = registry.emplace<tower::Weapon>(entity);
+			auto& [range, fire_rate] = registry.emplace<tower::Weapon>(entity);
 			range = 50.f;
 			fire_rate = 1.5f;
+			// 开火
+			auto& [on_fire] = registry.emplace<tower::Trigger>(entity);
 			on_fire =
 					[](entt::registry& reg, [[maybe_unused]] const entt::entity attacker, const entt::entity victim) noexcept -> void
 					{
