@@ -160,13 +160,15 @@ namespace
 			{
 				const auto type = reg.get<const entity::Type>(entity);
 				const auto [position] = reg.get<const entity::Position>(entity);
+				const auto& [name] = reg.get<const entity::Name>(entity);
 
 				std::println(
-					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})建造[0x{:08x}]型塔(EID:{})",
+					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})建造[0x{:08x}]型塔[{}](EID:{})",
 					utility::zoned_now(),
 					position.x,
 					position.y,
 					std::to_underlying(type),
+					name,
 					std::to_underlying(entity)
 				);
 			}>();
@@ -193,13 +195,15 @@ namespace
 			{
 				const auto type = reg.get<const entity::Type>(entity);
 				const auto [position] = reg.get<const entity::Position>(entity);
+				const auto& [name] = reg.get<const entity::Name>(entity);
 
 				std::println(
-					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})生成[0x{:08x}]型敌人(EID:{})",
+					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})生成[0x{:08x}]型敌人[{}](EID:{})",
 					utility::zoned_now(),
 					position.x,
 					position.y,
 					std::to_underlying(type),
+					name,
 					std::to_underlying(entity)
 				);
 			}>();

@@ -31,6 +31,9 @@ namespace helper
 		{
 			// auto& [configs] = registry.ctx().get<Configs>();
 
+			// 名字
+			registry.emplace<entity::Name>(entity, std::format("塔 0x{:x}", std::to_underlying(type)));
+
 			// 可攻击地面
 			registry.emplace<tags::targeting_ground>(entity);
 			// 距离优先

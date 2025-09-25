@@ -36,6 +36,9 @@ namespace helper
 		{
 			static std::mt19937 random{std::random_device{}()};
 
+			// 名字
+			registry.emplace<entity::Name>(entity, std::format("敌人 0x{:x}", std::to_underlying(type)));
+
 			// 地面单位
 			registry.emplace<tags::archetype_ground>(entity);
 			const auto direction = flow_field.direction_of(point);
