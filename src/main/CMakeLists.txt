@@ -122,7 +122,10 @@ add_executable(
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/enemy.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/enemy.cpp
-
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/sprite_frame.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/sprite_frame.cpp
+	
 	# =============================
 	# SYSTEMS
 		

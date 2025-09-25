@@ -74,23 +74,29 @@ namespace helper
 					return *it->second;
 				}();
 
-				sprite_frame::Uniform frames
-				{
-						.frame_duration = sf::seconds(.25f),
-						.elapsed_time = sf::Time::Zero,
-						.frame_position = {0, 0},
-						.frame_size = {16, 16},
-						.total_frame_count = 4,
-						.current_frame_index = 0,
-						.looping = true,
-						.playing = true,
-				};
+				constexpr auto frame_size = sf::Vector2i{16, 16};
 
 				sf::Sprite renderable{texture};
-				renderable.setTextureRect({{0, 0}, frames.frame_size});
-				renderable.setOrigin(sf::Vector2f{frames.frame_size / 2});
+				renderable.setTextureRect({{0, 0}, frame_size});
+				renderable.setOrigin(sf::Vector2f{frame_size / 2});
 
-				registry.emplace<sprite_frame::Uniform>(entity, frames);
+				registry.emplace<sprite_frame::Timer>(
+					entity,
+					sprite_frame::Timer{.frame_duration = sf::seconds(.25f), .elapsed_time = sf::Time::Zero}
+				);
+				registry.emplace<sprite_frame::Condition>(
+					entity,
+					sprite_frame::Condition{.looping = true, .playing = true}
+				);
+				registry.emplace<sprite_frame::Frame>(
+					entity,
+					sprite_frame::Frame{.total_count = 4, .current_index = 0}
+				);
+				registry.emplace<sprite_frame::Uniform>(
+					entity,
+					sprite_frame::Uniform{.frame_position = {0, 0}, .frame_size = frame_size}
+				);
+
 				registry.emplace<Renderable>(entity, std::move(renderable));
 			}
 
