@@ -3,12 +3,14 @@
 #include <algorithm>
 #include <ranges>
 
+#include <components/map.hpp>
+#include <components/navigation.hpp>
+
 #include <components/tags.hpp>
 #include <components/entity.hpp>
 #include <components/enemy.hpp>
-#include <components/navigation.hpp>
 
-#include <components/map.hpp>
+#include <helper/enemy.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -25,13 +27,6 @@ namespace systems
 		const auto half_tile = sf::Vector2f{static_cast<float>(tile_map.tile_width()) * .5f, static_cast<float>(tile_map.tile_height()) * .5f,};
 
 		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
-
-		// 标记为到达终点
-		auto mark_reached = [&registry](const entt::entity entity) noexcept -> void
-		{
-			registry.emplace<tags::dead>(entity);
-			registry.emplace<tags::enemy_reached>(entity);
-		};
 
 		for (const auto enemy_view = registry.view<tags::archetype_aerial, entity::Position, enemy::Movement>(entt::exclude<tags::dead>);
 		     const auto [entity, position, movement]: enemy_view.each())
@@ -60,7 +55,7 @@ namespace systems
 			{
 				if (direction.direction == map::Direction::NONE)
 				{
-					mark_reached(entity);
+					helper::Enemy::reach(registry, entity);
 					break;
 				}
 

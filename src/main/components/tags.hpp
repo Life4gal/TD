@@ -21,10 +21,11 @@ namespace components::tags
 	// 实体已死亡
 	using dead = entt::tag<"Dead"_hs>;
 
+	// 敌人死因(cause of death)
 	// 敌人到达终点
-	using enemy_reached = entt::tag<"Reached"_hs>;
+	using cod_reached = entt::tag<"CauseOfDeathReached"_hs>;
 	// 敌人被杀死
-	using enemy_killed = entt::tag<"Killed"_hs>;
+	using cod_killed = entt::tag<"CauseOfDeathKilled"_hs>;
 
 	// 索敌类型
 	// 对地面

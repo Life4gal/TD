@@ -18,7 +18,7 @@ namespace systems
 		auto& player_health = player_resource[resource::Type::HEALTH];
 
 		// 到达终点的敌人
-		const auto enemy_reached_view = registry.view<tags::enemy_reached>();
+		const auto enemy_reached_view = registry.view<tags::cod_reached>();
 		const auto reached_count = enemy_reached_view.size();
 
 		// todo: 每个敌人扣多少生命值?

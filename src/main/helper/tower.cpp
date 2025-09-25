@@ -13,6 +13,8 @@
 // #include <components/sound.hpp>
 #include <components/texture.hpp>
 
+#include <helper/enemy.hpp>
+
 #include <entt/entt.hpp>
 
 namespace helper
@@ -70,17 +72,7 @@ namespace helper
 						}
 
 						// todo: 不应该在这里负责对敌人造成伤害
-						auto& [health] = reg.get<enemy::Health>(victim);
-						health -= 10.f;
-
-						if (health <= 0)
-						{
-							reg.emplace<tags::dead>(victim);
-							reg.emplace<tags::enemy_killed>(victim);
-
-							// 移除目标
-							reg.remove<tower::Target>(attacker);
-						}
+						Enemy::hurt(reg, attacker, victim, 10.f);
 					};
 
 			// SpriteFrame & Renderable

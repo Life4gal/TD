@@ -21,7 +21,7 @@ namespace systems
 		// 击杀奖励
 		{
 			// 被杀死的实体(只有敌人吗?)
-			const auto killed_view = registry.view<tags::enemy_killed>();
+			const auto killed_view = registry.view<tags::cod_killed>();
 
 			if (const auto killed_count = killed_view.size();
 				killed_count != 0)
