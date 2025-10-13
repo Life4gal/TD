@@ -217,8 +217,7 @@ namespace helper
 			new_health
 		);
 
-		health -= damage;
-		if (health <= 0)
+		if (new_health <= 0)
 		{
 			kill(registry, attacker, victim);
 		}
