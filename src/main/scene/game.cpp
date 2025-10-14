@@ -1,10 +1,5 @@
 #include <scene/game.hpp>
 
-#include <components/config.hpp>
-#include <components/font.hpp>
-#include <components/sound.hpp>
-#include <components/texture.hpp>
-
 #include <systems/initialize.hpp>
 
 #include <systems/map.hpp>
@@ -24,6 +19,7 @@
 
 #include <systems/debug.hpp>
 
+#include <helper/asset.hpp>
 #include <helper/map.hpp>
 #include <helper/player.hpp>
 #include <helper/wave.hpp>
@@ -75,17 +71,13 @@ namespace scene
 		: Scene{std::move(global_registry)},
 		  simulation_times_per_tick_{1}
 	{
-		// 资源管理器
-		scene_registry_.ctx().emplace<components::Configs>();
-		scene_registry_.ctx().emplace<components::Fonts>();
-		scene_registry_.ctx().emplace<components::Textures>();
-		scene_registry_.ctx().emplace<components::Sounds>();
-
 		// 载入地图
 		helper::Map::load(scene_registry_);
 		// 载入波次
 		helper::Wave::load(scene_registry_);
 
+		// 初始化资源
+		helper::Asset::initialize(scene_registry_);
 		// 初始化游戏
 		systems::Initialize::initialize(scene_registry_);
 	}

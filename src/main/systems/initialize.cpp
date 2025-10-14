@@ -2,6 +2,8 @@
 
 #include <print>
 
+#include <components/asset.hpp>
+
 #include <components/map.hpp>
 #include <components/wave.hpp>
 #include <components/navigation.hpp>
@@ -17,9 +19,7 @@
 
 #include <components/debug.hpp>
 
-#include <components/font.hpp>
-
-#include <helper/wave.hpp>
+#include <helper/asset.hpp>
 
 #include <utility/time.hpp>
 
@@ -32,7 +32,11 @@ namespace
 	{
 		using namespace components;
 
-		std::ignore = registry;
+		const auto& texture = helper::Asset::texture_of(registry, asset::constants::map);
+		registry.ctx().emplace<map_ex::Background>(sf::Sprite{texture});
+
+		// todo: 现在将起点/终点视为地图的一部分,也就是说起点/终点已经位于地图上,无需额外绘制
+		// 是否支持一张地图但是起点/终点位于不同位置?
 	}
 
 	auto do_initialize_wave(entt::registry& registry) noexcept -> void
@@ -143,13 +147,8 @@ namespace
 	{
 		using namespace components;
 
-		auto& [fonts] = registry.ctx().get<Fonts>();
-
-		const auto [it, result] = fonts.load(constants::hud, "hud");
-		assert(result);
-		assert(it->second);
-
-		registry.ctx().emplace<hud::Text>(sf::Text{it->second, "", 25});
+		const auto& font = helper::Asset::font_of(registry, asset::constants::hud);
+		registry.ctx().emplace<hud::Text>(sf::Text{font, "", 25});
 	}
 
 	auto do_initialize_tower(entt::registry& registry) noexcept -> void

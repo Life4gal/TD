@@ -1,18 +1,22 @@
 #include <loaders/music.hpp>
 
+#include <loaders/path.hpp>
+
 #include <SFML/Audio.hpp>
 
 namespace loaders
 {
-	auto Music::operator()(const std::filesystem::path& path) noexcept -> result_type
+	auto Music::operator()(const std::string_view filename_without_extension) noexcept -> result_type
 	{
-		if (not exists(path))
+		const auto absolute_path = Path::music(filename_without_extension);
+
+		if (not exists(absolute_path))
 		{
 			return nullptr;
 		}
 
 		auto music = std::make_shared<sf::Music>();
-		if (not music->openFromFile(path))
+		if (not music->openFromFile(absolute_path))
 		{
 			return nullptr;
 		}

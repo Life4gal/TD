@@ -1,26 +1,16 @@
 #include <loaders/font.hpp>
 
+// #include <loaders/path.hpp>
+
 #include <SFML/Graphics.hpp>
 
 namespace loaders
 {
-	extern const std::filesystem::path font_path;
-	extern const std::filesystem::path font_extension;
-}
-
-namespace
-{
-	using loaders::Font;
-
-	[[nodiscard]] auto do_load_font(std::filesystem::path filename) noexcept -> Font::result_type
+	auto Font::operator()(const std::string_view filename_without_extension) noexcept -> result_type
 	{
-		// // 组合extension获得完整文件名
-		// filename.replace_extension(loaders::font_extension);
-		// // 组合base_path获得绝对路径
-		// const auto absolute_path = loaders::font_extension / filename;
-
-		// todo: 字体文件?
-		std::ignore = filename;
+		// todo: 还没有准备字体资源
+		// const auto absolute_path = Path::font(filename_without_extension);
+		std::ignore = filename_without_extension;
 		const auto absolute_path = std::filesystem::path{R"(C:\Windows\Fonts\msyh.ttc)"};
 
 		if (not exists(absolute_path))
@@ -35,14 +25,6 @@ namespace
 		}
 
 		return font;
-	}
-}
-
-namespace loaders
-{
-	auto Font::operator()(const std::string_view filename_without_extension) noexcept -> result_type
-	{
-		return do_load_font(filename_without_extension);
 	}
 
 	auto Font::operator()(const void* data, const std::size_t size) noexcept -> result_type

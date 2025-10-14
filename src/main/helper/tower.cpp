@@ -1,18 +1,12 @@
 #include <helper/tower.hpp>
 
-#include <components/map.hpp>
-
 #include <components/tags.hpp>
 #include <components/tower.hpp>
-#include <components/enemy.hpp>
 
 #include <components/sprite_frame.hpp>
 #include <components/renderable.hpp>
 
-// #include <components/config.hpp>
-// #include <components/sound.hpp>
-#include <components/texture.hpp>
-
+#include <helper/asset.hpp>
 #include <helper/enemy.hpp>
 
 #include <entt/entt.hpp>
@@ -79,19 +73,10 @@ namespace helper
 
 			// SpriteFrame & Renderable
 			{
-				const auto& texture = [&]() -> decltype(auto)
-				{
-					auto& [textures] = registry.ctx().get<Textures>();
-
-					constexpr std::string_view enemy_name{"deep-dive-WarpSkull"};
-					constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
-
-					// todo: 还没有为塔准备纹理
-					auto [it, result] = textures.load(enemy_hash_name, loaders::TextureType::ENEMY, enemy_name);
-					assert(it->second);
-
-					return *it->second;
-				}();
+				// todo: 还没有为塔准备纹理,这里暂时使用敌人的纹理
+				constexpr std::string_view tower_name{"deep-dive-WarpSkull"};
+				constexpr entt::basic_hashed_string tower_hash_name{tower_name.data(), tower_name.size()};
+				const auto& texture = Asset::texture_of(registry, tower_hash_name);
 
 				constexpr auto frame_size = sf::Vector2i{16, 16};
 

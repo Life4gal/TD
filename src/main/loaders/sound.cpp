@@ -4,11 +4,13 @@
 #include <ranges>
 #include <random>
 
+#include <loaders/path.hpp>
+
 #include <SFML/Audio.hpp>
 
 namespace loaders
 {
-	auto Sound::Resource::remove_stopped_sound() noexcept -> void
+	auto SoundResource::remove_stopped_sound() const noexcept -> void
 	{
 		const auto ranges = std::ranges::remove_if(
 			playing_sounds_,
@@ -31,7 +33,7 @@ namespace loaders
 		playing_sounds_.erase(ranges.begin(), ranges.end());
 	}
 
-	auto Sound::Resource::do_play(const bool pitch) noexcept -> void
+	auto SoundResource::do_play(const bool pitch) const noexcept -> void
 	{
 		remove_stopped_sound();
 
@@ -55,22 +57,22 @@ namespace loaders
 		sound.play();
 	}
 
-	Sound::Resource::Resource(std::unique_ptr<sf::SoundBuffer> sound_buffer) noexcept
+	SoundResource::SoundResource(std::unique_ptr<sf::SoundBuffer> sound_buffer) noexcept
 		: sound_buffer_{std::move(sound_buffer)},
 		  current_volume_{max_volume},
 		  saved_volume_{max_volume} {}
 
-	auto Sound::Resource::play() noexcept -> void
+	auto SoundResource::play() const noexcept -> void
 	{
 		do_play(false);
 	}
 
-	auto Sound::Resource::play_pitch_mod() noexcept -> void
+	auto SoundResource::play_pitch_mod() const noexcept -> void
 	{
 		do_play(true);
 	}
 
-	auto Sound::Resource::set_volume(const float volume) noexcept -> void
+	auto SoundResource::set_volume(const float volume) noexcept -> void
 	{
 		current_volume_ = std::ranges::clamp(volume, min_volume, max_volume);
 		saved_volume_ = current_volume_;
@@ -81,7 +83,7 @@ namespace loaders
 		);
 	}
 
-	auto Sound::Resource::mute() noexcept -> void
+	auto SoundResource::mute() noexcept -> void
 	{
 		saved_volume_ = current_volume_;
 		current_volume_ = min_volume;
@@ -92,7 +94,7 @@ namespace loaders
 		);
 	}
 
-	auto Sound::Resource::un_mute(const float volume) noexcept -> void
+	auto SoundResource::un_mute(const float volume) noexcept -> void
 	{
 		current_volume_ = std::ranges::clamp(volume, min_volume, max_volume);
 
@@ -102,25 +104,27 @@ namespace loaders
 		);
 	}
 
-	auto Sound::Resource::un_mute() noexcept -> void
+	auto SoundResource::un_mute() noexcept -> void
 	{
 		un_mute(saved_volume_);
 	}
 
-	auto Sound::operator()(const std::filesystem::path& path) noexcept -> result_type
+	auto Sound::operator()(const std::string_view filename_without_extension) noexcept -> result_type
 	{
-		if (not exists(path))
+		const auto absolute_path = Path::sound(filename_without_extension);
+
+		if (not exists(absolute_path))
 		{
 			return nullptr;
 		}
 
 		auto sound_buffer = std::make_unique<sf::SoundBuffer>();
-		if (not sound_buffer->loadFromFile(path))
+		if (not sound_buffer->loadFromFile(absolute_path))
 		{
 			return nullptr;
 		}
 
-		return std::make_shared<Resource>(std::move(sound_buffer));
+		return std::make_shared<SoundResource>(std::move(sound_buffer));
 	}
 
 	auto Sound::operator()(const void* data, const std::size_t size) noexcept -> result_type
@@ -136,7 +140,7 @@ namespace loaders
 			return nullptr;
 		}
 
-		return std::make_shared<Resource>(std::move(sound_buffer));
+		return std::make_shared<SoundResource>(std::move(sound_buffer));
 	}
 
 	auto Sound::operator()(sf::InputStream& stream) noexcept -> result_type
@@ -147,6 +151,6 @@ namespace loaders
 			return nullptr;
 		}
 
-		return std::make_shared<Resource>(std::move(sound_buffer));
+		return std::make_shared<SoundResource>(std::move(sound_buffer));
 	}
 }

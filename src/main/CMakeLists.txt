@@ -46,6 +46,7 @@ add_executable(
 	# =============================
 	# LOADERS
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/loaders/path.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/loaders/path.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/loaders/config.hpp
@@ -71,10 +72,7 @@ add_executable(
 	# =============================
 	# COMPONENTS
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/components/config.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/font.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/texture.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/sound.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/asset.hpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/components/debug.hpp
 
@@ -102,6 +100,9 @@ add_executable(
 	
 	# =============================
 	# HELPER
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/asset.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/asset.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.cpp

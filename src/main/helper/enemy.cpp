@@ -13,7 +13,7 @@
 #include <components/renderable.hpp>
 #include <components/health_bar.hpp>
 
-#include <components/texture.hpp>
+#include <helper/asset.hpp>
 
 #include <utility/time.hpp>
 
@@ -62,18 +62,9 @@ namespace helper
 
 			// SpriteFrame & Renderable & HealthBar
 			{
-				const auto& texture = [&]() -> decltype(auto)
-				{
-					auto& [textures] = registry.ctx().get<Textures>();
-
-					constexpr std::string_view enemy_name{"deep-dive-AntleredRascal"};
-					constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
-
-					auto [it, result] = textures.load(enemy_hash_name, loaders::TextureType::ENEMY, enemy_name);
-					assert(it->second);
-
-					return *it->second;
-				}();
+				constexpr std::string_view enemy_name{"deep-dive-AntleredRascal"};
+				constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
+				const auto& texture = Asset::texture_of(registry, enemy_hash_name);
 
 				constexpr auto frame_size = sf::Vector2i{16, 16};
 

@@ -2,8 +2,6 @@
 
 #include <components/map.hpp>
 
-#include <components/texture.hpp>
-
 #include <entt/entt.hpp>
 
 namespace helper
@@ -144,24 +142,6 @@ namespace helper
 		// Gate
 		{
 			registry.ctx().emplace<map_ex::Gate>(std::move(start_gates), std::move(end_gates));
-		}
-
-		// Render
-		{
-			auto& [textures] = registry.ctx().get<Textures>();
-
-			// 载入地图时
-			// constants::map, loaders::TextureType::MAP
-			// 两个参数不变,constants::map指定纹理id为地图,loaders::TextureType::MAP指示纹理类型为地图
-			// 第三个参数为地图文件文件名(不含后缀),这个按照具体关卡指定
-			auto [it, result] = textures.load(constants::map, loaders::TextureType::MAP, "map1");
-			assert(result);
-			assert(it != textures.end());
-
-			registry.ctx().emplace<map_ex::Background>(sf::Sprite{it->second});
-
-			// todo: 现在将起点/终点视为地图的一部分,也就是说起点/终点已经位于地图上,无需额外绘制
-			// 是否支持一张地图但是起点/终点位于不同位置?
 		}
 	}
 }

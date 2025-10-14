@@ -3,6 +3,8 @@
 #include <fstream>
 #include <ranges>
 
+#include <loaders/path.hpp>
+
 #include <nlohmann/json.hpp>
 
 namespace
@@ -11,18 +13,18 @@ namespace
 
 	[[nodiscard]] auto load_config_file(const Config::Category category) noexcept -> std::optional<nlohmann::json>
 	{
-		auto file = [category]
+		const auto file_path = [category]
 		{
 			using enum Config::Category;
 			switch (category)
 			{
 				case SYSTEM:
 				{
-					return std::ifstream{"system-config.json"};
+					return Path::config("system-config");
 				}
 				case WINDOW:
 				{
-					return std::ifstream{"window-config.json"};
+					return Path::config("window-config");
 				}
 				default: // NOLINT(clang-diagnostic-covered-switch-default)
 				{
@@ -30,6 +32,8 @@ namespace
 				}
 			}
 		}();
+
+		std::ifstream file{file_path};
 
 		if (not file.is_open())
 		{

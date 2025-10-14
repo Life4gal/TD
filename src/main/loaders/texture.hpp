@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <filesystem>
+#include <string>
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -30,8 +30,10 @@ namespace loaders
 	public:
 		using result_type = std::shared_ptr<sf::Texture>;
 
-		// TextureType::MAP, map1(不含后缀) ==> media/map/map1.map
-		[[nodiscard]] static auto operator()(TextureType type, std::string_view filename_without_extension) noexcept -> result_type;
+		// TextureType::MAP, map_name ==> media/map/map_name.png
+		// TextureType::ENEMY, enemy_name ==> media/enemy/enemy_name.png
+		// TextureType::TOWER, tower_name ==> media/enemy/tower_name.png
+		[[nodiscard]] static auto operator()(TextureType type, std::string_view filename_without_extension, bool s_rgb = false, const sf::IntRect& area = {}) noexcept -> result_type;
 
 		[[nodiscard]] static auto operator()(const void* data, std::size_t size, bool s_rgb = false, const sf::IntRect& area = {}) noexcept -> result_type;
 
