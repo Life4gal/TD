@@ -27,6 +27,7 @@ add_executable(
 	# MAP
 
 	${CMAKE_CURRENT_SOURCE_DIR}/map/tile_map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/map/tile_map.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/map/path.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/map/path.cpp
