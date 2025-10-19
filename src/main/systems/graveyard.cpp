@@ -6,6 +6,7 @@
 #include <components/tags.hpp>
 
 #include <helper/resource.hpp>
+#include <helper/entity.hpp>
 
 #include <entt/entt.hpp>
 
@@ -36,6 +37,6 @@ namespace systems
 			}
 		}
 
-		registry.destroy(dead_view.begin(), dead_view.end());
+		helper::Entity::kill(registry, dead_view.begin(), dead_view.end());
 	}
 }

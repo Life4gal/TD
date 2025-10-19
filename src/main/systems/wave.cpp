@@ -1,5 +1,6 @@
 #include <systems/wave.hpp>
 
+#include <helper/entity.hpp>
 #include <helper/enemy.hpp>
 #include <helper/wave.hpp>
 
@@ -132,7 +133,7 @@ namespace systems
 				case WaveState::DEAD:
 				{
 					// 销毁波次实体
-					registry.destroy(entity);
+					helper::Entity::kill(registry, entity);
 
 					break;
 				}

@@ -3,6 +3,8 @@
 #include <components/resource.hpp>
 #include <components/player.hpp>
 
+#include <helper/entity.hpp>
+
 #include <entt/entt.hpp>
 
 namespace systems
@@ -20,6 +22,6 @@ namespace systems
 			player_resource[resource.type()] += resource.amount();
 		}
 
-		registry.destroy(resource_view.begin(), resource_view.end());
+		helper::Entity::kill(registry, resource_view.begin(), resource_view.end());
 	}
 }

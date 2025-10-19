@@ -11,6 +11,7 @@
 #include <components/tags.hpp>
 
 #include <helper/resource.hpp>
+#include <helper/entity.hpp>
 #include <helper/tower.hpp>
 
 #include <entt/entt.hpp>
@@ -163,7 +164,7 @@ namespace helper
 		Resource::acquire(registry, tower_it->second);
 
 		// 销毁塔
-		registry.destroy(tower_it->second);
+		Entity::destroy(registry, tower_it->second);
 		player_tower.erase(tower_it);
 
 		// 设置地块

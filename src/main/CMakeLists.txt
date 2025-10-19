@@ -87,7 +87,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/enemy.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/timed_life.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/limited_life.hpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/wave.hpp
@@ -119,7 +119,10 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.cpp
-
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/entity.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/entity.cpp
+	
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.cpp
 	
@@ -150,8 +153,8 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/timed_life.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/timed_life.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/limited_life.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/limited_life.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.cpp

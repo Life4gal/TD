@@ -6,7 +6,7 @@
 
 namespace systems
 {
-	class TimedLife
+	class LimitedLife
 	{
 	public:
 		static auto update(entt::registry& registry, sf::Time delta) noexcept -> void;
