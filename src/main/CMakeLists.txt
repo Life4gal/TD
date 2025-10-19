@@ -240,3 +240,5 @@ target_link_libraries(
 	imgui::imgui
 	EnTT::EnTT
 )
+
+add_dependencies(${PROJECT_NAME} copy_resources)
