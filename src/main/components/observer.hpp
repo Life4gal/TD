@@ -11,25 +11,21 @@
 
 namespace components::observer
 {
-	class EnemyArchetype
+	class GroundEnemy
 	{
 	public:
 		// 网格 => 敌人
-
-		// 地面
-		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> ground;
-		// 空中
-		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> aerial;
+		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> entities;
+		// 总数(存活)
+		std::size_t total;
 	};
 
-	class EnemyStatistics
+	class AerialEnemy
 	{
 	public:
-		using size_type = std::uint32_t;
-
-		// 当前存活的地面敌人数量
-		size_type ground_alive;
-		// 当前存活的空中敌人数量
-		size_type aerial_alive;
+		// 网格 => 敌人
+		std::unordered_map<sf::Vector2u, std::vector<entt::entity>, utility::vector2_hasher> entities;
+		// 总数(存活)
+		std::size_t total;
 	};
 }

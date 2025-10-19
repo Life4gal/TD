@@ -115,10 +115,8 @@ namespace
 	{
 		using namespace components;
 
-		using size_type = observer::EnemyStatistics::size_type;
-
-		registry.ctx().emplace<observer::EnemyArchetype>();
-		registry.ctx().emplace<observer::EnemyStatistics>(size_type{0}, size_type{0});
+		registry.ctx().emplace<observer::GroundEnemy>();
+		registry.ctx().emplace<observer::AerialEnemy>();
 	}
 
 	auto do_initialize_player(entt::registry& registry) noexcept -> void

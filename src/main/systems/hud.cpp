@@ -338,7 +338,8 @@ namespace systems
 			const auto& [elapsed_time] = registry.ctx().get<const game::ElapsedTime>();
 			const auto& [elapsed_simulation_time] = registry.ctx().get<const game::ElapsedSimulationTime>();
 
-			const auto& [ground_alive, aerial_alive] = registry.ctx().get<const observer::EnemyStatistics>();
+			const auto& [ground_enemy, ground_enemy_alive] = registry.ctx().get<const observer::GroundEnemy>();
+			const auto& [aerial_enemy, aerial_enemy_alive] = registry.ctx().get<const observer::AerialEnemy>();
 			const auto& [killed_enemy] = registry.ctx().get<const player::Statistics>();
 
 			hud_text.setString(std::format(
@@ -346,8 +347,8 @@ namespace systems
 				1.f / frame_delta.asSeconds(),
 				elapsed_time.asSeconds(),
 				elapsed_simulation_time.asSeconds(),
-				ground_alive,
-				aerial_alive,
+				ground_enemy_alive,
+				aerial_enemy_alive,
 				killed_enemy
 			));
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 60)});

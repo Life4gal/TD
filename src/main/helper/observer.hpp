@@ -2,55 +2,36 @@
 
 #include <vector>
 
-#include <components/enemy.hpp>
-
 #include <entt/fwd.hpp>
 
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/Rect.hpp>
 
 namespace helper
 {
 	class Observer
 	{
 	public:
-		// 获取指定范围内的敌人
+		class Result
+		{
+		public:
+			// 敌人实体
+			entt::entity entity;
+			// 距离的平方
+			float distance_2;
+		};
 
-		// AABB
-		static auto query(
-			entt::registry& registry,
-			components::enemy::Archetype archetype,
-			bool visible_only,
-			const sf::FloatRect& bounds
-		) noexcept -> std::vector<entt::entity>;
+		// ===============================
+		// 获取指定区域内的所有敌人实体
 
-		// CIRCLE
-		static auto query(
-			entt::registry& registry,
-			components::enemy::Archetype archetype,
-			bool visible_only,
-			sf::Vector2f center,
-			float radius
-		) noexcept -> std::vector<entt::entity>;
+		// 圆形区域
+		[[nodiscard]] static auto search_region(entt::registry& registry, entt::entity tower, bool visible_only, sf::Vector2f center, float radius) noexcept -> std::vector<Result>;
 
-		// OBB
-		static auto query(
-			entt::registry& registry,
-			components::enemy::Archetype archetype,
-			bool visible_only,
-			const sf::FloatRect& bounds,
-			sf::Angle angle
-		) noexcept -> std::vector<entt::entity>;
+		// ===============================
+		// 塔寻找攻击目标
 
-		// SECTOR
-		static auto query(
-			entt::registry& registry,
-			components::enemy::Archetype archetype,
-			bool visible_only,
-			sf::Vector2f center,
-			float radius,
-			sf::Angle from,
-			sf::Angle to
-		) noexcept -> std::vector<entt::entity>;
+		// todo: 假定塔的索敌范围都是圆形
+		[[nodiscard]] static auto find_tower_target(entt::registry& registry, entt::entity tower, sf::Vector2f position, float range) noexcept -> entt::entity;
+
+		[[nodiscard]] static auto find_tower_target(entt::registry& registry, entt::entity tower) noexcept -> entt::entity;
 	};
 }
