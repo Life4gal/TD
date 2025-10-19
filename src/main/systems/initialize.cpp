@@ -4,6 +4,7 @@
 
 #include <components/asset.hpp>
 
+#include <components/game.hpp>
 #include <components/map.hpp>
 #include <components/wave.hpp>
 #include <components/navigation.hpp>
@@ -28,6 +29,15 @@
 
 namespace
 {
+	auto do_initialize_game(entt::registry& registry) noexcept -> void
+	{
+		using namespace components;
+
+		registry.ctx().emplace<game::FrameDelta>(sf::seconds(1));
+		registry.ctx().emplace<game::ElapsedTime>(sf::Time::Zero);
+		registry.ctx().emplace<game::ElapsedSimulationTime>(sf::Time::Zero);
+	}
+
 	auto do_initialize_map(entt::registry& registry) noexcept -> void
 	{
 		using namespace components;
@@ -238,6 +248,9 @@ namespace systems
 {
 	auto Initialize::initialize(entt::registry& registry) noexcept -> void
 	{
+		// 初始化游戏
+		do_initialize_game(registry);
+
 		// 初始化地图
 		do_initialize_map(registry);
 		// 初始化波次

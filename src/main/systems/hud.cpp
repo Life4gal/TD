@@ -2,6 +2,7 @@
 
 #include <print>
 
+#include <components/game.hpp>
 #include <components/map.hpp>
 #include <components/observer.hpp>
 
@@ -315,7 +316,7 @@ namespace systems
 			const auto health = player_resource.at(resource::Type::HEALTH);
 			const auto mana = player_resource.at(resource::Type::MANA);
 
-			hud_text.setString(std::format("Health: {} / Mana: {}", health, mana));
+			hud_text.setString(std::format(L"生命值: {} / 魔法值: {}", health, mana));
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 120)});
 			hud_text.setFillColor(sf::Color::Red);
 			window.draw(hud_text);
@@ -325,7 +326,7 @@ namespace systems
 		{
 			const auto gold = player_resource.at(resource::Type::GOLD);
 
-			hud_text.setString(std::format("Gold: ${}", gold));
+			hud_text.setString(std::format(L"金币: ${}", gold));
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 90)});
 			hud_text.setFillColor(sf::Color::Yellow);
 			window.draw(hud_text);
@@ -333,10 +334,22 @@ namespace systems
 
 		// Statistics
 		{
+			const auto& [frame_delta] = registry.ctx().get<const game::FrameDelta>();
+			const auto& [elapsed_time] = registry.ctx().get<const game::ElapsedTime>();
+			const auto& [elapsed_simulation_time] = registry.ctx().get<const game::ElapsedSimulationTime>();
+
 			const auto& [ground_alive, aerial_alive] = registry.ctx().get<const observer::EnemyStatistics>();
 			const auto& [killed_enemy] = registry.ctx().get<const player::Statistics>();
 
-			hud_text.setString(std::format("Alive: G:{} | A:{} / Killed: {}", ground_alive, aerial_alive, killed_enemy));
+			hud_text.setString(std::format(
+				L"FPS: {:.3f} | 游戏运行时间: {:.3f}秒(模拟时间: {:.3f}秒) | 存活敌人: 地面:{} | 空中:{} / 已击杀敌人数量: {}",
+				1.f / frame_delta.asSeconds(),
+				elapsed_time.asSeconds(),
+				elapsed_simulation_time.asSeconds(),
+				ground_alive,
+				aerial_alive,
+				killed_enemy
+			));
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 60)});
 			hud_text.setFillColor(sf::Color::Cyan);
 			window.draw(hud_text);
@@ -344,7 +357,7 @@ namespace systems
 
 		// Info
 		{
-			hud_text.setString("LMB: Build Tower | RMB: Destroy Tower | SPACE: PAUSE/UNPAUSE | TAB: ACCELERATE");
+			hud_text.setString(L"鼠标左键: 建造塔 | 鼠标右键: 摧毁塔 | 空格键: 暂停/继续 | TAB键: 加速");
 			hud_text.setPosition({10, static_cast<float>(window_size.y - 30)});
 			hud_text.setFillColor({180, 180, 180});
 			window.draw(hud_text);

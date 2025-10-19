@@ -76,6 +76,7 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/asset.hpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/components/debug.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game.hpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/tags.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/entity.hpp
@@ -137,6 +138,9 @@ add_executable(
 		
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/game.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/systems/game.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.cpp

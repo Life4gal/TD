@@ -16,7 +16,7 @@ namespace scene
 		std::uint32_t simulation_times_per_tick_;
 
 		auto do_update_simulation(sf::Time delta) noexcept -> void;
-		auto do_update() noexcept -> void;
+		auto do_update(sf::Time delta) noexcept -> void;
 
 	public:
 		~Game() noexcept override;

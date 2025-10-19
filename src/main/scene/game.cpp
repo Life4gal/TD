@@ -1,6 +1,7 @@
 #include <scene/game.hpp>
 
 #include <systems/initialize.hpp>
+#include <systems/game.hpp>
 
 #include <systems/map.hpp>
 #include <systems/wave.hpp>
@@ -35,6 +36,9 @@ namespace scene
 {
 	auto Game::do_update_simulation(const sf::Time delta) noexcept -> void
 	{
+		// 更新游戏状态
+		systems::Game::update_simulation(scene_registry_, delta);
+
 		// 更新波次
 		systems::Wave::update(scene_registry_, delta);
 		// 更新导航
@@ -52,8 +56,11 @@ namespace scene
 		systems::SpriteFrame::update(scene_registry_, delta);
 	}
 
-	auto Game::do_update() noexcept -> void
+	auto Game::do_update(const sf::Time delta) noexcept -> void
 	{
+		// 更新游戏状态
+		systems::Game::update(scene_registry_, delta);
+
 		// 更新玩家(检测到达终点敌人)
 		systems::Player::update(scene_registry_);
 		// 更新墓地(击杀敌人产生资源)
@@ -158,7 +165,7 @@ namespace scene
 			do_update_simulation(delta);
 		}
 
-		do_update();
+		do_update(delta);
 	}
 
 	auto Game::render(sf::RenderWindow& window) noexcept -> void
