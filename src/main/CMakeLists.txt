@@ -90,6 +90,8 @@ add_executable(
 
 	${CMAKE_CURRENT_SOURCE_DIR}/components/limited_life.hpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/components/weapon.hpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/components/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/wave.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/navigation.hpp

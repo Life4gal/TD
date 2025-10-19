@@ -2,6 +2,7 @@
 
 #include <components/tags.hpp>
 #include <components/tower.hpp>
+#include <components/weapon.hpp>
 
 #include <components/sprite_frame.hpp>
 #include <components/renderable.hpp>
@@ -32,14 +33,22 @@ namespace helper
 
 			// 可攻击地面
 			registry.emplace<tags::targeting_ground>(entity);
+			// 无优先
+			// registry.emplace<tags::strategy_ground_first>(entity);
 			// 距离优先
 			registry.emplace<tags::strategy_distance_first>(entity);
-			// 武器
-			auto& [range, fire_rate] = registry.emplace<tower::Weapon>(entity);
-			range = 50.f;
-			fire_rate = 1.5f;
+
+			// 初始处于冷却状态
+			registry.emplace<weapon::Cooldown>(entity, weapon::Cooldown{.delay = .001f});
+			// 初始没有目标
+			// registry.emplace<weapon::Target>(entity, entt::null);
+
+			// 武器配置
+			registry.emplace<weapon::Range>(entity, 50.f);
+			registry.emplace<weapon::FireRate>(entity, 1.5f);
+
 			// 开火
-			auto& [on_fire] = registry.emplace<tower::Trigger>(entity);
+			auto& [on_fire] = registry.emplace<weapon::Trigger>(entity);
 			on_fire =
 					[](entt::registry& reg, [[maybe_unused]] const entt::entity attacker, const entt::entity victim) noexcept -> void
 					{
@@ -48,7 +57,7 @@ namespace helper
 						if (reg.all_of<tags::dead>(victim))
 						{
 							// 移除目标
-							reg.remove<tower::Target>(attacker);
+							reg.remove<weapon::Target>(attacker);
 							return;
 						}
 

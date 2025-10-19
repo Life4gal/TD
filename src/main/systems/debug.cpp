@@ -5,7 +5,7 @@
 
 #include <components/tags.hpp>
 #include <components/entity.hpp>
-#include <components/tower.hpp>
+#include <components/weapon.hpp>
 
 #include <components/debug.hpp>
 
@@ -93,7 +93,7 @@ namespace systems
 		{
 			auto& lines = render->lines;
 
-			for (const auto tower_view = registry.view<const tower::Target, tags::tower>();
+			for (const auto tower_view = registry.view<const weapon::Target, tags::tower>();
 			     const auto [entity, target]: tower_view.each())
 			{
 				// 目标可能已经被别的塔击杀
