@@ -4,7 +4,7 @@
 
 #include <config/map.hpp>
 
-#include <components/map.hpp>
+#include <components/map/map.hpp>
 
 #include <entt/entt.hpp>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <components/wave.hpp>
+#include <components/game/wave.hpp>
 
 #include <entt/fwd.hpp>
 

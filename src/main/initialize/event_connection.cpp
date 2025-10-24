@@ -2,8 +2,10 @@
 
 #include <print>
 
-#include <components/tags.hpp>
-#include <components/wave.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/wave.hpp>
 
 #include <utility/time.hpp>
 
@@ -50,9 +52,9 @@ namespace
 		registry.on_construct<tags::tower>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				const auto type = reg.get<const entity::Type>(entity);
-				const auto [position] = reg.get<const entity::Position>(entity);
-				const auto& [name] = reg.get<const entity::Name>(entity);
+				const auto type = reg.get<const combat::Type>(entity);
+				const auto [position] = reg.get<const transform::Position>(entity);
+				const auto& [name] = reg.get<const combat::Name>(entity);
 
 				std::println(
 					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})建造[0x{:08x}]型塔[{}](EID:{})",
@@ -85,9 +87,9 @@ namespace
 		registry.on_construct<tags::enemy>().connect<
 			[](const entt::registry& reg, const entt::entity entity) noexcept -> void
 			{
-				const auto type = reg.get<const entity::Type>(entity);
-				const auto [position] = reg.get<const entity::Position>(entity);
-				const auto& [name] = reg.get<const entity::Name>(entity);
+				const auto type = reg.get<const combat::Type>(entity);
+				const auto [position] = reg.get<const transform::Position>(entity);
+				const auto& [name] = reg.get<const combat::Name>(entity);
 
 				std::println(
 					"[{:%Y-%m-%d %H:%M:%S}] 在({:.0f}:{:.0f})生成[0x{:08x}]型敌人[{}](EID:{})",

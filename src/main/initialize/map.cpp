@@ -1,7 +1,7 @@
 #include <initialize/map.hpp>
 
-#include <components/asset.hpp>
-#include <components/map.hpp>
+#include <components/game/asset.hpp>
+#include <components/map/map.hpp>
 
 #include <helper/asset.hpp>
 

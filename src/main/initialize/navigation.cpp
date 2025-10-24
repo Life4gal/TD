@@ -1,7 +1,7 @@
 #include <initialize/navigation.hpp>
 
-#include <components/map.hpp>
-#include <components/navigation.hpp>
+#include <components/map/map.hpp>
+#include <components/map/navigation.hpp>
 
 #include <entt/entt.hpp>
 

@@ -1,9 +1,9 @@
 #include <update/limited_life.hpp>
 
-#include <components/entity.hpp>
-#include <components/limited_life.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/limited_life.hpp>
 
-#include <helper/entity.hpp>
+#include <helper/combat_unit.hpp>
 
 #include <entt/entt.hpp>
 
@@ -22,7 +22,8 @@ namespace
 				continue;
 			}
 
-			helper::Entity::destroy(registry, entity);
+			// todo: 只有combat_unit会用到limited_life吗?
+			helper::CombatUnit::destroy(registry, entity);
 		}
 	}
 
@@ -30,7 +31,7 @@ namespace
 	{
 		using namespace components;
 
-		for (const auto travel_view = registry.view<limited_life::Distance, entity::Position>();
+		for (const auto travel_view = registry.view<limited_life::Distance, transform::Position>();
 		     const auto [entity, travel, position]: travel_view.each())
 		{
 			const auto dp = position.position - travel.initial_position;
@@ -41,7 +42,8 @@ namespace
 				continue;
 			}
 
-			helper::Entity::destroy(registry, entity);
+			// todo: 只有combat_unit会用到limited_life吗?
+			helper::CombatUnit::destroy(registry, entity);
 		}
 	}
 }

@@ -1,12 +1,12 @@
 #include <update/hud.hpp>
 
+#include <algorithm>
 #include <print>
 
-#include <components/map.hpp>
-#include <components/observer.hpp>
-
-#include <components/player.hpp>
-#include <components/hud.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/wave.hpp>
+#include <components/game/player.hpp>
+#include <components/map/map.hpp>
 
 #include <helper/wave.hpp>
 #include <helper/resource.hpp>
@@ -22,7 +22,7 @@ namespace update
 	{
 		using namespace components;
 
-		using entity_underlying_type = entity::type_underlying_type;
+		using entity_underlying_type = combat::type_underlying_type;
 		constexpr entity_underlying_type enemy_type_base = 0x1000;
 		constexpr entity_underlying_type tower_type_base = 0x2000;
 
@@ -77,7 +77,7 @@ namespace update
 				}
 			}
 			{
-				static entity_underlying_type selected_enemy_type = std::to_underlying(entity::invalid_type);
+				static entity_underlying_type selected_enemy_type = std::to_underlying(combat::invalid_type);
 
 				ImGui::Text("选择敌人");
 				ImGui::Separator();
@@ -101,13 +101,13 @@ namespace update
 					if (const auto label = std::format("出生点 {}", i);
 						ImGui::Button(label.c_str()))
 					{
-						if (selected_enemy_type == std::to_underlying(entity::invalid_type))
+						if (selected_enemy_type == std::to_underlying(combat::invalid_type))
 						{
 							std::println("未选择敌人类型");
 						}
 						else
 						{
-							const auto type = static_cast<entity::Type>(selected_enemy_type);
+							const auto type = static_cast<combat::Type>(selected_enemy_type);
 
 							helper::Enemy::spawn(registry, static_cast<std::uint32_t>(i), type);
 						}
@@ -123,7 +123,7 @@ namespace update
 					if (const auto label = std::format("塔 {}", i);
 						ImGui::Button(label.c_str()))
 					{
-						player_selected_tower_type = {static_cast<entity::Type>(tower_type_base + i)};
+						player_selected_tower_type = {static_cast<combat::Type>(tower_type_base + i)};
 
 						std::println("选择塔: {}", std::to_underlying(player_selected_tower_type));
 					}

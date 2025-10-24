@@ -1,7 +1,7 @@
 #include <update/weapon.hpp>
 
-#include <components/entity.hpp>
-#include <components/weapon.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/weapon.hpp>
 
 #include <helper/observer.hpp>
 
@@ -35,7 +35,7 @@ namespace
 	{
 		using namespace components;
 
-		for (const auto tower_view = registry.view<const weapon::Range, const entity::Position>(entt::exclude<weapon::Cooldown>);
+		for (const auto tower_view = registry.view<const weapon::Range, const transform::Position>(entt::exclude<weapon::Cooldown>);
 		     const auto [entity, range, position]: tower_view.each())
 		{
 			if (const auto target = helper::Observer::find_tower_target(registry, entity, position.position, range.range);

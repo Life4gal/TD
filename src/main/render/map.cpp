@@ -1,6 +1,6 @@
 #include <render/map.hpp>
 
-#include <components/map.hpp>
+#include <components/map/map.hpp>
 
 #include <SFML/Graphics.hpp>
 #include <entt/entt.hpp>

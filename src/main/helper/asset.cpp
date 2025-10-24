@@ -1,6 +1,6 @@
 #include <helper/asset.hpp>
 
-#include <components/asset.hpp>
+#include <components/game/asset.hpp>
 
 #include <entt/entt.hpp>
 

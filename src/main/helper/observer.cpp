@@ -1,11 +1,11 @@
 #include <helper/observer.hpp>
 
-#include <components/map.hpp>
-#include <components/observer.hpp>
-
-#include <components/tags.hpp>
-#include <components/entity.hpp>
-#include <components/weapon.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/enemy.hpp>
+#include <components/combat/weapon.hpp>
+#include <components/map/map.hpp>
+#include <components/map/observer.hpp>
 
 #include <helper/tower.hpp>
 
@@ -136,7 +136,7 @@ namespace
 							return;
 						}
 
-						const auto [position] = registry.get<const entity::Position>(enemy);
+						const auto [position] = registry.get<const transform::Position>(enemy);
 						const auto dp = position - center;
 
 						if (const auto distance_2 = dp.lengthSquared();
@@ -324,7 +324,7 @@ namespace helper
 		using namespace components;
 
 		// 塔位置(中心点)
-		const auto [position] = registry.get<const entity::Position>(tower);
+		const auto [position] = registry.get<const transform::Position>(tower);
 		// 搜索范围(攻击范围)
 		const auto [range] = registry.get<const weapon::Range>(tower);
 

@@ -1,7 +1,8 @@
 #include <initialize/player.hpp>
 
-#include <components/player.hpp>
-#include <components/map.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/player.hpp>
+#include <components/map/map.hpp>
 
 #include <entt/entt.hpp>
 
@@ -20,7 +21,7 @@ namespace initialize
 		cursor_shape.setOutlineColor(sf::Color::Green);
 		cursor_shape.setOutlineThickness(2.f);
 
-		registry.ctx().emplace<player::Interaction>(entity::invalid_type);
+		registry.ctx().emplace<player::Interaction>(combat::invalid_type);
 		registry.ctx().emplace<player::Tower>();
 		registry.ctx().emplace<player::Resource>();
 		registry.ctx().emplace<player::Statistics>(player::Statistics::size_type{0});

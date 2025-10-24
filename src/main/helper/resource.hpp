@@ -2,8 +2,8 @@
 
 #include <span>
 
-#include <components/entity.hpp>
-#include <components/resource.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/resource.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -26,8 +26,8 @@ namespace helper
 		// ==========
 		// 基于实体类型获取资源(击杀敌人或者拆除塔)
 
-		static auto acquire(entt::registry& registry, std::span<const components::entity::Type> types) noexcept -> void;
-		static auto acquire(entt::registry& registry, components::entity::Type type) noexcept -> void;
+		static auto acquire(entt::registry& registry, std::span<const components::combat::Type> types) noexcept -> void;
+		static auto acquire(entt::registry& registry, components::combat::Type type) noexcept -> void;
 
 		// ==========
 		// 基于实体获取资源(击杀敌人或者拆除塔)
@@ -47,8 +47,8 @@ namespace helper
 		// ==========
 		// 基于实体类型检查资源(建造塔或装备武器)
 
-		static auto require(entt::registry& registry, std::span<const components::entity::Type> types) noexcept -> bool;
-		static auto require(entt::registry& registry, components::entity::Type type) noexcept -> bool;
+		static auto require(entt::registry& registry, std::span<const components::combat::Type> types) noexcept -> bool;
+		static auto require(entt::registry& registry, components::combat::Type type) noexcept -> bool;
 
 		// ==========
 		// 基于实体检查资源(建造塔或装备武器)
@@ -68,8 +68,8 @@ namespace helper
 		// ==========
 		// 基于实体类型消耗资源(建造塔或装备武器)
 
-		static auto consume(entt::registry& registry, std::span<const components::entity::Type> types) noexcept -> bool;
-		static auto consume(entt::registry& registry, components::entity::Type type) noexcept -> bool;
+		static auto consume(entt::registry& registry, std::span<const components::combat::Type> types) noexcept -> bool;
+		static auto consume(entt::registry& registry, components::combat::Type type) noexcept -> bool;
 
 		// ==========
 		// 基于实体消耗资源(建造塔或装备武器)
@@ -89,8 +89,8 @@ namespace helper
 		// ==========
 		// 基于实体类型消耗资源(建造塔或装备武器)
 
-		static auto consume_unchecked(entt::registry& registry, std::span<const components::entity::Type> types) noexcept -> void;
-		static auto consume_unchecked(entt::registry& registry, components::entity::Type type) noexcept -> void;
+		static auto consume_unchecked(entt::registry& registry, std::span<const components::combat::Type> types) noexcept -> void;
+		static auto consume_unchecked(entt::registry& registry, components::combat::Type type) noexcept -> void;
 
 		// ==========
 		// 基于实体消耗资源(建造塔或装备武器)

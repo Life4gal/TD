@@ -1,7 +1,7 @@
 #include <update/player.hpp>
 
-#include <components/tags.hpp>
-#include <components/player.hpp>
+#include <components/core/tags.hpp>
+#include <components/game/player.hpp>
 
 #include <entt/entt.hpp>
 

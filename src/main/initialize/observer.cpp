@@ -1,6 +1,6 @@
 #include <initialize/observer.hpp>
 
-#include <components/observer.hpp>
+#include <components/map/observer.hpp>
 
 #include <entt/entt.hpp>
 

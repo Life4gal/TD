@@ -1,7 +1,7 @@
 #include <render/player.hpp>
 
-#include <components/player.hpp>
-#include <components/map.hpp>
+#include <components/game/player.hpp>
+#include <components/map/map.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>

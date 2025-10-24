@@ -3,12 +3,11 @@
 #include <algorithm>
 #include <ranges>
 
-#include <components/map.hpp>
-#include <components/navigation.hpp>
-
-#include <components/tags.hpp>
-#include <components/entity.hpp>
-#include <components/enemy.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/enemy.hpp>
+#include <components/map/map.hpp>
+#include <components/map/navigation.hpp>
 
 #include <helper/enemy.hpp>
 
@@ -28,7 +27,11 @@ namespace update
 
 		const auto& [flow_field] = registry.ctx().get<const navigation::FlowField>();
 
-		for (const auto enemy_view = registry.view<tags::archetype_aerial, entity::Position, enemy::Movement>(entt::exclude<tags::dead>);
+		for (const auto enemy_view = registry.view<
+			     tags::archetype_aerial,
+			     transform::Position,
+			     enemy::Movement
+		     >(entt::exclude<tags::dead>);
 		     const auto [entity, position, movement]: enemy_view.each())
 		{
 			// todo: 空中导航
@@ -36,7 +39,12 @@ namespace update
 		}
 
 		// 地面导航
-		for (const auto enemy_view = registry.view<tags::archetype_ground, entity::Position, enemy::Movement, enemy::Direction>(entt::exclude<tags::dead>);
+		for (const auto enemy_view = registry.view<
+			     tags::archetype_ground,
+			     transform::Position,
+			     enemy::Movement,
+			     enemy::Direction
+		     >(entt::exclude<tags::dead>);
 		     const auto [entity, position, movement, direction]: enemy_view.each())
 		{
 			// 本帧移动距离

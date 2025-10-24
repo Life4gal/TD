@@ -5,7 +5,7 @@
 
 #include <config/wave.hpp>
 
-#include <components/wave.hpp>
+#include <components/game/wave.hpp>
 
 #include <entt/entt.hpp>
 
@@ -16,7 +16,7 @@ namespace
 		using namespace config::wave;
 		using namespace std::chrono_literals;
 
-		using components::entity::Type;
+		using components::combat::Type;
 
 		Waves waves{};
 		{

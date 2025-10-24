@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <ranges>
 
-#include <components/player.hpp>
+#include <components/game/player.hpp>
 
 #include <entt/entt.hpp>
 
@@ -17,7 +17,7 @@ namespace
 	};
 
 	template<Type T>
-	constexpr auto entity_type_to_resource(const components::entity::Type type, std::vector<components::resource::Resource>& out) noexcept -> void
+	constexpr auto entity_type_to_resource(const components::combat::Type type, std::vector<components::resource::Resource>& out) noexcept -> void
 	{
 		using namespace components;
 
@@ -40,7 +40,7 @@ namespace
 	}
 
 	template<Type T>
-	[[nodiscard]] constexpr auto entity_type_to_resource(const components::entity::Type type) noexcept -> std::vector<components::resource::Resource>
+	[[nodiscard]] constexpr auto entity_type_to_resource(const components::combat::Type type) noexcept -> std::vector<components::resource::Resource>
 	{
 		std::vector<components::resource::Resource> resources{};
 
@@ -50,14 +50,14 @@ namespace
 	}
 
 	template<Type T>
-	constexpr auto entity_type_to_resource(const std::span<const components::entity::Type> types, std::vector<components::resource::Resource>& out) noexcept -> void
+	constexpr auto entity_type_to_resource(const std::span<const components::combat::Type> types, std::vector<components::resource::Resource>& out) noexcept -> void
 	{
 		using namespace components;
 
 		// 1. 获取所有结果
 		std::ranges::for_each(
 			types,
-			[&](const entity::Type type) noexcept -> void
+				[&](const combat::Type type) noexcept -> void
 			{
 				entity_type_to_resource<T>(type, out);
 			}
@@ -109,7 +109,7 @@ namespace
 	}
 
 	template<Type T>
-	[[nodiscard]] constexpr auto entity_type_to_resource(const std::span<const components::entity::Type> types) noexcept -> std::vector<components::resource::Resource>
+	[[nodiscard]] constexpr auto entity_type_to_resource(const std::span<const components::combat::Type> types) noexcept -> std::vector<components::resource::Resource>
 	{
 		std::vector<components::resource::Resource> resources{};
 
@@ -123,7 +123,7 @@ namespace
 	{
 		using namespace components;
 
-		const auto type = registry.get<const entity::Type>(entity);
+		const auto type = registry.get<const combat::Type>(entity);
 
 		return entity_type_to_resource<T>(type, out);
 	}
@@ -191,14 +191,14 @@ namespace helper
 		registry.emplace<resource_type>(entity, resource);
 	}
 
-	auto Resource::acquire(entt::registry& registry, const std::span<const components::entity::Type> types) noexcept -> void
+	auto Resource::acquire(entt::registry& registry, const std::span<const components::combat::Type> types) noexcept -> void
 	{
 		const auto resources = entity_type_to_resource<Type::ACQUIRE>(types);
 
 		return acquire(registry, resources);
 	}
 
-	auto Resource::acquire(entt::registry& registry, const components::entity::Type type) noexcept -> void
+	auto Resource::acquire(entt::registry& registry, const components::combat::Type type) noexcept -> void
 	{
 		const auto resource = entity_type_to_resource<Type::ACQUIRE>(type);
 
@@ -245,14 +245,14 @@ namespace helper
 		return player_resource_it != player_resources.end() and player_resource_it->second >= resource.amount();
 	}
 
-	auto Resource::require(entt::registry& registry, const std::span<const components::entity::Type> types) noexcept -> bool
+	auto Resource::require(entt::registry& registry, const std::span<const components::combat::Type> types) noexcept -> bool
 	{
 		const auto resources = entity_type_to_resource<Type::REQUIRE>(types);
 
 		return require(registry, resources);
 	}
 
-	auto Resource::require(entt::registry& registry, const components::entity::Type type) noexcept -> bool
+	auto Resource::require(entt::registry& registry, const components::combat::Type type) noexcept -> bool
 	{
 		const auto resource = entity_type_to_resource<Type::REQUIRE>(type);
 
@@ -297,14 +297,14 @@ namespace helper
 		return true;
 	}
 
-	auto Resource::consume(entt::registry& registry, const std::span<const components::entity::Type> types) noexcept -> bool
+	auto Resource::consume(entt::registry& registry, const std::span<const components::combat::Type> types) noexcept -> bool
 	{
 		const auto resources = entity_type_to_resource<Type::REQUIRE>(types);
 
 		return consume(registry, resources);
 	}
 
-	auto Resource::consume(entt::registry& registry, const components::entity::Type type) noexcept -> bool
+	auto Resource::consume(entt::registry& registry, const components::combat::Type type) noexcept -> bool
 	{
 		const auto resource = entity_type_to_resource<Type::REQUIRE>(type);
 
@@ -359,14 +359,14 @@ namespace helper
 		player_resource_it->second -= resource.amount();
 	}
 
-	auto Resource::consume_unchecked(entt::registry& registry, const std::span<const components::entity::Type> types) noexcept -> void
+	auto Resource::consume_unchecked(entt::registry& registry, const std::span<const components::combat::Type> types) noexcept -> void
 	{
 		const auto resources = entity_type_to_resource<Type::REQUIRE>(types);
 
 		consume_unchecked(registry, resources);
 	}
 
-	auto Resource::consume_unchecked(entt::registry& registry, const components::entity::Type type) noexcept -> void
+	auto Resource::consume_unchecked(entt::registry& registry, const components::combat::Type type) noexcept -> void
 	{
 		const auto resource = entity_type_to_resource<Type::REQUIRE>(type);
 

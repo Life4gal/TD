@@ -1,6 +1,6 @@
 #include <update/game.hpp>
 
-#include <components/game.hpp>
+#include <components/game/game.hpp>
 
 #include <entt/entt.hpp>
 

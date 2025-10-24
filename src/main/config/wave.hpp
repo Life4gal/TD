@@ -3,7 +3,7 @@
 #include <variant>
 #include <vector>
 
-#include <components/entity.hpp>
+#include <components/combat/unit.hpp>
 
 #include <SFML/System/Time.hpp>
 
@@ -16,7 +16,7 @@ namespace config::wave
 	class Spawn
 	{
 	public:
-		using type_type = components::entity::Type;
+		using type_type = components::combat::Type;
 
 		// 敌人类型
 		type_type type;
@@ -53,7 +53,7 @@ namespace config::wave
 		class Type
 		{
 		public:
-			using type_type = components::entity::Type;
+			using type_type = components::combat::Type;
 
 			type_type type;
 		};

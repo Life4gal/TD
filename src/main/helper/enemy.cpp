@@ -3,15 +3,15 @@
 #include <random>
 #include <print>
 
-#include <components/map.hpp>
-#include <components/navigation.hpp>
-
-#include <components/tags.hpp>
-#include <components/enemy.hpp>
-
-#include <components/sprite_frame.hpp>
-#include <components/renderable.hpp>
-#include <components/health_bar.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/core/renderable.hpp>
+#include <components/core/sprite_frame.hpp>
+#include <components/combat/unit.hpp>
+#include <components/combat/enemy.hpp>
+#include <components/combat/health_bar.hpp>
+#include <components/map/map.hpp>
+#include <components/map/navigation.hpp>
 
 #include <helper/asset.hpp>
 
@@ -21,7 +21,7 @@
 
 namespace helper
 {
-	auto Enemy::spawn(entt::registry& registry, const sf::Vector2u point, const components::entity::Type type) noexcept -> entt::entity
+	auto Enemy::spawn(entt::registry& registry, const sf::Vector2u point, const components::combat::Type type) noexcept -> entt::entity
 	{
 		using namespace components;
 
@@ -33,15 +33,15 @@ namespace helper
 
 		const auto entity = registry.create();
 
-		registry.emplace<entity::Type>(entity, type);
-		registry.emplace<entity::Position>(entity, position);
+		registry.emplace<combat::Type>(entity, type);
+		registry.emplace<transform::Position>(entity, position);
 
 		// todo: 加载配置文件
 		{
 			static std::mt19937 random{std::random_device{}()};
 
 			// 名字
-			registry.emplace<entity::Name>(entity, std::format("敌人 0x{:x}", std::to_underlying(type)));
+			registry.emplace<combat::Name>(entity, std::format("敌人 0x{:x}", std::to_underlying(type)));
 
 			// 地面单位
 			registry.emplace<tags::archetype_ground>(entity);
@@ -99,7 +99,8 @@ namespace helper
 			}
 
 			// 图集纹理大小为16*16,放大一些
-			registry.emplace<entity::Scale>(entity, sf::Vector2f{2.f, 2.f});
+			registry.emplace<transform::Scale>(entity, sf::Vector2f{2.f, 2.f});
+			registry.emplace<transform::Rotation>(entity, sf::degrees(0));
 		}
 
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
@@ -108,7 +109,7 @@ namespace helper
 		return entity;
 	}
 
-	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id, const components::entity::Type type) noexcept -> entt::entity
+	auto Enemy::spawn(entt::registry& registry, const std::uint32_t start_gate_id, const components::combat::Type type) noexcept -> entt::entity
 	{
 		using namespace components;
 
@@ -136,8 +137,8 @@ namespace helper
 		assert(registry.valid(victim));
 		assert(registry.all_of<tags::enemy>(victim));
 
-		const auto& [attacker_name] = registry.get<const entity::Name>(attacker);
-		const auto& [victim_name] = registry.get<const entity::Name>(victim);
+		const auto& [attacker_name] = registry.get<const combat::Name>(attacker);
+		const auto& [victim_name] = registry.get<const combat::Name>(victim);
 
 		// 如果目标已经死亡则什么也不做
 		if (registry.all_of<tags::dead>(victim))
@@ -174,8 +175,8 @@ namespace helper
 		assert(registry.valid(victim));
 		assert(registry.all_of<tags::enemy>(victim));
 
-		const auto& [attacker_name] = registry.get<const entity::Name>(attacker);
-		const auto& [victim_name] = registry.get<const entity::Name>(victim);
+		const auto& [attacker_name] = registry.get<const combat::Name>(attacker);
+		const auto& [victim_name] = registry.get<const combat::Name>(victim);
 
 		// 如果目标已经死亡则什么也不做
 		if (registry.all_of<tags::dead>(victim))

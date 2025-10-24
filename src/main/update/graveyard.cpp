@@ -1,12 +1,10 @@
 #include <update/graveyard.hpp>
 
-#include <components/player.hpp>
-#include <components/graveyard.hpp>
-
-#include <components/tags.hpp>
+#include <components/core/tags.hpp>
+#include <components/game/player.hpp>
+#include <components/game/graveyard.hpp>
 
 #include <helper/resource.hpp>
-#include <helper/entity.hpp>
 
 #include <entt/entt.hpp>
 
@@ -37,6 +35,6 @@ namespace update
 			}
 		}
 
-		helper::Entity::kill(registry, dead_view.begin(), dead_view.end());
+		registry.destroy(dead_view.begin(), dead_view.end());
 	}
 }

@@ -1,11 +1,11 @@
 #include <render/hud.hpp>
 
-#include <components/tags.hpp>
-#include <components/game.hpp>
-#include <components/wave.hpp>
-#include <components/player.hpp>
-#include <components/hud.hpp>
-#include <components/observer.hpp>
+#include <components/core/tags.hpp>
+#include <components/game/game.hpp>
+#include <components/game/wave.hpp>
+#include <components/game/player.hpp>
+#include <components/game/hud.hpp>
+#include <components/map/observer.hpp>
 
 #include <utility/functional.hpp>
 

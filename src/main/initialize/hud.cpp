@@ -1,7 +1,7 @@
 #include <initialize/hud.hpp>
 
-#include <components/asset.hpp>
-#include <components/hud.hpp>
+#include <components/game/asset.hpp>
+#include <components/game/hud.hpp>
 
 #include <helper/asset.hpp>
 

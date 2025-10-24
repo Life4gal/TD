@@ -1,7 +1,7 @@
 #include <update/sprite_frame.hpp>
 
-#include <components/sprite_frame.hpp>
-#include <components/renderable.hpp>
+#include <components/core/sprite_frame.hpp>
+#include <components/core/renderable.hpp>
 
 #include <helper/sprite_frame.hpp>
 

@@ -1,10 +1,9 @@
 #include <update/observer.hpp>
 
-#include <components/map.hpp>
-#include <components/observer.hpp>
-
-#include <components/tags.hpp>
-#include <components/entity.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/map/map.hpp>
+#include <components/map/observer.hpp>
 
 #include <entt/entt.hpp>
 
@@ -21,8 +20,8 @@ namespace update
 		auto& [ground_enemy, ground_enemy_alive] = registry.ctx().get<observer::GroundEnemy>();
 		auto& [aerial_enemy, aerial_enemy_alive] = registry.ctx().get<observer::AerialEnemy>();
 
-		const auto ground_view = registry.view<tags::archetype_ground, const entity::Position>(entt::exclude<tags::dead>);
-		const auto aerial_view = registry.view<tags::archetype_aerial, const entity::Position>(entt::exclude<tags::dead>);
+		const auto ground_view = registry.view<tags::archetype_ground, const transform::Position>(entt::exclude<tags::dead>);
+		const auto aerial_view = registry.view<tags::archetype_aerial, const transform::Position>(entt::exclude<tags::dead>);
 
 		ground_enemy_alive = ground_view.size_hint();
 		aerial_enemy_alive = aerial_view.size_hint();

@@ -1,9 +1,6 @@
 #include <update/resource.hpp>
 
-#include <components/resource.hpp>
-#include <components/player.hpp>
-
-#include <helper/entity.hpp>
+#include <components/game/player.hpp>
 
 #include <entt/entt.hpp>
 
@@ -22,6 +19,6 @@ namespace update
 			player_resource[resource.type()] += resource.amount();
 		}
 
-		helper::Entity::kill(registry, resource_view.begin(), resource_view.end());
+		registry.destroy(resource_view.begin(), resource_view.end());
 	}
 }

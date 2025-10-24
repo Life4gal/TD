@@ -1,14 +1,10 @@
 #pragma once
 
-#include <limits>
-#include <type_traits>
 #include <string>
 
-#include <entt/entity/fwd.hpp>
+#include <entt/fwd.hpp>
 
-#include <SFML/System/Vector2.hpp>
-
-namespace components::entity
+namespace components::combat
 {
 	enum class Type : std::uint32_t {};
 
@@ -24,21 +20,7 @@ namespace components::entity
 		std::string name;
 	};
 
-	// 实体位置
-	class Position
-	{
-	public:
-		sf::Vector2f position;
-	};
-
-	// 实体尺寸(比例)
-	class Scale
-	{
-	public:
-		sf::Vector2f scale;
-	};
-
-	// 实体死亡回调(可以没有)
+	// 死亡回调(可选)
 	class OnDeath
 	{
 	public:

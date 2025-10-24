@@ -74,35 +74,42 @@ add_executable(
 	# =============================
 	# COMPONENTS
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/components/asset.hpp
+	# =======
+	# CORE
+
+	${CMAKE_CURRENT_SOURCE_DIR}/components/core/tags.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/core/transform.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/core/sprite_frame.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/core/renderable.hpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/components/debug.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/game.hpp
+	# =======
+	# COMBAT
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/tags.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/entity.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/unit.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/limited_life.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/health_bar.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/combat/weapon.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/sprite_frame.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/renderable.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/health_bar.hpp
+	# =======
+	# GAME
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/tower.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/asset.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/game.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/graveyard.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/game/hud.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/limited_life.hpp
+	# =======
+	# MAP
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/map/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/map/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/components/map/observer.hpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/components/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/wave.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/observer.hpp
-
-	${CMAKE_CURRENT_SOURCE_DIR}/components/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/graveyard.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/components/hud.hpp
-	
 	# =============================
 	# HELPER
 	
@@ -121,8 +128,8 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/player.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/helper/entity.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/helper/entity.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/combat_unit.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/helper/combat_unit.cpp
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/tower.cpp

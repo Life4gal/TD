@@ -4,8 +4,8 @@
 
 #include <utility/hash.hpp>
 
-#include <components/entity.hpp>
-#include <components/resource.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/resource.hpp>
 
 #include <entt/entity/fwd.hpp>
 
@@ -18,7 +18,7 @@ namespace components::player
 	{
 	public:
 		// 当前选择的塔
-		entity::Type selected_tower_type;
+		combat::Type selected_tower_type;
 	};
 
 	// 建造的塔

@@ -1,6 +1,7 @@
 #include <update/wave.hpp>
 
-#include <helper/entity.hpp>
+#include <components/game/wave.hpp>
+
 #include <helper/enemy.hpp>
 #include <helper/wave.hpp>
 
@@ -133,7 +134,7 @@ namespace update
 				case WaveState::DEAD:
 				{
 					// 销毁波次实体
-					helper::Entity::kill(registry, entity);
+					registry.destroy(entity);
 
 					break;
 				}

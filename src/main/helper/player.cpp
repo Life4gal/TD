@@ -4,14 +4,14 @@
 #include <ranges>
 #include <print>
 
-#include <components/map.hpp>
-#include <components/navigation.hpp>
-#include <components/player.hpp>
-
-#include <components/tags.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/unit.hpp>
+#include <components/game/player.hpp>
+#include <components/map/map.hpp>
+#include <components/map/navigation.hpp>
 
 #include <helper/resource.hpp>
-#include <helper/entity.hpp>
 #include <helper/tower.hpp>
 
 #include <entt/entt.hpp>
@@ -34,7 +34,7 @@ namespace helper
 		const auto grid_position = tile_map.coordinate_world_to_grid(position);
 
 		// 检查是否选择了塔
-		if (player_selected_tower_type == entity::invalid_type)
+		if (player_selected_tower_type == combat::invalid_type)
 		{
 			std::println("未选择塔类型,建造失败");
 			return false;
@@ -95,7 +95,7 @@ namespace helper
 		{
 			// 确保位置位于网格中心
 			const auto centered_position = tile_map.coordinate_grid_to_world(grid_position);
-			registry.emplace<entity::Position>(tower_entity, centered_position);
+			registry.emplace<transform::Position>(tower_entity, centered_position);
 		}
 		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
 		registry.emplace<tags::tower>(tower_entity);
@@ -164,7 +164,7 @@ namespace helper
 		Resource::acquire(registry, tower_it->second);
 
 		// 销毁塔
-		Entity::destroy(registry, tower_it->second);
+		registry.destroy(tower_it->second);
 		player_tower.erase(tower_it);
 
 		// 设置地块

@@ -4,7 +4,7 @@
 #include <ranges>
 #include <print>
 
-#include <components/tags.hpp>
+#include <components/core/tags.hpp>
 
 #include <utility/functional.hpp>
 #include <utility/time.hpp>
@@ -244,7 +244,7 @@ namespace helper
 								return false;
 							}
 
-							const auto type = registry.get<const entity::Type>(enemy);
+							const auto type = registry.get<const combat::Type>(enemy);
 							return type == condition.type;
 						}
 					);

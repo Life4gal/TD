@@ -1,11 +1,12 @@
 #include <helper/tower.hpp>
 
-#include <components/tags.hpp>
-#include <components/tower.hpp>
-#include <components/weapon.hpp>
-
-#include <components/sprite_frame.hpp>
-#include <components/renderable.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/core/renderable.hpp>
+#include <components/core/sprite_frame.hpp>
+#include <components/combat/unit.hpp>
+#include <components/combat/tower.hpp>
+#include <components/combat/weapon.hpp>
 
 #include <helper/asset.hpp>
 #include <helper/enemy.hpp>
@@ -14,13 +15,13 @@
 
 namespace helper
 {
-	auto Tower::build(entt::registry& registry, components::entity::Type type) noexcept -> entt::entity
+	auto Tower::build(entt::registry& registry, components::combat::Type type) noexcept -> entt::entity
 	{
 		using namespace components;
 
 		const auto entity = registry.create();
 
-		registry.emplace<entity::Type>(entity, type);
+		registry.emplace<combat::Type>(entity, type);
 		// 位置由外部设置,这里只负责构建实体
 		// registry.emplace<entity::Position>(entity, position);
 
@@ -29,7 +30,7 @@ namespace helper
 			// auto& [configs] = registry.ctx().get<Configs>();
 
 			// 名字
-			registry.emplace<entity::Name>(entity, std::format("塔 0x{:x}", std::to_underlying(type)));
+			registry.emplace<combat::Name>(entity, std::format("塔 0x{:x}", std::to_underlying(type)));
 
 			// 可攻击地面
 			registry.emplace<tags::targeting_ground>(entity);
@@ -114,7 +115,8 @@ namespace helper
 			}
 
 			// 图集纹理大小为16*16,放大一些
-			registry.emplace<entity::Scale>(entity, sf::Vector2f{2.5f, 2.5f});
+			registry.emplace<transform::Scale>(entity, sf::Vector2f{2.5f, 2.5f});
+			registry.emplace<transform::Rotation>(entity, sf::degrees(0));
 		}
 
 		return entity;

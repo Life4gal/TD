@@ -1,9 +1,9 @@
 #include <render/health_bar.hpp>
 
-#include <components/tags.hpp>
-#include <components/entity.hpp>
-#include <components/enemy.hpp>
-#include <components/health_bar.hpp>
+#include <components/core/tags.hpp>
+#include <components/core/transform.hpp>
+#include <components/combat/enemy.hpp>
+#include <components/combat/health_bar.hpp>
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -19,7 +19,7 @@ namespace render
 			const health_bar::Health,
 			const health_bar::Size,
 			const health_bar::Offset,
-			const entity::Position>(entt::exclude<tags::dead>);
+			const transform::Position>(entt::exclude<tags::dead>);
 		const auto enemy_count = enemy_view.size_hint();
 
 		// 2个矩形 * 6个顶点(每个矩形2个三角形)

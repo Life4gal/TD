@@ -1,28 +1,28 @@
-#include <helper/entity.hpp>
+#include <helper/combat_unit.hpp>
 
 #include <algorithm>
 
-#include <components/entity.hpp>
+#include <components/combat/unit.hpp>
 
 #include <entt/entt.hpp>
 
 namespace helper
 {
-	auto Entity::kill(entt::registry& registry, const entt::entity entity) noexcept -> void
+	auto CombatUnit::kill(entt::registry& registry, const entt::entity entity) noexcept -> void
 	{
 		using namespace components;
 
 		registry.destroy(entity);
 	}
 
-	auto Entity::kill(entt::registry& registry, const std::span<const entt::entity> entities) noexcept -> void
+	auto CombatUnit::kill(entt::registry& registry, const std::span<const entt::entity> entities) noexcept -> void
 	{
 		using namespace components;
 
 		registry.destroy(entities.begin(), entities.end());
 	}
 
-	auto Entity::kill(
+	auto CombatUnit::kill(
 		entt::registry& registry,
 		const entt::internal::sparse_set_iterator<std::vector<entt::entity>> begin,
 		const entt::internal::sparse_set_iterator<std::vector<entt::entity>> end
@@ -33,11 +33,11 @@ namespace helper
 		registry.destroy(begin, end);
 	}
 
-	auto Entity::destroy(entt::registry& registry, const entt::entity entity) noexcept -> void
+	auto CombatUnit::destroy(entt::registry& registry, const entt::entity entity) noexcept -> void
 	{
 		using namespace components;
 
-		if (const auto* on_death = registry.try_get<const entity::OnDeath>(entity))
+		if (const auto* on_death = registry.try_get<const combat::OnDeath>(entity))
 		{
 			on_death->on_death(registry, entity);
 		}
@@ -45,7 +45,7 @@ namespace helper
 		kill(registry, entity);
 	}
 
-	auto Entity::destroy(entt::registry& registry, const std::span<const entt::entity> entities) noexcept -> void
+	auto CombatUnit::destroy(entt::registry& registry, const std::span<const entt::entity> entities) noexcept -> void
 	{
 		using namespace components;
 
@@ -53,7 +53,7 @@ namespace helper
 			entities,
 			[&](const entt::entity entity) noexcept -> void
 			{
-				if (const auto* on_death = registry.try_get<const entity::OnDeath>(entity))
+				if (const auto* on_death = registry.try_get<const combat::OnDeath>(entity))
 				{
 					on_death->on_death(registry, entity);
 				}
@@ -63,7 +63,7 @@ namespace helper
 		kill(registry, entities);
 	}
 
-	auto Entity::destroy(
+	auto CombatUnit::destroy(
 		entt::registry& registry,
 		const entt::internal::sparse_set_iterator<std::vector<entt::entity>> begin,
 		const entt::internal::sparse_set_iterator<std::vector<entt::entity>> end
@@ -75,7 +75,7 @@ namespace helper
 			std::ranges::subrange{begin, end},
 			[&](const entt::entity entity) noexcept -> void
 			{
-				if (const auto* on_death = registry.try_get<const entity::OnDeath>(entity))
+				if (const auto* on_death = registry.try_get<const combat::OnDeath>(entity))
 				{
 					on_death->on_death(registry, entity);
 				}

@@ -6,7 +6,7 @@
 
 namespace helper
 {
-	class Entity
+	class CombatUnit
 	{
 	public:
 		// 销毁实体,不执行回调
