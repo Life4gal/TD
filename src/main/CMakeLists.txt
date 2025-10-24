@@ -109,6 +109,14 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/components/map/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/map/navigation.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/components/map/observer.hpp
+	
+	# =============================
+	# FACTORY
+
+	${CMAKE_CURRENT_SOURCE_DIR}/factory/enemy.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/factory/enemy.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/factory/tower.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/factory/tower.cpp
 
 	# =============================
 	# HELPER

@@ -2,7 +2,8 @@
 
 #include <components/game/wave.hpp>
 
-#include <helper/enemy.hpp>
+#include <factory/enemy.hpp>
+
 #include <helper/wave.hpp>
 
 #include <entt/entt.hpp>
@@ -79,7 +80,7 @@ namespace update
 							to_spawn,
 							[&](const config::wave::Spawn& spawn) noexcept -> void
 							{
-								const auto enemy = helper::Enemy::spawn(registry, spawn.gate_id, spawn.type);
+								const auto enemy = factory::enemy(registry, spawn.gate_id, spawn.type);
 								wave_enemy.push_back(enemy);
 							}
 						);

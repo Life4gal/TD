@@ -1,22 +1,12 @@
 #pragma once
 
-#include <components/combat/unit.hpp>
-
 #include <entt/fwd.hpp>
-
-#include <SFML/System/Vector2.hpp>
 
 namespace helper
 {
 	class Enemy
 	{
 	public:
-		// 生成敌人(任意位置)
-		static auto spawn(entt::registry& registry, sf::Vector2u point, components::combat::Type type) noexcept -> entt::entity;
-
-		// 生成敌人(指定出生点)
-		static auto spawn(entt::registry& registry, std::uint32_t start_gate_id, components::combat::Type type) noexcept -> entt::entity;
-
 		// 杀死敌人(死因: 到达终点)
 		static auto reach(entt::registry& registry, entt::entity enemy) noexcept -> void;
 

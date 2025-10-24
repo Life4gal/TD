@@ -11,8 +11,9 @@
 #include <components/map/map.hpp>
 #include <components/map/navigation.hpp>
 
+#include <factory/tower.hpp>
+
 #include <helper/resource.hpp>
-#include <helper/tower.hpp>
 
 #include <entt/entt.hpp>
 
@@ -85,20 +86,12 @@ namespace helper
 		}
 
 		// 构建塔实体
-		const auto tower_entity = Tower::build(registry, player_selected_tower_type);
+		const auto tower_entity = factory::tower(registry, grid_position, player_selected_tower_type);
 		if (tower_entity == entt::null)
 		{
 			std::println("建造塔失败");
 			return false;
 		}
-		// 设置塔位置
-		{
-			// 确保位置位于网格中心
-			const auto centered_position = tile_map.coordinate_grid_to_world(grid_position);
-			registry.emplace<transform::Position>(tower_entity, centered_position);
-		}
-		// 初始化完成后才注册该标记,如此方便获取设置的实体信息
-		registry.emplace<tags::tower>(tower_entity);
 
 		// 消耗资源
 		Resource::consume_unchecked(registry, player_selected_tower_type);

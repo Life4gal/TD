@@ -8,9 +8,10 @@
 #include <components/game/player.hpp>
 #include <components/map/map.hpp>
 
+#include <factory/enemy.hpp>
+
 #include <helper/wave.hpp>
 #include <helper/resource.hpp>
-#include <helper/enemy.hpp>
 
 #include <entt/entt.hpp>
 
@@ -109,7 +110,7 @@ namespace update
 						{
 							const auto type = static_cast<combat::Type>(selected_enemy_type);
 
-							helper::Enemy::spawn(registry, static_cast<std::uint32_t>(i), type);
+							factory::enemy(registry, static_cast<std::uint32_t>(i), type);
 						}
 					}
 				}
