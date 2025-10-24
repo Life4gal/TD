@@ -13,8 +13,14 @@ namespace update
 	{
 		using namespace components;
 
-		for (const auto sprite_frame_view = registry.view<sprite_frame::Timer, sprite_frame::Frame, sprite_frame::Condition, Renderable>();
-		     const auto [entity, timer, frame, condition, renderable]: sprite_frame_view.each())
+		for (const auto sprite_frame_view = registry.view<
+			     sprite_frame::Timer,
+			     sprite_frame::Frame,
+			     sprite_frame::Condition,
+			     renderable::Area,
+			     renderable::Origin
+		     >();
+		     const auto [entity, timer, frame, condition, area, origin]: sprite_frame_view.each())
 		{
 			if (not condition.playing)
 			{
@@ -42,9 +48,9 @@ namespace update
 
 				// 更新精灵的纹理矩形
 				const auto rect = helper::SpriteFrame::rect_of(registry, entity);
-				renderable.sprite.setTextureRect(rect);
+				area.area = rect;
 				// todo: 原点一定是中心点吗?
-				renderable.sprite.setOrigin(sf::Vector2f{rect.size / 2});
+				origin.origin = sf::Vector2f{rect.size / 2};
 			}
 		}
 	}

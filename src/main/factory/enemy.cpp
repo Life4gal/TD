@@ -11,8 +11,6 @@
 #include <components/map/map.hpp>
 #include <components/map/navigation.hpp>
 
-#include <helper/asset.hpp>
-
 #include <entt/entt.hpp>
 
 namespace factory
@@ -43,11 +41,16 @@ namespace factory
 		}
 		// renderable & sprite_frame
 		{
+			constexpr auto frame_size = sf::Vector2i{16, 16};
+
 			constexpr std::string_view enemy_name{"deep-dive-AntleredRascal"};
 			constexpr entt::basic_hashed_string enemy_hash_name{enemy_name.data(), enemy_name.size()};
-			const auto& texture = helper::Asset::texture_of(registry, enemy_hash_name);
 
-			constexpr auto frame_size = sf::Vector2i{16, 16};
+			// const auto& texture = helper::Asset::texture_of(registry, enemy_hash_name);
+			registry.emplace<renderable::Texture>(entity, enemy_hash_name);
+			registry.emplace<renderable::Area>(entity, sf::IntRect{{0, 0}, frame_size});
+			registry.emplace<renderable::Origin>(entity, sf::Vector2f{frame_size / 2});
+			registry.emplace<renderable::Color>(entity, sf::Color::White);
 
 			// SpriteFrame
 			registry.emplace<sprite_frame::Timer>(
@@ -66,12 +69,6 @@ namespace factory
 				entity,
 				sprite_frame::Uniform{.frame_position = {0, 0}, .frame_size = frame_size}
 			);
-
-			// Renderable
-			sf::Sprite renderable{texture};
-			renderable.setTextureRect({{0, 0}, frame_size});
-			renderable.setOrigin(sf::Vector2f{frame_size / 2});
-			registry.emplace<Renderable>(entity, std::move(renderable));
 		}
 
 		// ======================
@@ -107,8 +104,8 @@ namespace factory
 
 			// HealthBar
 			{
-				const auto& [sprite] = registry.get<const Renderable>(entity);
-				const auto frame_size = sprite.getTextureRect().size;
+				const auto& [rect] = registry.get<const renderable::Area>(entity);
+				const auto frame_size = rect.size;
 
 				registry.emplace<health_bar::Health>(entity, health);
 				registry.emplace<health_bar::Size>(entity, sf::Vector2f{static_cast<float>(frame_size.x), static_cast<float>(frame_size.y / 4)}); // NOLINT(bugprone-integer-division)

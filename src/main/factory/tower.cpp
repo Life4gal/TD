@@ -10,7 +10,6 @@
 #include <components/combat/weapon.hpp>
 #include <components/map/map.hpp>
 
-#include <helper/asset.hpp>
 #include <helper/enemy.hpp>
 
 #include <entt/entt.hpp>
@@ -42,16 +41,17 @@ namespace factory
 		}
 		// renderable & sprite_frame
 		{
+			constexpr auto frame_size = sf::Vector2i{16, 16};
+
 			// todo: 还没有为塔准备纹理,这里暂时使用敌人的纹理
 			constexpr std::string_view tower_name{"deep-dive-WarpSkull"};
 			constexpr entt::basic_hashed_string tower_hash_name{tower_name.data(), tower_name.size()};
-			const auto& texture = helper::Asset::texture_of(registry, tower_hash_name);
 
-			constexpr auto frame_size = sf::Vector2i{16, 16};
-
-			sf::Sprite renderable{texture};
-			renderable.setTextureRect({{0, 0}, frame_size});
-			renderable.setOrigin(sf::Vector2f{frame_size / 2});
+			// const auto& texture = helper::Asset::texture_of(registry, tower_hash_name);
+			registry.emplace<renderable::Texture>(entity, tower_hash_name);
+			registry.emplace<renderable::Area>(entity, sf::IntRect{{0, 0}, frame_size});
+			registry.emplace<renderable::Origin>(entity, sf::Vector2f{frame_size / 2});
+			registry.emplace<renderable::Color>(entity, sf::Color::White);
 
 			registry.emplace<sprite_frame::Timer>(
 				entity,
@@ -69,8 +69,6 @@ namespace factory
 				entity,
 				sprite_frame::Uniform{.frame_position = {0, 0}, .frame_size = frame_size}
 			);
-
-			registry.emplace<Renderable>(entity, std::move(renderable));
 		}
 
 		// ======================
