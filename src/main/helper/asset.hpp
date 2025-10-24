@@ -18,9 +18,6 @@ namespace helper
 	class Asset
 	{
 	public:
-		// 预加载(当前地图)所有资源
-		static auto initialize(entt::registry& registry) noexcept -> void;
-
 		// todo: config?
 
 		// 获取指定ID字体,保证不为空(如果不存在则返回默认字体)

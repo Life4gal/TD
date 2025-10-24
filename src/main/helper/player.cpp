@@ -23,7 +23,7 @@ namespace helper
 		using namespace components;
 
 		auto& [tile_map] = registry.ctx().get<map_ex::TileMap>();
-		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
+		const auto& [end_gates] = registry.ctx().get<const map_ex::EndGate>();
 
 		auto& [flow_field] = registry.ctx().get<navigation::FlowField>();
 		auto& [cache_paths] = registry.ctx().get<navigation::Path>();

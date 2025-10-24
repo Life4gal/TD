@@ -1,10 +1,8 @@
 #pragma once
 
-#include <vector>
-
 #include <map/tile_map.hpp>
+#include <config/map.hpp>
 
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 namespace components::map_ex
@@ -15,13 +13,10 @@ namespace components::map_ex
 		map::TileMap tile_map;
 	};
 
-	class Gate
-	{
-	public:
-		std::vector<sf::Vector2u> start_gates;
-		std::vector<sf::Vector2u> end_gates;
-	};
+	using config::map_ex::EndGate;
+	using config::map_ex::StartGate;
 
+	// todo: 把这个组件放到一个合适的位置
 	class Background
 	{
 	public:

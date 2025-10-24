@@ -1,0 +1,12 @@
+#pragma once
+
+#include <entt/fwd.hpp>
+
+#include <SFML/System/Time.hpp>
+
+namespace update
+{
+	auto game(entt::registry& registry, sf::Time delta) noexcept -> void;
+
+	auto game_simulation(entt::registry& registry, sf::Time delta) noexcept -> void;
+}

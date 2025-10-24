@@ -1,35 +1,61 @@
 #include <scene/game.hpp>
 
-#include <systems/initialize.hpp>
-#include <systems/game.hpp>
+// ================
+// INITIALIZE
 
-#include <systems/map.hpp>
-#include <systems/wave.hpp>
-#include <systems/navigation.hpp>
-#include <systems/observer.hpp>
+#include <initialize/map_data.hpp>
+#include <initialize/wave_data.hpp>
+#include <initialize/asset.hpp>
+#include <initialize/event_connection.hpp>
+#include <initialize/game.hpp>
+#include <initialize/map.hpp>
+#include <initialize/navigation.hpp>
+#include <initialize/observer.hpp>
+#include <initialize/player.hpp>
+#include <initialize/hud.hpp>
 
-#include <systems/resource.hpp>
-#include <systems/player.hpp>
-#include <systems/graveyard.hpp>
-#include <systems/hud.hpp>
-#include <systems/weapon.hpp>
-#include <systems/limited_life.hpp>
-#include <systems/sprite_frame.hpp>
-#include <systems/renderable.hpp>
-#include <systems/health_bar.hpp>
+// ================
+// UPDATE
 
-#include <systems/debug.hpp>
+#include <update/game.hpp>
 
-#include <helper/asset.hpp>
-#include <helper/map.hpp>
+#include <update/wave.hpp>
+#include <update/navigation.hpp>
+#include <update/observer.hpp>
+#include <update/weapon.hpp>
+#include <update/limited_life.hpp>
+#include <update/sprite_frame.hpp>
+
+#include <update/player.hpp>
+#include <update/graveyard.hpp>
+#include <update/resource.hpp>
+#include <update/hud.hpp>
+
+// ================
+// RENDER
+
+#include <render/map.hpp>
+#include <render/navigation.hpp>
+#include <render/renderable.hpp>
+#include <render/health_bar.hpp>
+#include <render/player.hpp>
+#include <render/hud.hpp>
+
+// ================
+// HELPER
+
 #include <helper/player.hpp>
-#include <helper/wave.hpp>
+
+// ================
+// UTILITY
 
 #include <utility/functional.hpp>
 
-#include <entt/entt.hpp>
-#include <SFML/Graphics.hpp>
+// ================
+// DEPENDENCIES
 
+#include <entt/entt.hpp>
+#include <SFML/Window.hpp>
 #include <imgui.h>
 
 namespace scene
@@ -37,38 +63,38 @@ namespace scene
 	auto Game::do_update_simulation(const sf::Time delta) noexcept -> void
 	{
 		// 更新游戏状态
-		systems::Game::update_simulation(scene_registry_, delta);
+		update::game_simulation(scene_registry_, delta);
 
 		// 更新波次
-		systems::Wave::update(scene_registry_, delta);
+		update::wave(scene_registry_, delta);
 		// 更新导航
-		systems::Navigation::update(scene_registry_, delta);
+		update::navigation(scene_registry_, delta);
 		// 更新观察者
-		systems::Observer::update(scene_registry_, delta);
+		update::observer(scene_registry_, delta);
 
 		// 更新塔(武器)目标
-		systems::Weapon::update(scene_registry_, delta);
+		update::weapon(scene_registry_, delta);
 
 		// 更新有限生命周期实体
-		systems::LimitedLife::update(scene_registry_, delta);
+		update::limited_life(scene_registry_, delta);
 
 		// 更新精灵帧序列
-		systems::SpriteFrame::update(scene_registry_, delta);
+		update::sprite_frame(scene_registry_, delta);
 	}
 
 	auto Game::do_update(const sf::Time delta) noexcept -> void
 	{
 		// 更新游戏状态
-		systems::Game::update(scene_registry_, delta);
+		update::game(scene_registry_, delta);
 
 		// 更新玩家(检测到达终点敌人)
-		systems::Player::update(scene_registry_);
+		update::player(scene_registry_);
 		// 更新墓地(击杀敌人产生资源)
-		systems::Graveyard::update(scene_registry_);
+		update::graveyard(scene_registry_);
 		// 更新资源(获取产生的资源)
-		systems::Resource::update(scene_registry_);
+		update::resource(scene_registry_);
 		// 更新玩家HUD
-		systems::HUD::update(scene_registry_);
+		update::hud(scene_registry_);
 	}
 
 	// todo: 更新全局统计数据等信息?
@@ -78,15 +104,29 @@ namespace scene
 		: Scene{std::move(global_registry)},
 		  simulation_times_per_tick_{1}
 	{
-		// 载入地图
-		helper::Map::load(scene_registry_);
-		// 载入波次
-		helper::Wave::load(scene_registry_);
+		// 载入地图数据
+		initialize::map_data(scene_registry_);
+		// 载入波次数据
+		initialize::wave_data(scene_registry_);
 
-		// 初始化资源
-		helper::Asset::initialize(scene_registry_);
+		// 预加载资源
+		initialize::asset(scene_registry_);
+
+		// 连接事件
+		initialize::event_connection(scene_registry_);
+
 		// 初始化游戏
-		systems::Initialize::initialize(scene_registry_);
+		initialize::game(scene_registry_);
+		// 初始化地图
+		initialize::map(scene_registry_);
+		// 初始化导航
+		initialize::navigation(scene_registry_);
+		// 初始化观察者
+		initialize::observer(scene_registry_);
+		// 初始化玩家
+		initialize::player(scene_registry_);
+		// 初始化HUD
+		initialize::hud(scene_registry_);
 	}
 
 	auto Game::handle_event(const sf::Event& event) noexcept -> void
@@ -171,17 +211,16 @@ namespace scene
 	auto Game::render(sf::RenderWindow& window) noexcept -> void
 	{
 		// 先渲染地图
-		systems::Map::render(scene_registry_, window);
-
+		render::map(scene_registry_, window);
+		// 绘制导航信息(路径/流向)
+		render::navigation(scene_registry_, window);
 		// 绘制实体
-		systems::Renderable::render(scene_registry_, window);
-
+		render::renderable(scene_registry_, window);
 		// 渲染血条
-		systems::HealthBar::render(scene_registry_, window);
-
-		systems::Debug::render(scene_registry_, window);
-
+		render::health_bar(scene_registry_, window);
+		// 绘制玩家(鼠标)
+		render::player(scene_registry_, window);
 		// HUD位于最上层
-		systems::HUD::render(scene_registry_, window);
+		render::hud(scene_registry_, window);
 	}
 }

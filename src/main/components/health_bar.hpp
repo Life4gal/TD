@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace components::health_bar
 {
@@ -28,12 +28,4 @@ namespace components::health_bar
 
 	// 血条位置
 	// entity::position + Offset
-
-	// 用于绘制所有血条的缓冲区
-	// todo: 只有一种血条吗?
-	class Renderer
-	{
-	public:
-		sf::VertexArray triangles;
-	};
 }

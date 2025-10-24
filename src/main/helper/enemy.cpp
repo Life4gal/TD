@@ -112,7 +112,7 @@ namespace helper
 	{
 		using namespace components;
 
-		const auto& [start_gates, end_gates] = registry.ctx().get<const map_ex::Gate>();
+		const auto& [start_gates] = registry.ctx().get<const map_ex::StartGate>();
 		const auto start_gate = start_gates[start_gate_id];
 
 		return spawn(registry, start_gate, type);

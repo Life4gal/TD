@@ -68,6 +68,7 @@ add_executable(
 	# =============================
 	# CONFIG
 	
+	${CMAKE_CURRENT_SOURCE_DIR}/config/map.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/config/wave.hpp
 
 	# =============================
@@ -108,9 +109,6 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/asset.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/asset.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/helper/map.cpp
-	
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/wave.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/wave.cpp
 
@@ -136,56 +134,76 @@ add_executable(
 	${CMAKE_CURRENT_SOURCE_DIR}/helper/sprite_frame.cpp
 	
 	# =============================
-	# SYSTEMS
-		
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/initialize.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/game.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/game.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/debug.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/map.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/map.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/wave.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/wave.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/navigation.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/navigation.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/observer.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/limited_life.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/limited_life.cpp
+	# INITIALIZE
 
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/map_data.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/map_data.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/wave_data.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/wave_data.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/resource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/asset.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/asset.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/player.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/event_connection.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/event_connection.cpp
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/graveyard.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/graveyard.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/hud.cpp
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/sprite_frame.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/game.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/game.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/map.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/observer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/initialize/hud.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/renderable.cpp
+	# =============================
+	# UPDATE
+
+	${CMAKE_CURRENT_SOURCE_DIR}/update/game.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/game.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/update/wave.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/wave.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/observer.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/observer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/weapon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/weapon.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/limited_life.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/limited_life.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/sprite_frame.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/sprite_frame.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/update/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/graveyard.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/graveyard.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/resource.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/resource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/update/hud.cpp
+
+	# =============================
+	# RENDER	
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/health_bar.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/systems/health_bar.cpp
-	
+	${CMAKE_CURRENT_SOURCE_DIR}/render/map.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/map.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/navigation.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/navigation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/renderable.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/renderable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/health_bar.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/health_bar.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/player.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/player.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/hud.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/render/hud.cpp
+
 	#===================
 	# MAIN
 

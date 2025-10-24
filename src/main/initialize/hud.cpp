@@ -1,0 +1,19 @@
+#include <initialize/hud.hpp>
+
+#include <components/asset.hpp>
+#include <components/hud.hpp>
+
+#include <helper/asset.hpp>
+
+#include <entt/entt.hpp>
+
+namespace initialize
+{
+	auto hud(entt::registry& registry) noexcept -> void
+	{
+		using namespace components;
+
+		const auto& font = helper::Asset::font_of(registry, asset::constants::hud);
+		registry.ctx().emplace<hud::Text>(sf::Text{font, "", 25});
+	}
+}

@@ -9,9 +9,6 @@ namespace helper
 	class Wave
 	{
 	public:
-		// 载入波次数据
-		static auto load(entt::registry& registry) noexcept -> void;
-
 		// =========================
 		// 状态切换
 
